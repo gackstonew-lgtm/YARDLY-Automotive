@@ -10,37 +10,37 @@ export const SparesAccessoriesSection: React.FC = () => {
     {
       title: 'Brake Rotors & Ceramic Pads',
       category: 'Braking Systems',
-      image: '/spares/brakes.jpg',
+      image: '/Car Images/brake rotors & ceramic pads.jpeg',
       desc: 'Ventilated slotted rotors and low-dust ceramic pads engineered for high stopping power.',
     },
     {
       title: 'Engine Filters & Spark Plugs',
       category: 'Engine Maintenance',
-      image: '/spares/filters_plugs.jpg',
+      image: '/Car Images/Engine Filters & Spark Plugs.jpeg',
       desc: 'Synthetic oil filters, high-flow air intake elements, and platinum iridium spark plugs.',
     },
     {
       title: 'Diamond-Cut Alloy Wheels',
       category: 'Wheels & Tyres',
-      image: '/spares/wheels_tyres.jpg',
+      image: '/Car Images/Diamond-Cut Alloy Wheels.jpeg',
       desc: 'Precision machined lightweight alloy wheels fitted with high-performance sport tyres.',
     },
     {
       title: '12V Sealed AGM Batteries',
       category: 'Electrical & Power',
-      image: '/spares/battery.jpg',
+      image: '/Car Images/12V Sealed AGM Batteries.jpeg',
       desc: 'Heavy-duty maintenance-free automotive batteries with high cold cranking performance.',
     },
     {
       title: 'LED Projector Headlight Units',
       category: 'Lighting & Electronics',
-      image: '/spares/lighting.jpg',
+      image: '/Car Images/LED Projector Headlight Units.jpeg',
       desc: 'High-intensity LED projector assemblies with crystal daylight running lamps.',
     },
     {
       title: 'Custom Diamond-Stitched Mats',
       category: 'Interior Accessories',
-      image: '/spares/interior.jpg',
+      image: '/Car Images/Custom Diamond-Stitched Mats.jpeg',
       desc: 'Tailored 7D waterproof floor mats, leather key fobs, and interior protection essentials.',
     },
   ];
@@ -86,6 +86,7 @@ export const SparesAccessoriesSection: React.FC = () => {
                       alt={item.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                       loading="lazy"
+                      decoding="async"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
                     

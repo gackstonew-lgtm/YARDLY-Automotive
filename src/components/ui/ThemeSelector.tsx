@@ -6,7 +6,7 @@ export const ThemeSelector: React.FC<{ className?: string }> = ({ className = ''
   const { theme, resolvedTheme, setTheme } = useTheme();
 
   const options: { id: ThemeMode; label: string; icon: React.FC<{ className?: string }> }[] = [
-    { id: 'light', label: 'Light', icon: Sun },
+    { id: 'light', label: 'Light / Day', icon: Sun },
     { id: 'dark', label: 'Dark', icon: Moon },
     { id: 'system', label: 'System', icon: Laptop },
   ];

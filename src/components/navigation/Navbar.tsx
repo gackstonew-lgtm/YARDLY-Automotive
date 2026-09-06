@@ -4,7 +4,6 @@ import { Search, PlusCircle, ShieldCheck, Menu, X, PhoneCall, User, RefreshCw, G
 import { motion, AnimatePresence } from 'framer-motion';
 import { siteConfig } from '../../config/site';
 import { AuthService, AuthUser } from '../../lib/supabase/client';
-import { ThemeToggle } from '../ui/ThemeToggle';
 import { ThemeSelector } from '../ui/ThemeSelector';
 
 export const Navbar: React.FC = () => {
@@ -156,9 +155,6 @@ export const Navbar: React.FC = () => {
 
         {/* Right Header Actions */}
         <div className="flex items-center gap-2 sm:gap-2.5">
-          {/* Quick Theme Switcher Button */}
-          <ThemeToggle />
-
           <Link to={user ? ((user.role === 'admin' || user.role === 'yard_admin') ? '/admin' : '/account') : '/login'} className="hidden sm:block">
             <button className="px-4 py-2 rounded-xl bg-[#EBF2EE] dark:bg-[#002B1F] border border-[rgba(0,60,40,0.12)] dark:border-[rgba(180,255,210,0.18)] text-[#0F241C] dark:text-[#F2F7F3] text-xs font-extrabold flex items-center gap-1.5 hover:border-[#009E52] dark:hover:border-[#00E878] hover:bg-white dark:hover:bg-[#003D2D] hover:text-[#009E52] dark:hover:text-[#00E878] transition-all duration-200 shadow-sm active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]">
               <User className="w-3.5 h-3.5 text-[#009E52] dark:text-[#00E878]" />
