@@ -1,0 +1,36 @@
+{
+  "name": "Yardly Automotives — Find Your Next Drive",
+  "short_name": "Yardly Automotives",
+  "description": "Explore quality vehicles and discover your next drive with Yardly Automotives.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#001A13",
+  "theme_color": "#00E878",
+  "categories": [
+    "automotive",
+    "shopping",
+    "business"
+  ],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: 0 232 120;        /* #00E878 Emerald */
+    --primary-dark: 0 184 94;    /* #00B85E */
+    --primary-glow: 85 255 120;  /* #55FF78 Luminous Green */
+    --bg-main: 0 26 19;          /* #001A13 Very Dark Forest */
+    --bg-card: 0 43 31;          /* #002B1F Deep Forest */
+    --bg-elevated: 0 61 45;      /* #003D2D Forest Surface */
+    --text-main: 242 247 243;    /* #F2F7F3 Warm Off-White */
+    --text-muted: 142 167 156;   /* #8EA79C Muted Green-Gray */
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: #001A13;
+    color: #F2F7F3;
+    overflow-x: hidden;
+  }
+}
+
+/* Glassmorphism & Luxury Forest Floating Cards */
+.glass-card {
+  background: rgba(0, 43, 31, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(180, 255, 210, 0.12);
+  box-shadow: 0 10px 30px -10px rgba(0, 20, 15, 0.6);
+}
+
+.glass-card-dark {
+  background: rgba(0, 26, 19, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 232, 120, 0.2);
+  box-shadow: 0 20px 40px -15px rgba(0, 15, 10, 0.8);
+}
+
+.glass-pill {
+  background: rgba(0, 43, 31, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(180, 255, 210, 0.15);
+}
+
+/* Luxury Emerald Glow Effects */
+.unitpay-glow {
+  position: relative;
+}
+.unitpay-glow::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: 20%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(0, 232, 120, 0.18) 0%, rgba(0, 26, 19, 0) 70%);
+  filter: blur(40px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Premium Hover & Interaction Utilities */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px -8px rgba(0, 232, 120, 0.12), 0 8px 20px -4px rgba(0, 20, 15, 0.8);
+}
+
+.btn-glow {
+  transition: transform 0.2s ease, box-shadow 0.3s ease, background-color 0.2s ease;
+}
+.btn-glow:hover {
+  box-shadow: 0 0 25px rgba(0, 232, 120, 0.35), 0 4px 14px rgba(0, 232, 120, 0.25);
+}
+
+/* Subtle gradient text shimmer for hero accents */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.text-shimmer {
+  background-size: 200% auto;
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+/* Smooth section divider */
+.section-fade-in {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.section-fade-in.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Custom Scrollbar - Dark Forest & Emerald */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #001A13;
+}
+::-webkit-scrollbar-thumb {
+  background: #004D39;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00E878;
+}
+
+/* Safe Area Insets & Mobile Enhancements */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+body.menu-open {
+  overflow: hidden !important;
+  touch-action: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-brand-ticker {
+    animation: none !important;
+  }
+  .text-shimmer {
+    animation: none !important;
+  }
+  .hover-lift:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  .btn-glow:hover {
+    box-shadow: none !important;
+  }
+}
+
+/* Popular Brands Infinite Ticker Animation */
+@keyframes brandTicker {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-brand-ticker {
+  display: flex;
+  width: max-content;
+  animation: brandTicker 32s linear infinite;
+}
+
+.animate-brand-ticker:hover,
+.animate-brand-ticker:focus-within,
+.animate-brand-ticker.is-paused {
+  animation-play-state: paused;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
