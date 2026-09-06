@@ -679,8 +679,52 @@ export const AuthService = {
     if (typeof window !== 'undefined') {
       localStorage.removeItem(LOCAL_STORAGE_KEY_CURRENT_USER);
     }
+  },
+
+  onAuthStateChange(callback: (user: AuthUser | null) => void): () => void {
+    if (isSupabaseConfigured && supabase) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+        if (session?.user) {
+          const authUser: AuthUser = {
+            id: session.user.id,
+            email: session.user.email || '',
+            full_name: session.user.user_metadata?.full_name || 'Yardly User',
+            phone: session.user.user_metadata?.phone,
+            role: (session.user.user_metadata?.role as UserRole) || 'buyer',
+            seller_type: session.user.user_metadata?.seller_type,
+            business_name: session.user.user_metadata?.business_name
+          };
+          setStored(LOCAL_STORAGE_KEY_CURRENT_USER, authUser);
+          callback(authUser);
+        } else if (event === 'SIGNED_OUT') {
+          callback(null);
+        }
+      });
+      return () => subscription.unsubscribe();
+    }
+
+    if (typeof window !== 'undefined') {
+      const listener = (e: StorageEvent) => {
+        if (e.key === LOCAL_STORAGE_KEY_CURRENT_USER) {
+          try {
+            const u = e.newValue ? JSON.parse(e.newValue) : null;
+            callback(u);
+          } catch {
+            callback(null);
+          }
+        }
+      };
+      window.addEventListener('storage', listener);
+      return () => window.removeEventListener('storage', listener);
+    }
+
+    return () => {};
   }
 };
+
+export function isAdminRole(role?: UserRole): boolean {
+  return role === 'admin' || role === 'yard_admin';
+}
 
 // Vehicle Management Service
 export const VehicleService = {

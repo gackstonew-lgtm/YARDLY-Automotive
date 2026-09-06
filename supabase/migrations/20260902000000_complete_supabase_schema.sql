@@ -41,6 +41,7 @@ begin
             'dealer',
             'customer',
             'staff',
+            'yard_admin',
             'admin',
             'super_admin'
         );
@@ -1036,10 +1037,11 @@ as $$
         and (
             role = required_role
             or role = 'admin'
+            or role = 'yard_admin'
             or role = 'super_admin'
             or (
                 required_role = 'staff'
-                and role in ('admin', 'super_admin')
+                and role in ('admin', 'yard_admin', 'super_admin')
             )
         )
     );

@@ -199,22 +199,25 @@ export const Navbar: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.25, ease: 'easeInOut' }}
               onClick={() => {
                 setMobileMenuOpen(false);
                 menuButtonRef.current?.focus();
               }}
-              className="fixed inset-0 top-[65px] sm:top-[70px] bg-black/60 dark:bg-black/75 backdrop-blur-md z-40"
+              className="fixed inset-0 top-[58px] sm:top-[68px] bg-black/50 dark:bg-black/70 backdrop-blur-md menu-backdrop z-40 transition-all"
               aria-hidden="true"
             />
 
             <motion.div
               id="navigation-drawer"
-              initial={{ opacity: 0, y: -10 }}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Site Navigation & Services Menu"
+              initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
+              exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-full left-0 right-0 z-50 bg-white/98 dark:bg-[#001A13]/98 backdrop-blur-xl border-b border-[rgba(0,60,40,0.12)] dark:border-[rgba(180,255,210,0.18)] px-4 sm:px-6 lg:px-8 py-5 sm:py-6 shadow-2xl overflow-y-auto max-h-[calc(100vh-75px)] pb-safe text-[#0F241C] dark:text-[#F2F7F3]"
+              className="absolute top-full left-0 right-0 z-50 bg-white/95 dark:bg-[#001A13]/95 backdrop-blur-2xl border-b border-[rgba(0,60,40,0.12)] dark:border-[rgba(180,255,210,0.18)] px-4 sm:px-6 lg:px-8 py-5 sm:py-6 shadow-2xl overflow-y-auto max-h-[calc(100vh-75px)] pb-safe text-[#0F241C] dark:text-[#F2F7F3]"
             >
               <div className="max-w-lg mx-auto space-y-4 sm:space-y-5">
 

@@ -1,5 +1,5 @@
 import { getPaymentProvider } from '../lib/payments/factory.js';
-import { VehicleService, AuthService, requireAdminRole } from '../lib/supabase/client.js';
+import { VehicleService, AuthService, requireAdminRole, isAdminRole } from '../lib/supabase/client.js';
 import { EmailService } from '../lib/email/resend.js';
 
 async function runVerificationSuite() {
@@ -129,6 +129,35 @@ async function runVerificationSuite() {
     );
   } catch (e) {
     assert(false, `Sign Up Role Sanitization Exception: ${e}`);
+  }
+
+  // TEST 10: Centralized Admin Role Verification Utility
+  try {
+    const isYardAdmin = isAdminRole('yard_admin');
+    const isSystemAdmin = isAdminRole('admin');
+    const isBuyerAdmin = isAdminRole('buyer');
+    const isSellerAdmin = isAdminRole('seller');
+    assert(
+      isYardAdmin === true &&
+      isSystemAdmin === true &&
+      isBuyerAdmin === false &&
+      isSellerAdmin === false,
+      'Centralized isAdminRole Helper Verification'
+    );
+  } catch (e) {
+    assert(false, `isAdminRole Helper Exception: ${e}`);
+  }
+
+  // TEST 11: Reactive onAuthStateChange Subscription
+  try {
+    let capturedUser: any = undefined;
+    const unsub = AuthService.onAuthStateChange((u) => {
+      capturedUser = u;
+    });
+    assert(typeof unsub === 'function', 'AuthService.onAuthStateChange Returns Unsubscribe Handler');
+    unsub();
+  } catch (e) {
+    assert(false, `onAuthStateChange Exception: ${e}`);
   }
 
   console.log('\n====================================================');
