@@ -133,17 +133,17 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     >
       {paymentStatus === 'paid' ? (
         <div className="text-center py-6 space-y-4">
-          <div className="w-16 h-16 rounded-full bg-[#003D2D] text-[#00E878] border border-[#00E878]/30 flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(0,232,120,0.2)]">
+          <div className="w-16 h-16 rounded-full bg-[#E0F8EC] dark:bg-[#003D2D] text-[#009E52] dark:text-[#00E878] border border-[#009E52]/30 dark:border-[#00E878]/30 flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(0,232,120,0.2)]">
             <CheckCircle2 className="w-8 h-8" />
           </div>
-          <h3 className="text-2xl font-extrabold text-[#F2F7F3]">Vehicle Reserved!</h3>
-          <p className="text-xs text-[#A7BDB3] max-w-xs mx-auto">
+          <h3 className="text-2xl font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">Vehicle Reserved!</h3>
+          <p className="text-xs text-[#355347] dark:text-[#A7BDB3] max-w-xs mx-auto">
             M-Pesa receipt <strong>{receiptNumber}</strong> confirmed. A reservation email has been sent to <strong>{buyerEmail}</strong>.
           </p>
-          <div className="p-4 rounded-2xl bg-[#001F17] border border-[rgba(180,255,210,0.15)] text-left text-xs space-y-1">
-            <div className="font-bold text-[#F2F7F3]">Next Steps:</div>
-            <div className="text-[#8EA79C]">1. Our sales rep will call {buyerPhone} to confirm inspection.</div>
-            <div className="text-[#8EA79C]">2. Visit {siteConfig.contact.address} to complete final paperwork.</div>
+          <div className="p-4 rounded-2xl bg-[#F4F8F6] dark:bg-[#001F17] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] text-left text-xs space-y-1">
+            <div className="font-bold text-[#0F241C] dark:text-[#F2F7F3]">Next Steps:</div>
+            <div className="text-[#355347] dark:text-[#8EA79C]">1. Our sales rep will call {buyerPhone} to confirm inspection.</div>
+            <div className="text-[#355347] dark:text-[#8EA79C]">2. Visit {siteConfig.contact.address} to complete final paperwork.</div>
           </div>
           <Button fullWidth onClick={onClose} variant="primary" className="font-bold">
             Done
@@ -152,21 +152,21 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       ) : (
         <form onSubmit={handleInitiatePayment} className="space-y-5">
           {errorMsg && (
-            <div className="p-3 rounded-xl bg-red-950/60 border border-red-800/40 text-red-300 text-xs font-semibold flex items-center gap-2">
+            <div className="p-3 rounded-xl bg-red-100 dark:bg-red-950/60 border border-red-300 dark:border-red-800/40 text-red-700 dark:text-red-300 text-xs font-semibold flex items-center gap-2">
               <AlertCircle className="w-4 h-4" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           {/* Deposit Summary Box */}
-          <div className="p-4 rounded-2xl bg-[#001F17] border border-[rgba(180,255,210,0.15)] flex items-center justify-between">
+          <div className="p-4 rounded-2xl bg-[#F4F8F6] dark:bg-[#001F17] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] flex items-center justify-between">
             <div>
-              <div className="text-[10px] font-bold text-[#8EA79C] uppercase">Holding Deposit</div>
-              <div className="text-xl font-black text-[#00E878]">KES {depositAmount.toLocaleString()}</div>
+              <div className="text-[10px] font-bold text-[#355347] dark:text-[#8EA79C] uppercase">Holding Deposit</div>
+              <div className="text-xl font-black text-[#009E52] dark:text-[#00E878]">KES {depositAmount.toLocaleString()}</div>
             </div>
             <div className="text-right">
-              <div className="text-[10px] font-bold text-[#8EA79C] uppercase">Vehicle Price</div>
-              <div className="text-sm font-bold text-[#F2F7F3]">KES {vehicle.price.toLocaleString()}</div>
+              <div className="text-[10px] font-bold text-[#355347] dark:text-[#8EA79C] uppercase">Vehicle Price</div>
+              <div className="text-sm font-bold text-[#0F241C] dark:text-[#F2F7F3]">KES {vehicle.price.toLocaleString()}</div>
             </div>
           </div>
 
@@ -183,7 +183,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             placeholder="e.g. 0722998877"
             value={buyerPhone}
             onChange={(e) => setBuyerPhone(e.target.value)}
-            icon={<Phone className="w-4 h-4 text-[#8EA79C]" />}
+            icon={<Phone className="w-4 h-4 text-[#355347] dark:text-[#8EA79C]" />}
             helperText="You will receive an instant Safaricom STK PIN prompt"
             required
           />
@@ -197,8 +197,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             required
           />
 
-          <div className="flex items-center gap-2 text-xs text-[#8EA79C] pt-1">
-            <Lock className="w-4 h-4 text-[#00E878]" />
+          <div className="flex items-center gap-2 text-xs text-[#355347] dark:text-[#8EA79C] pt-1">
+            <Lock className="w-4 h-4 text-[#009E52] dark:text-[#00E878]" />
             <span>256-bit SSL encrypted. Idempotency protected.</span>
           </div>
 

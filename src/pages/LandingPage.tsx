@@ -20,7 +20,7 @@ export const LandingPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#001A13] text-[#F2F7F3] flex flex-col font-sans selection:bg-[#00E878] selection:text-[#001A13] pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pb-0 overflow-x-hidden">
+    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col font-sans selection:bg-[#009E52] selection:text-white dark:selection:bg-[#00E878] dark:selection:text-[#001A13] pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pb-0 overflow-x-hidden">
       {/* 1. Navigation / Header */}
       <Navbar />
 

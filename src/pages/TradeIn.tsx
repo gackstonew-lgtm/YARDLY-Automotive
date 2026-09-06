@@ -113,21 +113,21 @@ export const TradeIn: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#001A13] text-[#F2F7F3] flex flex-col font-sans selection:bg-[#00E878] selection:text-[#001A13]">
+    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col font-sans selection:bg-[#00E878] selection:text-[#001A13]">
       <Navbar />
 
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-[#00140F] via-[#00251B] to-[#001F17] border-b border-[rgba(180,255,210,0.12)] text-[#F2F7F3] py-14 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#EDF5F1] via-[#E4EFEA] to-[#DBE9E2] dark:from-[#00140F] dark:via-[#00251B] dark:to-[#001F17] border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] text-[#0F241C] dark:text-[#F2F7F3] py-14 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#00E878]/5 rounded-full blur-3xl pointer-events-none" />
         <div className="max-w-4xl mx-auto text-center space-y-4 relative z-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#00E878]/10 border border-[#00E878]/30 text-xs font-extrabold uppercase tracking-wider text-[#00E878]">
-            <RefreshCw className="w-4 h-4 text-[#00E878]" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#009E52]/10 dark:bg-[#00E878]/10 border border-[#009E52]/20 dark:border-[#00E878]/30 text-xs font-extrabold uppercase tracking-wider text-[#009E52] dark:text-[#00E878]">
+            <RefreshCw className="w-4 h-4 text-[#009E52] dark:text-[#00E878]" />
             <span>INSTANT VEHICLE TRADE-IN & VALUATION</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[#F2F7F3]">
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[#0F241C] dark:text-[#F2F7F3]">
             Trade In Your Vehicle with Yardly Automotives
           </h1>
-          <p className="text-sm sm:text-base text-[#8EA79C] max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-[#355347] dark:text-[#8EA79C] max-w-2xl mx-auto">
             Upgrade your ride effortlessly. Submit your vehicle details to get a fair market valuation from verified Kenyan car yards and apply the value directly towards your next car.
           </p>
         </div>
@@ -136,26 +136,26 @@ export const TradeIn: React.FC = () => {
       {/* Main Content Area */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pb-12 w-full flex-grow">
         {submittedRef ? (
-          <div className="bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(180,255,210,0.15)] p-8 sm:p-12 shadow-glass text-center space-y-6">
-            <div className="w-20 h-20 bg-[#00E878]/15 text-[#00E878] border border-[#00E878]/30 rounded-full flex items-center justify-center mx-auto shadow-sm">
+          <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-8 sm:p-12 shadow-sm dark:shadow-glass text-center space-y-6">
+            <div className="w-20 h-20 bg-[#E0F8EC] dark:bg-[#00E878]/15 text-[#009E52] dark:text-[#00E878] border border-[#009E52]/30 dark:border-[#00E878]/30 rounded-full flex items-center justify-center mx-auto shadow-sm">
               <CheckCircle2 className="w-10 h-10" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-2xl font-black text-[#F2F7F3]">Trade-In Request Submitted!</h2>
-              <p className="text-sm text-[#8EA79C] max-w-md mx-auto">
+              <h2 className="text-2xl font-black text-[#0F241C] dark:text-[#F2F7F3]">Trade-In Request Submitted!</h2>
+              <p className="text-sm text-[#355347] dark:text-[#8EA79C] max-w-md mx-auto">
                 Thank you, <strong>{fullName}</strong>. Your trade-in valuation request has been logged into our system.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#001F17] border border-[rgba(180,255,210,0.15)] inline-block w-full max-w-md text-left space-y-2">
-              <div className="text-xs font-bold text-[#8EA79C] uppercase">Reference Tracking ID</div>
-              <div className="text-2xl font-black font-mono text-[#00E878]">{submittedRef}</div>
-              <div className="text-xs text-[#8EA79C] pt-2 border-t border-[rgba(180,255,210,0.12)]">
-                Vehicle: <strong className="text-[#F2F7F3]">{year} {make} {model}</strong>
+            <div className="p-6 rounded-2xl bg-[#F4F8F6] dark:bg-[#001F17] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] inline-block w-full max-w-md text-left space-y-2">
+              <div className="text-xs font-bold text-[#355347] dark:text-[#8EA79C] uppercase">Reference Tracking ID</div>
+              <div className="text-2xl font-black font-mono text-[#009E52] dark:text-[#00E878]">{submittedRef}</div>
+              <div className="text-xs text-[#355347] dark:text-[#8EA79C] pt-2 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)]">
+                Vehicle: <strong className="text-[#0F241C] dark:text-[#F2F7F3]">{year} {make} {model}</strong>
               </div>
             </div>
 
-            <p className="text-xs text-[#8EA79C] max-w-lg mx-auto">
+            <p className="text-xs text-[#355347] dark:text-[#8EA79C] max-w-lg mx-auto">
               Our appraisal team will inspect your details and contact you via phone ({phone}) or email ({email}) within 24 hours with an official trade-in quote.
             </p>
 
@@ -171,17 +171,17 @@ export const TradeIn: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(180,255,210,0.15)] p-6 sm:p-10 shadow-glass space-y-8">
-            <div className="border-b border-[rgba(180,255,210,0.12)] pb-6">
-              <h2 className="text-2xl font-black text-[#F2F7F3]">Vehicle Valuation & Trade-In Form</h2>
-              <p className="text-xs sm:text-sm text-[#8EA79C] mt-1">
+          <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-6 sm:p-10 shadow-sm dark:shadow-glass space-y-8">
+            <div className="border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] pb-6">
+              <h2 className="text-2xl font-black text-[#0F241C] dark:text-[#F2F7F3]">Vehicle Valuation & Trade-In Form</h2>
+              <p className="text-xs sm:text-sm text-[#355347] dark:text-[#8EA79C] mt-1">
                 Provide accurate details of your current vehicle to receive a fast, reliable trade-in offer.
               </p>
             </div>
 
             {errorMsg && (
-              <div className="p-4 rounded-2xl bg-red-950/40 border border-red-500/30 text-xs font-semibold text-red-300 flex items-center gap-3">
-                <AlertCircle className="w-5 h-5 shrink-0 text-red-400" />
+              <div className="p-4 rounded-2xl bg-red-100 dark:bg-red-950/40 border border-red-300 dark:border-red-500/30 text-xs font-semibold text-red-700 dark:text-red-300 flex items-center gap-3">
+                <AlertCircle className="w-5 h-5 shrink-0 text-red-500 dark:text-red-400" />
                 <span>{errorMsg}</span>
               </div>
             )}
@@ -190,7 +190,7 @@ export const TradeIn: React.FC = () => {
               
               {/* Contact Information */}
               <div>
-                <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#00E878] mb-4">
+                <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#009E52] dark:text-[#00E878] mb-4">
                   1. Contact Information
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -221,7 +221,7 @@ export const TradeIn: React.FC = () => {
 
               {/* Vehicle Specifications */}
               <div>
-                <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#00E878] mb-4">
+                <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#009E52] dark:text-[#00E878] mb-4">
                   2. Vehicle Specifications
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -254,28 +254,28 @@ export const TradeIn: React.FC = () => {
                     required
                   />
                   <div>
-                    <label className="block text-xs font-bold text-[#8EA79C] mb-1.5">Transmission *</label>
+                    <label className="block text-xs font-bold text-[#355347] dark:text-[#8EA79C] mb-1.5">Transmission *</label>
                     <select
                       value={transmission}
                       onChange={(e) => setTransmission(e.target.value as TransmissionType)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-[rgba(180,255,210,0.2)] text-xs font-bold text-[#F2F7F3] bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#00E878]"
+                      className="w-full px-4 py-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
                     >
-                      <option value="Automatic" className="bg-[#001F17] text-[#F2F7F3]">Automatic</option>
-                      <option value="Manual" className="bg-[#001F17] text-[#F2F7F3]">Manual</option>
-                      <option value="CVT" className="bg-[#001F17] text-[#F2F7F3]">CVT</option>
+                      <option value="Automatic" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Automatic</option>
+                      <option value="Manual" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Manual</option>
+                      <option value="CVT" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">CVT</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-[#8EA79C] mb-1.5">Fuel Type *</label>
+                    <label className="block text-xs font-bold text-[#355347] dark:text-[#8EA79C] mb-1.5">Fuel Type *</label>
                     <select
                       value={fuelType}
                       onChange={(e) => setFuelType(e.target.value as FuelType)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-[rgba(180,255,210,0.2)] text-xs font-bold text-[#F2F7F3] bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#00E878]"
+                      className="w-full px-4 py-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
                     >
-                      <option value="Petrol" className="bg-[#001F17] text-[#F2F7F3]">Petrol</option>
-                      <option value="Diesel" className="bg-[#001F17] text-[#F2F7F3]">Diesel</option>
-                      <option value="Hybrid" className="bg-[#001F17] text-[#F2F7F3]">Hybrid</option>
-                      <option value="Electric" className="bg-[#001F17] text-[#F2F7F3]">Electric</option>
+                      <option value="Petrol" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Petrol</option>
+                      <option value="Diesel" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Diesel</option>
+                      <option value="Hybrid" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Hybrid</option>
+                      <option value="Electric" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Electric</option>
                     </select>
                   </div>
                 </div>
@@ -283,20 +283,20 @@ export const TradeIn: React.FC = () => {
 
               {/* Condition & Pricing */}
               <div>
-                <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#00E878] mb-4">
+                <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#009E52] dark:text-[#00E878] mb-4">
                   3. Vehicle Condition & Expected Valuation
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-[#8EA79C] mb-1.5">Vehicle Condition *</label>
+                    <label className="block text-xs font-bold text-[#355347] dark:text-[#8EA79C] mb-1.5">Vehicle Condition *</label>
                     <select
                       value={condition}
                       onChange={(e) => setCondition(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-[rgba(180,255,210,0.2)] text-xs font-bold text-[#F2F7F3] bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#00E878]"
+                      className="w-full px-4 py-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
                     >
-                      <option value="Foreign Used" className="bg-[#001F17] text-[#F2F7F3]">Foreign Used (Imported)</option>
-                      <option value="Locally Used" className="bg-[#001F17] text-[#F2F7F3]">Locally Used</option>
-                      <option value="Brand New" className="bg-[#001F17] text-[#F2F7F3]">Brand New</option>
+                      <option value="Foreign Used" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Foreign Used (Imported)</option>
+                      <option value="Locally Used" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Locally Used</option>
+                      <option value="Brand New" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Brand New</option>
                     </select>
                   </div>
                   <Input
@@ -319,23 +319,23 @@ export const TradeIn: React.FC = () => {
               {/* Description & Images */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#8EA79C] mb-1.5">Description / Additional Notes</label>
+                  <label className="block text-xs font-bold text-[#355347] dark:text-[#8EA79C] mb-1.5">Description / Additional Notes</label>
                   <textarea
                     rows={3}
                     placeholder="Describe extras, service history, current status, or preferred car you want to trade into..."
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full p-4 rounded-xl border border-[rgba(180,255,210,0.2)] text-xs text-[#F2F7F3] bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#00E878]"
+                    className="w-full p-4 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] text-xs text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
                   />
                 </div>
 
                 {/* Photo JPG Upload Input */}
                 <div className="space-y-2">
-                  <label className="block text-xs font-bold text-[#8EA79C] uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-[#355347] dark:text-[#8EA79C] uppercase tracking-wider">
                     Upload Vehicle Photos (.jpg / .png) *
                   </label>
                   <div className="flex items-center gap-3">
-                    <label className="cursor-pointer inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#00E878] text-[#001A13] text-xs font-extrabold shadow hover:bg-[#55FF78] transition-all">
+                    <label className="cursor-pointer inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#009E52] dark:bg-[#00E878] text-white dark:text-[#001A13] text-xs font-extrabold shadow hover:bg-[#00B85E] dark:hover:bg-[#55FF78] transition-all">
                       <Upload className="w-4 h-4" />
                       <span>Select Photo Files (.jpg)</span>
                       <input
@@ -346,7 +346,7 @@ export const TradeIn: React.FC = () => {
                         className="hidden"
                       />
                     </label>
-                    <span className="text-xs text-[#8EA79C] font-medium">
+                    <span className="text-xs text-[#355347] dark:text-[#8EA79C] font-medium">
                       {images.length} photo(s) attached
                     </span>
                   </div>
@@ -354,7 +354,7 @@ export const TradeIn: React.FC = () => {
                   {images.length > 0 && (
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
                       {images.map((url, idx) => (
-                        <div key={idx} className="relative aspect-video rounded-xl overflow-hidden bg-[#001711] group border border-[rgba(180,255,210,0.15)] shadow-sm">
+                        <div key={idx} className="relative aspect-video rounded-xl overflow-hidden bg-[#EDF5F1] dark:bg-[#001711] group border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] shadow-sm">
                           <img src={url} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
                           <button
                             type="button"
@@ -372,12 +372,12 @@ export const TradeIn: React.FC = () => {
 
                 {/* Logbook PDF/DOC Upload Input */}
                 <div className="space-y-2 pt-2">
-                  <label className="block text-xs font-bold text-[#8EA79C] uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-[#355347] dark:text-[#8EA79C] uppercase tracking-wider">
                     Upload Logbook / Registration Document (.pdf / .doc)
                   </label>
                   <div className="flex items-center gap-3">
-                    <label className="cursor-pointer inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#003D2D] text-[#00E878] border border-[#00E878]/30 text-xs font-extrabold shadow hover:bg-[#002B1F] transition-all">
-                      <FileText className="w-4 h-4 text-[#00E878]" />
+                    <label className="cursor-pointer inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#E0F8EC] dark:bg-[#003D2D] text-[#009E52] dark:text-[#00E878] border border-[#009E52]/30 dark:border-[#00E878]/30 text-xs font-extrabold shadow hover:bg-[#D0F2E2] dark:hover:bg-[#002B1F] transition-all">
+                      <FileText className="w-4 h-4 text-[#009E52] dark:text-[#00E878]" />
                       <span>Select Document (.pdf / .doc)</span>
                       <input
                         type="file"
@@ -387,7 +387,7 @@ export const TradeIn: React.FC = () => {
                       />
                     </label>
                     {logbookFileName && (
-                      <div className="flex items-center gap-2 bg-[#001F17] border border-[#00E878]/30 text-[#00E878] px-3 py-1.5 rounded-lg text-xs font-bold">
+                      <div className="flex items-center gap-2 bg-[#F4F8F6] dark:bg-[#001F17] border border-[#009E52]/30 dark:border-[#00E878]/30 text-[#009E52] dark:text-[#00E878] px-3 py-1.5 rounded-lg text-xs font-bold">
                         <FileText className="w-4 h-4" />
                         <span className="truncate max-w-[200px]">{logbookFileName}</span>
                       </div>
@@ -396,7 +396,7 @@ export const TradeIn: React.FC = () => {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[rgba(180,255,210,0.12)]">
+              <div className="pt-4 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)]">
                 <Button type="submit" fullWidth loading={loading} className="py-3.5 text-sm font-extrabold btn-glow">
                   Submit Trade-In Request
                 </Button>

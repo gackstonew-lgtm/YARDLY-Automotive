@@ -87,20 +87,20 @@ export const ImportServicePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#001A13] text-[#F2F7F3] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col font-sans selection:bg-[#00E878] selection:text-[#001A13]">
       <Navbar />
 
       {/* Hero */}
-      <div className="bg-gradient-to-b from-[#00251B] via-[#001F17] to-[#001A13] border-b border-[rgba(180,255,210,0.12)] text-[#F2F7F3] py-14 px-4 sm:px-6 lg:px-8">
+      <div className="bg-gradient-to-r from-[#EDF5F1] via-[#E4EFEA] to-[#DBE9E2] dark:from-[#00140F] dark:via-[#00251B] dark:to-[#001F17] border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] text-[#0F241C] dark:text-[#F2F7F3] py-14 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#002B1F]/90 border border-[#00E878]/30 text-xs font-extrabold uppercase tracking-wider text-[#00E878]">
-            <Globe className="w-4 h-4 text-[#00E878]" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#009E52]/10 dark:bg-[#002B1F]/90 border border-[#009E52]/20 dark:border-[#00E878]/30 text-xs font-extrabold uppercase tracking-wider text-[#009E52] dark:text-[#00E878]">
+            <Globe className="w-4 h-4 text-[#009E52] dark:text-[#00E878]" />
             <span>GLOBAL VEHICLE SOURCING & CUSTOMS CLEARANCE</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[#F2F7F3]">
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[#0F241C] dark:text-[#F2F7F3]">
             Custom Vehicle Import Sourcing
           </h1>
-          <p className="text-sm sm:text-base text-[#8EA79C] max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-[#355347] dark:text-[#8EA79C] max-w-2xl mx-auto">
             Order your dream car directly from Japan, the United Kingdom, Australia, or Dubai. We handle auction bidding, QISJ inspections, ocean freight shipping, and KRA customs clearance to Mombasa.
           </p>
         </div>
@@ -108,27 +108,27 @@ export const ImportServicePage: React.FC = () => {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pb-12 w-full flex-grow">
         {submittedRef ? (
-          <div className="bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(180,255,210,0.18)] p-8 sm:p-12 shadow-2xl text-center space-y-6">
-            <div className="w-20 h-20 bg-[#003D2D] text-[#00E878] border border-[#00E878]/30 rounded-full flex items-center justify-center mx-auto shadow-lg">
+          <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.18)] p-8 sm:p-12 shadow-sm dark:shadow-2xl text-center space-y-6">
+            <div className="w-20 h-20 bg-[#E0F8EC] dark:bg-[#003D2D] text-[#009E52] dark:text-[#00E878] border border-[#009E52]/30 dark:border-[#00E878]/30 rounded-full flex items-center justify-center mx-auto shadow-sm">
               <CheckCircle2 className="w-10 h-10" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-2xl font-black text-[#F2F7F3]">Import Sourcing Request Registered!</h2>
-              <p className="text-sm text-[#8EA79C] max-w-md mx-auto">
-                Thank you, <strong className="text-[#F2F7F3]">{fullName}</strong>. Your custom import request has been dispatched to our international sourcing team.
+              <h2 className="text-2xl font-black text-[#0F241C] dark:text-[#F2F7F3]">Import Sourcing Request Registered!</h2>
+              <p className="text-sm text-[#355347] dark:text-[#8EA79C] max-w-md mx-auto">
+                Thank you, <strong className="text-[#0F241C] dark:text-[#F2F7F3]">{fullName}</strong>. Your custom import request has been dispatched to our international sourcing team.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#001F17] border border-[rgba(180,255,210,0.15)] inline-block w-full max-w-md text-left space-y-2">
-              <div className="text-xs font-bold text-[#8EA79C] uppercase tracking-wider">Import Reference Code</div>
-              <div className="text-2xl font-black font-mono text-[#00E878]">{submittedRef}</div>
-              <div className="text-xs text-[#8EA79C] pt-2 border-t border-[rgba(180,255,210,0.12)]">
-                Requested: <strong className="text-[#F2F7F3]">{make} {model} ({preferredSourceCountry})</strong>
+            <div className="p-6 rounded-2xl bg-[#F4F8F6] dark:bg-[#001F17] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] inline-block w-full max-w-md text-left space-y-2">
+              <div className="text-xs font-bold text-[#355347] dark:text-[#8EA79C] uppercase tracking-wider">Import Reference Code</div>
+              <div className="text-2xl font-black font-mono text-[#009E52] dark:text-[#00E878]">{submittedRef}</div>
+              <div className="text-xs text-[#355347] dark:text-[#8EA79C] pt-2 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)]">
+                Requested: <strong className="text-[#0F241C] dark:text-[#F2F7F3]">{make} {model} ({preferredSourceCountry})</strong>
               </div>
             </div>
 
-            <p className="text-xs text-[#8EA79C] max-w-lg mx-auto">
-              Our import logistics specialist will contact you via <strong className="text-[#F2F7F3]">{phone}</strong> with verified auction listings and CIF Mombasa quotations.
+            <p className="text-xs text-[#355347] dark:text-[#8EA79C] max-w-lg mx-auto">
+              Our import logistics specialist will contact you via <strong className="text-[#0F241C] dark:text-[#F2F7F3]">{phone}</strong> with verified auction listings and CIF Mombasa quotations.
             </p>
 
             <div className="flex justify-center gap-4 pt-4">
@@ -138,17 +138,17 @@ export const ImportServicePage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(180,255,210,0.18)] p-6 sm:p-10 shadow-2xl space-y-8">
-            <div className="border-b border-[rgba(180,255,210,0.12)] pb-6">
-              <h2 className="text-2xl font-black text-[#F2F7F3]">Direct Import Sourcing Application</h2>
-              <p className="text-xs sm:text-sm text-[#8EA79C] mt-1">
+          <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.18)] p-6 sm:p-10 shadow-sm dark:shadow-2xl space-y-8">
+            <div className="border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] pb-6">
+              <h2 className="text-2xl font-black text-[#0F241C] dark:text-[#F2F7F3]">Direct Import Sourcing Application</h2>
+              <p className="text-xs sm:text-sm text-[#355347] dark:text-[#8EA79C] mt-1">
                 Fill in your desired vehicle specifications and budget to begin sourcing.
               </p>
             </div>
 
             {errorMsg && (
-              <div className="p-4 rounded-2xl bg-red-950/50 border border-red-800/50 text-xs font-semibold text-red-300 flex items-center gap-3">
-                <AlertCircle className="w-5 h-5 shrink-0 text-red-400" />
+              <div className="p-4 rounded-2xl bg-red-100 dark:bg-red-950/50 border border-red-300 dark:border-red-800/50 text-xs font-semibold text-red-700 dark:text-red-300 flex items-center gap-3">
+                <AlertCircle className="w-5 h-5 shrink-0 text-red-500 dark:text-red-400" />
                 <span>{errorMsg}</span>
               </div>
             )}
@@ -157,7 +157,7 @@ export const ImportServicePage: React.FC = () => {
               
               {/* Contact Info */}
               <div>
-                <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#00E878] mb-4">
+                <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#009E52] dark:text-[#00E878] mb-4">
                   1. Buyer Details
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -188,21 +188,21 @@ export const ImportServicePage: React.FC = () => {
 
               {/* Sourcing Requirements */}
               <div>
-                <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#00E878] mb-4">
+                <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#009E52] dark:text-[#00E878] mb-4">
                   2. Vehicle Sourcing Requirements
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-xs font-bold text-[#8EA79C] mb-1.5">Preferred Source Country *</label>
+                    <label className="block text-xs font-bold text-[#355347] dark:text-[#8EA79C] mb-1.5">Preferred Source Country *</label>
                     <select
                       value={preferredSourceCountry}
                       onChange={(e) => setPreferredSourceCountry(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-[rgba(180,255,210,0.18)] text-xs font-bold text-[#F2F7F3] bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#00E878]"
+                      className="w-full px-4 py-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.18)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
                     >
-                      <option value="Japan" className="bg-[#001F17] text-[#F2F7F3]">Japan (JDM / USS Auctions)</option>
-                      <option value="United Kingdom" className="bg-[#001F17] text-[#F2F7F3]">United Kingdom (UK Specs)</option>
-                      <option value="Australia" className="bg-[#001F17] text-[#F2F7F3]">Australia</option>
-                      <option value="Dubai" className="bg-[#001F17] text-[#F2F7F3]">Dubai / UAE</option>
+                      <option value="Japan" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Japan (JDM / USS Auctions)</option>
+                      <option value="United Kingdom" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">United Kingdom (UK Specs)</option>
+                      <option value="Australia" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Australia</option>
+                      <option value="Dubai" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Dubai / UAE</option>
                     </select>
                   </div>
                   <Input
@@ -234,14 +234,14 @@ export const ImportServicePage: React.FC = () => {
                     required
                   />
                   <div>
-                    <label className="block text-xs font-bold text-[#8EA79C] mb-1.5">Shipping Method Preference</label>
+                    <label className="block text-xs font-bold text-[#355347] dark:text-[#8EA79C] mb-1.5">Shipping Method Preference</label>
                     <select
                       value={shippingPreference}
                       onChange={(e) => setShippingPreference(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-[rgba(180,255,210,0.18)] text-xs font-bold text-[#F2F7F3] bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#00E878]"
+                      className="w-full px-4 py-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.18)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
                     >
-                      <option value="RoRo" className="bg-[#001F17] text-[#F2F7F3]">Roll-on/Roll-off (RoRo)</option>
-                      <option value="Container" className="bg-[#001F17] text-[#F2F7F3]">Dedicated Container Shipping</option>
+                      <option value="RoRo" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Roll-on/Roll-off (RoRo)</option>
+                      <option value="Container" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Dedicated Container Shipping</option>
                     </select>
                   </div>
                 </div>
@@ -250,35 +250,35 @@ export const ImportServicePage: React.FC = () => {
               {/* Preferred Specs & Additional Notes */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#8EA79C] mb-1.5">Preferred Trim & Options</label>
+                  <label className="block text-xs font-bold text-[#355347] dark:text-[#8EA79C] mb-1.5">Preferred Trim & Options</label>
                   <textarea
                     rows={2}
                     placeholder="e.g. Sunroof, Leather interior, 360 camera, White or Black exterior..."
                     value={preferredSpecs}
                     onChange={(e) => setPreferredSpecs(e.target.value)}
-                    className="w-full p-4 rounded-xl border border-[rgba(180,255,210,0.18)] text-xs text-[#F2F7F3] bg-[#001F17] placeholder-[#8EA79C]/50 focus:outline-none focus:ring-2 focus:ring-[#00E878]"
+                    className="w-full p-4 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.18)] text-xs text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] placeholder-[#355347]/50 dark:placeholder-[#8EA79C]/50 focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#8EA79C] mb-1.5">Additional Requirements</label>
+                  <label className="block text-xs font-bold text-[#355347] dark:text-[#8EA79C] mb-1.5">Additional Requirements</label>
                   <textarea
                     rows={2}
                     placeholder="Any special inspection certs, delivery destination, financing requests..."
                     value={additionalRequirements}
                     onChange={(e) => setAdditionalRequirements(e.target.value)}
-                    className="w-full p-4 rounded-xl border border-[rgba(180,255,210,0.18)] text-xs text-[#F2F7F3] bg-[#001F17] placeholder-[#8EA79C]/50 focus:outline-none focus:ring-2 focus:ring-[#00E878]"
+                    className="w-full p-4 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.18)] text-xs text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] placeholder-[#355347]/50 dark:placeholder-[#8EA79C]/50 focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
                   />
                 </div>
 
                 {/* Import Authorization & Logbook PDF/DOC Upload */}
                 <div className="space-y-2 pt-2">
-                  <label className="block text-xs font-bold text-[#8EA79C] uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-[#355347] dark:text-[#8EA79C] uppercase tracking-wider">
                     Upload PIN / Import Authorization Document (.pdf / .doc)
                   </label>
                   <div className="flex items-center gap-3">
-                    <label className="cursor-pointer inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#003D2D] text-[#00E878] border border-[#00E878]/30 text-xs font-extrabold shadow-lg hover:bg-[#004D39] transition-all">
-                      <FileText className="w-4 h-4 text-[#00E878]" />
+                    <label className="cursor-pointer inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#E0F8EC] dark:bg-[#003D2D] text-[#009E52] dark:text-[#00E878] border border-[#009E52]/30 dark:border-[#00E878]/30 text-xs font-extrabold shadow-sm hover:bg-[#D0F2E2] dark:hover:bg-[#004D39] transition-all">
+                      <FileText className="w-4 h-4 text-[#009E52] dark:text-[#00E878]" />
                       <span>Select Document (.pdf / .doc)</span>
                       <input
                         type="file"
@@ -288,7 +288,7 @@ export const ImportServicePage: React.FC = () => {
                       />
                     </label>
                     {docFileName && (
-                      <div className="flex items-center gap-2 bg-[#003D2D]/80 border border-[#00E878]/30 text-[#00E878] px-3 py-1.5 rounded-lg text-xs font-bold">
+                      <div className="flex items-center gap-2 bg-[#F4F8F6] dark:bg-[#003D2D]/80 border border-[#009E52]/30 dark:border-[#00E878]/30 text-[#009E52] dark:text-[#00E878] px-3 py-1.5 rounded-lg text-xs font-bold">
                         <FileText className="w-4 h-4" />
                         <span className="truncate max-w-[200px]">{docFileName}</span>
                       </div>
@@ -297,8 +297,8 @@ export const ImportServicePage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[rgba(180,255,210,0.12)]">
-                <Button type="submit" fullWidth loading={loading} className="py-3.5 text-sm font-extrabold">
+              <div className="pt-4 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)]">
+                <Button type="submit" fullWidth loading={loading} className="py-3.5 text-sm font-extrabold btn-glow">
                   Submit Direct Import Request
                 </Button>
               </div>

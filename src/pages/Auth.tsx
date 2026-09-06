@@ -113,7 +113,7 @@ export const Auth: React.FC = () => {
         // 1. If an intended destination was preserved and authorized
         if (redirectParam && redirectParam !== '/login' && redirectParam !== '/register' && redirectParam !== '/auth') {
           // If a non-admin attempts to access /admin, safely redirect to /account
-          if (redirectParam.startsWith('/admin') && loggedInRole !== 'admin') {
+          if (redirectParam.startsWith('/admin') && loggedInRole !== 'admin' && loggedInRole !== 'yard_admin') {
             navigate('/account', { replace: true });
           } else {
             navigate(redirectParam, { replace: true });
@@ -122,7 +122,7 @@ export const Auth: React.FC = () => {
         }
 
         // 2. Default role-based destinations
-        if (loggedInRole === 'admin') {
+        if (loggedInRole === 'admin' || loggedInRole === 'yard_admin') {
           navigate('/admin', { replace: true });
         } else if (loggedInRole === 'seller') {
           navigate('/sell', { replace: true });
@@ -138,38 +138,38 @@ export const Auth: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#001A13] text-[#F2F7F3] flex flex-col font-sans selection:bg-[#00E878] selection:text-[#001A13]">
+    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col font-sans selection:bg-[#009E52] selection:text-white dark:selection:bg-[#00E878] dark:selection:text-[#001A13]">
       <Navbar />
 
       <div className="max-w-lg mx-auto my-auto px-4 pt-10 pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pb-12 w-full">
         
         {/* Intended Destination Notice Banner */}
         {destinationFeatureName && (
-          <div className="mb-4 p-3.5 rounded-2xl bg-[#002B1F] border border-[rgba(180,255,210,0.2)] text-xs text-[#F2F7F3] flex items-center justify-between shadow-md">
+          <div className="mb-4 p-3.5 rounded-2xl bg-[#E6F4ED] dark:bg-[#002B1F] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.2)] text-xs text-[#0F241C] dark:text-[#F2F7F3] flex items-center justify-between shadow-xs">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#00E878] shrink-0" />
+              <Sparkles className="w-4 h-4 text-[#009E52] dark:text-[#00E878] shrink-0" />
               <span>Authentication required for <strong>{destinationFeatureName}</strong></span>
             </div>
-            <span className="text-[10px] font-extrabold uppercase text-[#00E878] bg-[#001711] px-2 py-0.5 rounded-md">
+            <span className="text-[10px] font-extrabold uppercase text-[#009E52] bg-white dark:text-[#00E878] dark:bg-[#001711] px-2 py-0.5 rounded-md border border-[rgba(0,60,40,0.1)] dark:border-transparent">
               Protected
             </span>
           </div>
         )}
 
-        <div className="bg-[#00251B]/95 backdrop-blur-md rounded-3xl border border-[rgba(180,255,210,0.18)] p-6 sm:p-8 shadow-glow space-y-6">
+        <div className="bg-white dark:bg-[#00251B]/95 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.18)] p-6 sm:p-8 shadow-xl dark:shadow-glow space-y-6">
           
           <div className="text-center space-y-3">
-            <div className="w-16 h-16 rounded-2xl bg-[#001711] border border-[rgba(180,255,210,0.2)] p-1 shadow-md mx-auto flex items-center justify-center">
+            <div className="w-16 h-16 rounded-2xl bg-[#F4F8F6] dark:bg-[#001711] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.2)] p-1 shadow-sm mx-auto flex items-center justify-center">
               <img
                 src="/logo.jpeg"
                 alt="Yardly Automotives Logo"
                 className="w-full h-full object-contain rounded-xl"
               />
             </div>
-            <h2 className="text-2xl font-extrabold text-[#F2F7F3]">
+            <h2 className="text-2xl font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">
               {isRegister ? `Register as a ${registerRole === 'seller' ? 'Seller / Dealer' : 'Buyer'}` : 'Yardly Partner & Buyer Sign In'}
             </h2>
-            <p className="text-xs text-[#8EA79C]">
+            <p className="text-xs text-[#355347] dark:text-[#8EA79C]">
               {isRegister 
                 ? 'Create your Yardly Automotives account to buy, bid, list cars or request imports' 
                 : 'Access your vehicle inventory, saved cars, trade-ins & bidding portal'}
@@ -179,17 +179,17 @@ export const Auth: React.FC = () => {
           {/* Registration Role Selector: Buyer vs Seller */}
           {isRegister && (
             <div className="space-y-1.5">
-              <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#8EA79C] px-1">
+              <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#355347] dark:text-[#8EA79C] px-1">
                 Select Your Account Role
               </label>
-              <div className="grid grid-cols-2 gap-2 bg-[#001F17] p-1.5 rounded-2xl border border-[rgba(180,255,210,0.15)]">
+              <div className="grid grid-cols-2 gap-2 bg-[#F4F8F6] dark:bg-[#001F17] p-1.5 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)]">
                 <button
                   type="button"
                   onClick={() => setRegisterRole('buyer')}
                   className={`py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
                     registerRole === 'buyer'
-                      ? 'bg-[#00E878] text-[#001A13] shadow-md'
-                      : 'text-[#8EA79C] hover:text-[#F2F7F3]'
+                      ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-sm'
+                      : 'text-[#355347] hover:text-[#0F241C] dark:text-[#8EA79C] dark:hover:text-[#F2F7F3]'
                   }`}
                 >
                   Register as Buyer
@@ -199,8 +199,8 @@ export const Auth: React.FC = () => {
                   onClick={() => setRegisterRole('seller')}
                   className={`py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
                     registerRole === 'seller'
-                      ? 'bg-[#00E878] text-[#001A13] shadow-md'
-                      : 'text-[#8EA79C] hover:text-[#F2F7F3]'
+                      ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-sm'
+                      : 'text-[#355347] hover:text-[#0F241C] dark:text-[#8EA79C] dark:hover:text-[#F2F7F3]'
                   }`}
                 >
                   Register as Seller
@@ -210,15 +210,15 @@ export const Auth: React.FC = () => {
           )}
 
           {errorMsg && (
-            <div className="p-3.5 rounded-xl bg-red-950/40 border border-red-500/30 text-xs font-semibold text-red-300 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
+            <div className="p-3.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-500/30 text-xs font-semibold text-red-700 dark:text-red-300 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 text-red-500 dark:text-red-400" />
               <span>{errorMsg}</span>
             </div>
           )}
 
           {successMsg && (
-            <div className="p-3.5 rounded-xl bg-[#00E878]/15 border border-[#00E878]/30 text-xs font-semibold text-[#00E878] flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 shrink-0 text-[#00E878]" />
+            <div className="p-3.5 rounded-xl bg-[#009E52]/10 dark:bg-[#00E878]/15 border border-[#009E52]/30 dark:border-[#00E878]/30 text-xs font-semibold text-[#009E52] dark:text-[#00E878] flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-[#009E52] dark:text-[#00E878]" />
               <span>{successMsg}</span>
             </div>
           )}
@@ -232,7 +232,7 @@ export const Auth: React.FC = () => {
                   placeholder="e.g. Maina Kamau"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  icon={<User className="w-4 h-4 text-[#8EA79C]" />}
+                  icon={<User className="w-4 h-4 text-[#5F7E71] dark:text-[#8EA79C]" />}
                   required
                 />
 
@@ -241,7 +241,7 @@ export const Auth: React.FC = () => {
                   placeholder="+254 712 345 678"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  icon={<Phone className="w-4 h-4 text-[#8EA79C]" />}
+                  icon={<Phone className="w-4 h-4 text-[#5F7E71] dark:text-[#8EA79C]" />}
                   required
                 />
 
@@ -252,20 +252,20 @@ export const Auth: React.FC = () => {
                       placeholder="e.g. Mwangi Car Yard Ltd"
                       value={businessName}
                       onChange={(e) => setBusinessName(e.target.value)}
-                      icon={<Building className="w-4 h-4 text-[#8EA79C]" />}
+                      icon={<Building className="w-4 h-4 text-[#5F7E71] dark:text-[#8EA79C]" />}
                     />
 
                     <div>
-                      <label className="block text-xs font-bold text-[#8EA79C] mb-1.5">Seller Category *</label>
+                      <label className="block text-xs font-bold text-[#355347] dark:text-[#8EA79C] mb-1.5">Seller Category *</label>
                       <select
                         value={sellerType}
                         onChange={(e) => setSellerType(e.target.value as SellerType)}
-                        className="w-full px-4 py-2.5 rounded-xl border border-[rgba(180,255,210,0.2)] text-xs font-bold text-[#F2F7F3] bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#00E878]"
+                        className="w-full px-4 py-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
                       >
-                        <option value="private" className="bg-[#001F17] text-[#F2F7F3]">Individual Private Seller</option>
-                        <option value="dealer" className="bg-[#001F17] text-[#F2F7F3]">Car Yard / Commercial Dealer</option>
-                        <option value="importer" className="bg-[#001F17] text-[#F2F7F3]">Direct Importer</option>
-                        <option value="business" className="bg-[#001F17] text-[#F2F7F3]">Corporate / Business Fleet</option>
+                        <option value="private" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Individual Private Seller</option>
+                        <option value="dealer" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Car Yard / Commercial Dealer</option>
+                        <option value="importer" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Direct Importer</option>
+                        <option value="business" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Corporate / Business Fleet</option>
                       </select>
                     </div>
                   </>
@@ -279,7 +279,7 @@ export const Auth: React.FC = () => {
               placeholder="user@yardly.co.ke"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              icon={<Mail className="w-4 h-4 text-[#8EA79C]" />}
+              icon={<Mail className="w-4 h-4 text-[#5F7E71] dark:text-[#8EA79C]" />}
               required
             />
 
@@ -289,7 +289,7 @@ export const Auth: React.FC = () => {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              icon={<Lock className="w-4 h-4 text-[#8EA79C]" />}
+              icon={<Lock className="w-4 h-4 text-[#5F7E71] dark:text-[#8EA79C]" />}
               required
             />
 
@@ -300,7 +300,7 @@ export const Auth: React.FC = () => {
                 placeholder="••••••••"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                icon={<Lock className="w-4 h-4 text-[#8EA79C]" />}
+                icon={<Lock className="w-4 h-4 text-[#5F7E71] dark:text-[#8EA79C]" />}
                 required
               />
             )}
@@ -310,7 +310,7 @@ export const Auth: React.FC = () => {
             </Button>
           </form>
 
-          <div className="text-center text-xs text-[#8EA79C] pt-3 border-t border-[rgba(180,255,210,0.12)] space-y-2">
+          <div className="text-center text-xs text-[#355347] dark:text-[#8EA79C] pt-3 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] space-y-2">
             <div>
               {isRegister ? 'Already registered?' : "Don't have an account yet?"}{' '}
               <button
@@ -320,14 +320,14 @@ export const Auth: React.FC = () => {
                   setErrorMsg('');
                   setSuccessMsg('');
                 }}
-                className="font-bold text-[#00E878] hover:underline cursor-pointer"
+                className="font-bold text-[#009E52] dark:text-[#00E878] hover:underline cursor-pointer"
               >
                 {isRegister ? 'Sign In Here' : 'Create Account Now'}
               </button>
             </div>
 
-            <div className="pt-2 border-t border-[rgba(180,255,210,0.1)] flex items-center justify-center">
-              <Link to="/admin/login" className="inline-flex items-center gap-1.5 font-bold text-[#00E878] hover:underline hover:text-[#55FF78]">
+            <div className="pt-2 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.1)] flex items-center justify-center">
+              <Link to="/admin/login" className="inline-flex items-center gap-1.5 font-bold text-[#009E52] dark:text-[#00E878] hover:underline hover:text-[#007A3E] dark:hover:text-[#55FF78]">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>Administrator Portal Login</span>
               </Link>

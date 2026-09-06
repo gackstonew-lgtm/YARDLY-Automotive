@@ -108,8 +108,20 @@ if (typeof window !== 'undefined') {
   }
 }
 
+const nodeMemoryStore = new Map<string, string>();
+
 function getStored<T>(key: string, initial: T): T {
-  if (typeof window === 'undefined') return initial;
+  if (typeof window === 'undefined') {
+    const raw = nodeMemoryStore.get(key);
+    if (raw) {
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return initial;
+      }
+    }
+    return initial;
+  }
 
   if (key === LOCAL_STORAGE_KEY_VEHICLES && inMemoryVehiclesCache && inMemoryVehiclesCache.length > 0) {
     return inMemoryVehiclesCache as unknown as T;
@@ -151,7 +163,14 @@ function getStored<T>(key: string, initial: T): T {
 }
 
 function setStored<T>(key: string, value: T): void {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') {
+    try {
+      nodeMemoryStore.set(key, JSON.stringify(value));
+    } catch {
+      // Ignore
+    }
+    return;
+  }
 
   if (key === LOCAL_STORAGE_KEY_VEHICLES && Array.isArray(value)) {
     inMemoryVehiclesCache = value as unknown as Vehicle[];
@@ -325,7 +344,7 @@ async function hashPassword(password: string): Promise<string> {
 // Server / API Level Admin Authorization Guard
 export async function requireAdminRole(): Promise<AuthUser> {
   const user = await AuthService.getCurrentUser();
-  if (!user || user.role !== 'admin') {
+  if (!user || (user.role !== 'admin' && user.role !== 'yard_admin')) {
     throw new Error('Access denied: Administrator privileges required.');
   }
   return user;
@@ -338,9 +357,30 @@ interface StoredUserAccount extends AuthUser {
 
 async function getStoredUsers(): Promise<StoredUserAccount[]> {
   const users = getStored<StoredUserAccount[]>(LOCAL_STORAGE_KEY_USERS, []);
+  const yardAdminHash = await hashPassword('Admin123.');
   const adminHash = await hashPassword('Admin123');
 
-  // 1. Ensure dedicated primary admin account (admin@yardlyautomotives.co.ke) exists with Admin123 password
+  // 1. Ensure dedicated Yard Admin account (yardlyauto@admin.com) exists with Admin123. password and yard_admin role
+  let yardAdmin = users.find(u => u.email.toLowerCase() === 'yardlyauto@admin.com');
+  if (!yardAdmin) {
+    yardAdmin = {
+      id: 'admin-yard-master-001',
+      email: 'yardlyauto@admin.com',
+      passwordHash: yardAdminHash,
+      full_name: 'Yardly Automotives Yard Admin',
+      role: 'yard_admin'
+    };
+    users.unshift(yardAdmin);
+    setStored(LOCAL_STORAGE_KEY_USERS, users);
+  } else if (!yardAdmin.passwordHash || yardAdmin.passwordHash !== yardAdminHash || yardAdmin.role !== 'yard_admin') {
+    yardAdmin.passwordHash = yardAdminHash;
+    yardAdmin.role = 'yard_admin';
+    yardAdmin.full_name = yardAdmin.full_name || 'Yardly Automotives Yard Admin';
+    delete yardAdmin.password;
+    setStored(LOCAL_STORAGE_KEY_USERS, users);
+  }
+
+  // 2. Ensure primary system admin account (admin@yardlyautomotives.co.ke) exists with Admin123 password
   let primaryAdmin = users.find(u => u.email.toLowerCase() === 'admin@yardlyautomotives.co.ke');
   if (!primaryAdmin) {
     primaryAdmin = {
@@ -350,7 +390,7 @@ async function getStoredUsers(): Promise<StoredUserAccount[]> {
       full_name: 'Yardly Automotives System Administrator',
       role: 'admin'
     };
-    users.unshift(primaryAdmin);
+    users.push(primaryAdmin);
     setStored(LOCAL_STORAGE_KEY_USERS, users);
   } else if (!primaryAdmin.passwordHash || primaryAdmin.passwordHash !== adminHash || primaryAdmin.role !== 'admin') {
     primaryAdmin.passwordHash = adminHash;
@@ -359,7 +399,7 @@ async function getStoredUsers(): Promise<StoredUserAccount[]> {
     setStored(LOCAL_STORAGE_KEY_USERS, users);
   }
 
-  // 2. Ensure legacy admin account exists for backwards compatibility
+  // 3. Ensure legacy admin account exists for backwards compatibility
   let legacyAdmin = users.find(u => u.email.toLowerCase() === 'admin@varbanautohub.com');
   if (!legacyAdmin) {
     legacyAdmin = {
@@ -585,18 +625,52 @@ export const AuthService = {
     if (!res.success || !res.user) {
       return { success: false, error: 'Invalid administrator email or password.' };
     }
-    if (res.user.role !== 'admin') {
+    if (res.user.role !== 'admin' && res.user.role !== 'yard_admin') {
       // Reject authenticated non-admin user
       await this.signOut();
       return { success: false, error: 'Access denied: Account does not have administrator privileges.' };
     }
-    await AuditLogService.logAction('admin_login', `Administrator ${res.user.email} logged in successfully.`);
+    await AuditLogService.logAction('admin_login', `Administrator ${res.user.email} (${res.user.role}) logged in successfully.`);
     return { success: true, user: res.user };
+  },
+
+  async changePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
+    const currentUser = await this.getCurrentUser();
+    if (!currentUser) {
+      return { success: false, error: 'User must be signed in to update password.' };
+    }
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase.auth.updateUser({ password: newPassword });
+        if (error) return { success: false, error: error.message };
+      } catch (err: any) {
+        console.warn('Supabase password update error:', err);
+      }
+    }
+
+    const users = await getStoredUsers();
+    const userRecord = users.find(u => u.id === currentUser.id || u.email.toLowerCase() === currentUser.email.toLowerCase());
+    if (!userRecord) {
+      return { success: false, error: 'Account record not found.' };
+    }
+
+    const currentInputHash = await hashPassword(currentPassword);
+    if (userRecord.passwordHash && userRecord.passwordHash !== currentInputHash) {
+      return { success: false, error: 'Incorrect current password provided.' };
+    }
+
+    const newHash = await hashPassword(newPassword);
+    userRecord.passwordHash = newHash;
+    setStored(LOCAL_STORAGE_KEY_USERS, users);
+
+    await AuditLogService.logAction('password_changed', `User ${currentUser.email} updated their account password.`);
+    return { success: true };
   },
 
   async signOut(): Promise<void> {
     const currentUser = getStored<AuthUser | null>(LOCAL_STORAGE_KEY_CURRENT_USER, null);
-    if (currentUser && currentUser.role === 'admin') {
+    if (currentUser && (currentUser.role === 'admin' || currentUser.role === 'yard_admin')) {
       await AuditLogService.logAction('admin_logout', `Administrator ${currentUser.email} logged out.`);
     }
     if (isSupabaseConfigured && supabase) {

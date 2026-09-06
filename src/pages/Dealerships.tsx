@@ -42,20 +42,20 @@ export const DealershipsPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#001A13] text-[#F2F7F3] flex flex-col pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pb-8 font-sans">
+    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pb-8 font-sans">
       <Navbar />
 
       {/* Hero Banner */}
-      <div className="bg-gradient-to-b from-[#00251B] via-[#001F17] to-[#001A13] border-b border-[rgba(180,255,210,0.12)] text-[#F2F7F3] py-14 px-4 sm:px-6 lg:px-8">
+      <div className="bg-gradient-to-b from-[#E6F4ED] via-[#EDF7F2] to-[#F4F8F6] dark:from-[#00251B] dark:via-[#001F17] dark:to-[#001A13] border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] text-[#0F241C] dark:text-[#F2F7F3] py-14 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#002B1F]/90 border border-[#00E878]/30 text-xs font-extrabold uppercase tracking-wider text-[#00E878]">
-            <Building className="w-4 h-4 text-[#00E878]" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-[#002B1F]/90 border border-[#009E52]/30 dark:border-[#00E878]/30 text-xs font-extrabold uppercase tracking-wider text-[#009E52] dark:text-[#00E878] shadow-xs">
+            <Building className="w-4 h-4 text-[#009E52] dark:text-[#00E878]" />
             <span>VERIFIED KENYAN CAR YARD DIRECTORY</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[#F2F7F3]">
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[#0F241C] dark:text-[#F2F7F3]">
             Partner Dealerships & Car Yards
           </h1>
-          <p className="text-sm sm:text-base text-[#8EA79C] max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-[#355347] dark:text-[#8EA79C] max-w-2xl mx-auto">
             Explore verified car yards and licensed auto dealers across Nairobi, Mombasa, and Nakuru. Every listed dealer is logbook-audited and background-verified by Yardly Automotives.
           </p>
         </div>
@@ -66,31 +66,31 @@ export const DealershipsPage: React.FC = () => {
         {/* Dealership Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {yards.map((yard, idx) => (
-            <div key={idx} className="bg-[#00251B]/90 backdrop-blur-md rounded-3xl p-6 border border-[rgba(180,255,210,0.12)] shadow-xl hover:border-[#00E878]/40 hover:shadow-[0_12px_40px_-8px_rgba(0,232,120,0.15)] transition-all flex flex-col justify-between space-y-4">
+            <div key={idx} className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl p-6 border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] shadow-sm dark:shadow-xl hover:border-[#009E52]/40 dark:hover:border-[#00E878]/40 hover:shadow-md dark:hover:shadow-[0_12px_40px_-8px_rgba(0,232,120,0.15)] transition-all flex flex-col justify-between space-y-4">
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <Badge variant="verified" size="sm">
                     <ShieldCheck className="w-3.5 h-3.5 mr-1" />
                     Logbook Verified Yard
                   </Badge>
-                  <span className="text-xs font-bold text-[#00E878]">{yard.inventoryCount}</span>
+                  <span className="text-xs font-bold text-[#009E52] dark:text-[#00E878]">{yard.inventoryCount}</span>
                 </div>
-                <h3 className="text-xl font-extrabold text-[#F2F7F3]">{yard.name}</h3>
-                <div className="text-xs text-[#8EA79C] space-y-1">
+                <h3 className="text-xl font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">{yard.name}</h3>
+                <div className="text-xs text-[#355347] dark:text-[#8EA79C] space-y-1">
                   <div className="flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-[#00E878]" />
+                    <MapPin className="w-3.5 h-3.5 text-[#009E52] dark:text-[#00E878]" />
                     <span>{yard.location}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Car className="w-3.5 h-3.5 text-[#00E878]" />
+                    <Car className="w-3.5 h-3.5 text-[#009E52] dark:text-[#00E878]" />
                     <span>Specialties: {yard.specialty}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[rgba(180,255,210,0.12)] flex items-center justify-between gap-3">
-                <a href={`tel:${yard.phone}`} className="inline-flex items-center gap-1.5 text-xs font-bold text-[#F2F7F3] hover:text-[#00E878]">
-                  <Phone className="w-3.5 h-3.5 text-[#00E878]" />
+              <div className="pt-4 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] flex items-center justify-between gap-3">
+                <a href={`tel:${yard.phone}`} className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] hover:text-[#009E52] dark:hover:text-[#00E878]">
+                  <Phone className="w-3.5 h-3.5 text-[#009E52] dark:text-[#00E878]" />
                   <span>{yard.phone}</span>
                 </a>
                 <Link to="/buy">

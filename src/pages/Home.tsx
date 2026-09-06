@@ -38,7 +38,7 @@ export const Home: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#001A13] text-[#F2F7F3] flex flex-col font-sans selection:bg-[#00E878] selection:text-[#001A13] pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pb-0">
+    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col font-sans selection:bg-[#00E878] selection:text-[#001A13] pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pb-0">
       <Navbar />
 
       {/* Popular Brands Logo Bar */}
@@ -55,24 +55,24 @@ export const Home: React.FC = () => {
       </div>
 
       {/* Featured Vehicles Grid Section */}
-      <section className="pt-4 pb-12 sm:py-12 bg-[#001A13]">
+      <section className="pt-4 pb-12 sm:py-12 bg-[#F4F8F6] dark:bg-[#001A13]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           
           <Reveal direction="up">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[rgba(180,255,210,0.12)] pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] pb-4">
               <div>
-                <div className="text-xs font-bold uppercase tracking-widest text-[#00E878] mb-1">
+                <div className="text-xs font-bold uppercase tracking-widest text-[#009E52] dark:text-[#00E878] mb-1">
                   Quality Selection
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#F2F7F3]">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">
                   Explore Our Vehicles
                 </h2>
-                <p className="text-xs sm:text-sm text-[#8EA79C] mt-1 max-w-xl">
+                <p className="text-xs sm:text-sm text-[#355347] dark:text-[#8EA79C] mt-1 max-w-xl">
                   Browse our selection of carefully presented vehicles and find an option that fits your needs, lifestyle, and budget.
                 </p>
               </div>
 
-              <Link to="/buy" className="inline-flex items-center gap-1 text-xs font-bold text-[#00E878] hover:text-[#55FF78] transition-colors group shrink-0">
+              <Link to="/buy" className="inline-flex items-center gap-1 text-xs font-bold text-[#009E52] dark:text-[#00E878] hover:text-[#00B85E] dark:hover:text-[#55FF78] transition-colors group shrink-0">
                 <span>View All Vehicles</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -83,7 +83,7 @@ export const Home: React.FC = () => {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3].map((n) => (
-                <div key={n} className="h-96 rounded-3xl bg-[#002B1F]/60 border border-[rgba(180,255,210,0.08)] animate-pulse" />
+                <div key={n} className="h-96 rounded-3xl bg-white/70 dark:bg-[#002B1F]/60 border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.08)] animate-pulse" />
               ))}
             </div>
           ) : (
@@ -100,53 +100,53 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Why Choose Yardly Automotives Section */}
-      <section className="py-16 bg-[#001711] border-y border-[rgba(180,255,210,0.1)]">
+      <section className="py-16 bg-[#EBF3EF] dark:bg-[#001711] border-y border-[rgba(0,60,40,0.06)] dark:border-[rgba(180,255,210,0.1)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <Reveal direction="up" className="text-center max-w-2xl mx-auto space-y-2">
-            <div className="text-xs font-bold uppercase tracking-widest text-[#00E878]">
+            <div className="text-xs font-bold uppercase tracking-widest text-[#009E52] dark:text-[#00E878]">
               Quality & Transparency
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#F2F7F3]">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">
               Why Choose Yardly Automotives?
             </h2>
-            <p className="text-xs sm:text-sm text-[#8EA79C]">
+            <p className="text-xs sm:text-sm text-[#355347] dark:text-[#8EA79C]">
               We make the vehicle buying experience straightforward, transparent, and customer-focused.
             </p>
           </Reveal>
 
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <StaggerItem>
-              <div className="bg-[#00251B] p-8 rounded-3xl border border-[rgba(180,255,210,0.12)] relative h-full space-y-4 hover:border-[#00E878]/40 transition-colors shadow-lg">
-                <div className="w-12 h-12 rounded-2xl bg-[#003D2D] text-[#00E878] border border-[rgba(180,255,210,0.15)] flex items-center justify-center font-black text-lg">
+              <div className="bg-white dark:bg-[#00251B] p-8 rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] relative h-full space-y-4 hover:border-[#009E52]/40 dark:hover:border-[#00E878]/40 transition-colors shadow-sm dark:shadow-lg">
+                <div className="w-12 h-12 rounded-2xl bg-[#E0F8EC] dark:bg-[#003D2D] text-[#009E52] dark:text-[#00E878] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] flex items-center justify-center font-black text-lg">
                   01
                 </div>
-                <h3 className="text-lg font-extrabold text-[#F2F7F3]">Quality-Focused</h3>
-                <p className="text-xs text-[#8EA79C] leading-relaxed">
+                <h3 className="text-lg font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">Quality-Focused</h3>
+                <p className="text-xs text-[#355347] dark:text-[#8EA79C] leading-relaxed">
                   We present vehicles with clear information to help you make confident choices.
                 </p>
               </div>
             </StaggerItem>
 
             <StaggerItem>
-              <div className="bg-[#00251B] p-8 rounded-3xl border border-[rgba(180,255,210,0.12)] relative h-full space-y-4 hover:border-[#00E878]/40 transition-colors shadow-lg">
-                <div className="w-12 h-12 rounded-2xl bg-[#003D2D] text-[#00E878] border border-[rgba(180,255,210,0.15)] flex items-center justify-center font-black text-lg">
+              <div className="bg-white dark:bg-[#00251B] p-8 rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] relative h-full space-y-4 hover:border-[#009E52]/40 dark:hover:border-[#00E878]/40 transition-colors shadow-sm dark:shadow-lg">
+                <div className="w-12 h-12 rounded-2xl bg-[#E0F8EC] dark:bg-[#003D2D] text-[#009E52] dark:text-[#00E878] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] flex items-center justify-center font-black text-lg">
                   02
                 </div>
-                <h3 className="text-lg font-extrabold text-[#F2F7F3]">Customer-First Service</h3>
-                <p className="text-xs text-[#8EA79C] leading-relaxed">
+                <h3 className="text-lg font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">Customer-First Service</h3>
+                <p className="text-xs text-[#355347] dark:text-[#8EA79C] leading-relaxed">
                   Your needs come first, from your first enquiry to your final decision.
                 </p>
               </div>
             </StaggerItem>
 
             <StaggerItem>
-              <div className="bg-[#00251B] p-8 rounded-3xl border border-[rgba(180,255,210,0.12)] relative h-full space-y-4 hover:border-[#00E878]/40 transition-colors shadow-lg">
-                <div className="w-12 h-12 rounded-2xl bg-[#003D2D] text-[#00E878] border border-[rgba(180,255,210,0.15)] flex items-center justify-center font-black text-lg">
+              <div className="bg-white dark:bg-[#00251B] p-8 rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] relative h-full space-y-4 hover:border-[#009E52]/40 dark:hover:border-[#00E878]/40 transition-colors shadow-sm dark:shadow-lg">
+                <div className="w-12 h-12 rounded-2xl bg-[#E0F8EC] dark:bg-[#003D2D] text-[#009E52] dark:text-[#00E878] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] flex items-center justify-center font-black text-lg">
                   03
                 </div>
-                <h3 className="text-lg font-extrabold text-[#F2F7F3]">Transparent Information</h3>
-                <p className="text-xs text-[#8EA79C] leading-relaxed">
+                <h3 className="text-lg font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">Transparent Information</h3>
+                <p className="text-xs text-[#355347] dark:text-[#8EA79C] leading-relaxed">
                   We make it easier to understand the vehicles and options available to you.
                 </p>
               </div>
@@ -157,7 +157,7 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Call to Action Banner */}
-      <section className="py-16 bg-[#001A13]">
+      <section className="py-16 bg-[#F4F8F6] dark:bg-[#001A13]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal direction="up">
             <div className="rounded-3xl bg-gradient-to-r from-[#003426] via-[#004735] to-[#00251B] p-8 sm:p-12 text-[#F2F7F3] shadow-2xl border border-[rgba(180,255,210,0.2)] relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
@@ -194,45 +194,45 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#00140F] text-[#F2F7F3] pt-12 pb-8 border-t border-[rgba(180,255,210,0.1)] mt-auto">
+      <footer className="bg-[#E4ECE7] dark:bg-[#00140F] text-[#0F241C] dark:text-[#F2F7F3] pt-12 pb-8 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.1)] mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="space-y-3">
-              <h3 className="text-lg font-black text-[#F2F7F3]">{siteConfig.name}</h3>
-              <p className="text-xs text-[#8EA79C] leading-relaxed">
+              <h3 className="text-lg font-black text-[#0F241C] dark:text-[#F2F7F3]">{siteConfig.name}</h3>
+              <p className="text-xs text-[#355347] dark:text-[#8EA79C] leading-relaxed">
                 Yardly Automotives helps you discover quality vehicles and make confident choices for your next journey.
               </p>
             </div>
 
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#00E878] mb-3">Marketplace</h4>
-              <ul className="space-y-2 text-xs text-[#A7BDB3]">
-                <li><Link to="/buy?make=Toyota" className="hover:text-[#00E878]">Toyota Vehicles</Link></li>
-                <li><Link to="/buy?transmission=Automatic" className="hover:text-[#00E878]">Automatic SUVs</Link></li>
-                <li><Link to="/buy?maxPrice=5000000" className="hover:text-[#00E878]">Under KES 5M</Link></li>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[#009E52] dark:text-[#00E878] mb-3">Marketplace</h4>
+              <ul className="space-y-2 text-xs text-[#355347] dark:text-[#A7BDB3]">
+                <li><Link to="/buy?make=Toyota" className="hover:text-[#009E52] dark:hover:text-[#00E878]">Toyota Vehicles</Link></li>
+                <li><Link to="/buy?transmission=Automatic" className="hover:text-[#009E52] dark:hover:text-[#00E878]">Automatic SUVs</Link></li>
+                <li><Link to="/buy?maxPrice=5000000" className="hover:text-[#009E52] dark:hover:text-[#00E878]">Under KES 5M</Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#00E878] mb-3">Car Yard</h4>
-              <ul className="space-y-2 text-xs text-[#A7BDB3]">
-                <li><Link to="/sell" className="hover:text-[#00E878]">Sell Your Car</Link></li>
-                <li><Link to="/admin" className="hover:text-[#00E878]">Admin Dashboard</Link></li>
-                <li><Link to="/auth" className="hover:text-[#00E878]">Partner Portal</Link></li>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[#009E52] dark:text-[#00E878] mb-3">Car Yard</h4>
+              <ul className="space-y-2 text-xs text-[#355347] dark:text-[#A7BDB3]">
+                <li><Link to="/sell" className="hover:text-[#009E52] dark:hover:text-[#00E878]">Sell Your Car</Link></li>
+                <li><Link to="/admin" className="hover:text-[#009E52] dark:hover:text-[#00E878]">Admin Dashboard</Link></li>
+                <li><Link to="/auth" className="hover:text-[#009E52] dark:hover:text-[#00E878]">Partner Portal</Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#00E878] mb-3">Contact</h4>
-              <div className="text-xs text-[#A7BDB3] space-y-1">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[#009E52] dark:text-[#00E878] mb-3">Contact</h4>
+              <div className="text-xs text-[#355347] dark:text-[#A7BDB3] space-y-1">
                 <p>{siteConfig.contact.address}</p>
-                <p><a href={`tel:${siteConfig.contact.phone}`} className="hover:text-[#00E878] transition-colors">{siteConfig.contact.phone}</a></p>
-                <p><a href={`mailto:${siteConfig.contact.email}`} className="hover:text-[#00E878] transition-colors">{siteConfig.contact.email}</a></p>
+                <p><a href={`tel:${siteConfig.contact.phone}`} className="hover:text-[#009E52] dark:hover:text-[#00E878] transition-colors">{siteConfig.contact.phone}</a></p>
+                <p><a href={`mailto:${siteConfig.contact.email}`} className="hover:text-[#009E52] dark:hover:text-[#00E878] transition-colors">{siteConfig.contact.email}</a></p>
               </div>
             </div>
           </div>
 
-          <div className="pt-8 border-t border-[rgba(180,255,210,0.08)] text-center text-xs text-[#5B7569]">
+          <div className="pt-8 border-t border-[rgba(0,60,40,0.06)] dark:border-[rgba(180,255,210,0.08)] text-center text-xs text-[#5F7E71] dark:text-[#5B7569]">
             &copy; {new Date().getFullYear()} {siteConfig.legalName}. All rights reserved.
           </div>
         </div>

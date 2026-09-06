@@ -1,4 +1,4 @@
-export type UserRole = 'buyer' | 'seller' | 'dealer' | 'admin';
+export type UserRole = 'buyer' | 'seller' | 'dealer' | 'admin' | 'yard_admin';
 
 export type VehicleStatus = 'pending_review' | 'active' | 'reserved' | 'sold' | 'rejected' | 'draft' | 'archived';
 

@@ -21,31 +21,31 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
   return (
     <div className="w-full space-y-1.5">
       {label && (
-        <label htmlFor={inputId} className="block text-xs font-bold text-[#A7BDB3] uppercase tracking-wider">
+        <label htmlFor={inputId} className="block text-xs font-bold text-[#355347] dark:text-[#A7BDB3] uppercase tracking-wider">
           {label}
         </label>
       )}
       <div className="relative flex items-center">
         {icon && (
-          <div className="absolute left-3.5 text-[#8EA79C] pointer-events-none">
+          <div className="absolute left-3.5 text-[#5F7E71] dark:text-[#8EA79C] pointer-events-none">
             {icon}
           </div>
         )}
         <input
           ref={ref}
           id={inputId}
-          className={`w-full rounded-xl border bg-[#001F17] px-4 py-3 text-sm text-[#F2F7F3] placeholder-[#8EA79C]/60 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#00E878] focus:border-transparent ${
+          className={`w-full rounded-xl border bg-white dark:bg-[#001F17] px-4 py-3 text-sm text-[#0F241C] dark:text-[#F2F7F3] placeholder-[#5F7E71]/60 dark:placeholder-[#8EA79C]/60 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878] focus:border-transparent ${
             icon ? 'pl-10' : ''
           } ${
-            error ? 'border-red-500 focus:ring-red-500' : 'border-[rgba(180,255,210,0.18)] hover:border-[#00E878]/60'
+            error ? 'border-red-500 focus:ring-red-500' : 'border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.18)] hover:border-[#009E52]/60 dark:hover:border-[#00E878]/60'
           } ${className}`}
           {...props}
         />
       </div>
       {error ? (
-        <p className="text-xs text-red-400 font-medium">{error}</p>
+        <p className="text-xs text-red-500 dark:text-red-400 font-medium">{error}</p>
       ) : helperText ? (
-        <p className="text-xs text-[#8EA79C]">{helperText}</p>
+        <p className="text-xs text-[#5F7E71] dark:text-[#8EA79C]">{helperText}</p>
       ) : null}
     </div>
   );

@@ -50,16 +50,16 @@ export const Modal: React.FC<ModalProps> = ({
       />
 
       {/* Dialog Box */}
-      <div className={`relative w-full ${widthClasses[maxWidth]} bg-[#00251B] text-[#F2F7F3] rounded-2xl shadow-2xl border border-[rgba(180,255,210,0.2)] z-10 overflow-hidden my-auto transform transition-all duration-200`}>
+      <div className={`relative w-full ${widthClasses[maxWidth]} bg-white dark:bg-[#00251B] text-[#0F241C] dark:text-[#F2F7F3] rounded-2xl shadow-2xl border border-[rgba(0,60,40,0.12)] dark:border-[rgba(180,255,210,0.2)] z-10 overflow-hidden my-auto transform transition-all duration-200`}>
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[rgba(180,255,210,0.12)] bg-[#001F17]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] bg-[#F4F8F6] dark:bg-[#001F17]">
           <div>
-            {title && <h3 className="text-lg font-bold text-[#F2F7F3]">{title}</h3>}
-            {subtitle && <p className="text-xs text-[#8EA79C] mt-0.5">{subtitle}</p>}
+            {title && <h3 className="text-lg font-bold text-[#0F241C] dark:text-[#F2F7F3]">{title}</h3>}
+            {subtitle && <p className="text-xs text-[#355347] dark:text-[#8EA79C] mt-0.5">{subtitle}</p>}
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-[#8EA79C] hover:text-[#00E878] hover:bg-[#003D2D] transition-colors"
+            className="p-1.5 rounded-full text-[#355347] dark:text-[#8EA79C] hover:text-[#009E52] dark:hover:text-[#00E878] hover:bg-[#E4EFEA] dark:hover:bg-[#003D2D] transition-colors"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />

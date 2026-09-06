@@ -22,9 +22,12 @@ import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { MobileBottomNav } from './components/navigation/MobileBottomNav';
 import { PWAInstallPrompt } from './components/ui/PWAInstallPrompt';
 
+import { ThemeProvider } from './context/ThemeContext';
+
 export const App: React.FC = () => {
   return (
-    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <ThemeProvider>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
         {/* Public Gateway & Informational Routes */}
         <Route path="/" element={<LandingPage />} />
@@ -106,11 +109,11 @@ export const App: React.FC = () => {
           }
         />
 
-        {/* Protected Yard Admin Console - Strictly Restricted to Admin Role */}
+        {/* Protected Yard Admin Console - Strictly Restricted to Admin & Yard Admin Roles */}
         <Route
           path="/admin"
           element={
-            <ProtectedRoute allowedRoles={['admin']}>
+            <ProtectedRoute allowedRoles={['admin', 'yard_admin']}>
               <AdminDashboard />
             </ProtectedRoute>
           }
@@ -122,6 +125,7 @@ export const App: React.FC = () => {
       <MobileBottomNav />
       <PWAInstallPrompt />
     </BrowserRouter>
+    </ThemeProvider>
   );
 };
 

@@ -215,17 +215,17 @@ export const PopularBrandsBar: React.FC = () => {
   const tickerItems = [...POPULAR_BRANDS, ...POPULAR_BRANDS];
 
   return (
-    <div className="w-full bg-[#001711] border-b border-[rgba(180,255,210,0.1)] py-3.5 px-2 sm:px-4 overflow-hidden relative z-30 select-none">
+    <div className="w-full bg-[#F4F8F6] dark:bg-[#001711] border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.1)] py-3.5 px-2 sm:px-4 overflow-hidden relative z-30 select-none">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 mb-2 px-2">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#00E878] animate-pulse shadow-[0_0_8px_#00E878]" />
-          <span className="text-[11px] font-black uppercase tracking-wider text-[#F2F7F3]">
+          <span className="w-2 h-2 rounded-full bg-[#009E52] dark:bg-[#00E878] animate-pulse shadow-[0_0_8px_#009E52] dark:shadow-[0_0_8px_#00E878]" />
+          <span className="text-[11px] font-black uppercase tracking-wider text-[#0F241C] dark:text-[#F2F7F3]">
             Popular Automotive Brands
           </span>
         </div>
         <button
           onClick={() => navigate('/buy')}
-          className="text-[11px] font-extrabold text-[#00E878] hover:text-[#55FF78] hover:underline transition-colors focus:outline-none"
+          className="text-[11px] font-extrabold text-[#009E52] dark:text-[#00E878] hover:text-[#008744] dark:hover:text-[#55FF78] hover:underline transition-colors focus:outline-none"
         >
           View All Makes →
         </button>
@@ -256,21 +256,21 @@ export const PopularBrandsBar: React.FC = () => {
                 key={`${brand.name}-${idx}`}
                 onClick={() => handleBrandClick(brand.name)}
                 aria-label={`Filter inventory by ${brand.name} vehicles`}
-                className={`group flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl border transition-all duration-200 shrink-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#00E878] ${
+                className={`group flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl border transition-all duration-200 shrink-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878] ${
                   isActive
-                    ? 'bg-[#00E878] text-[#001A13] border-[#00E878] shadow-md scale-105 font-black'
-                    : 'bg-[#002B1F] text-[#F2F7F3] border-[rgba(180,255,210,0.15)] hover:border-[#00E878] hover:bg-[#003D2D] shadow-xs active:scale-95'
+                    ? 'bg-[#009E52] dark:bg-[#00E878] text-white dark:text-[#001A13] border-[#009E52] dark:border-[#00E878] shadow-md scale-105 font-black'
+                    : 'bg-white dark:bg-[#002B1F] text-[#0F241C] dark:text-[#F2F7F3] border-[rgba(0,60,40,0.12)] dark:border-[rgba(180,255,210,0.15)] hover:border-[#009E52] dark:hover:border-[#00E878] hover:bg-[#EBF2EE] dark:hover:bg-[#003D2D] shadow-xs active:scale-95'
                 }`}
               >
-                <div className={`${isActive ? 'text-[#001A13]' : 'text-[#00E878] group-hover:scale-110'} transition-transform duration-200 flex items-center`}>
+                <div className={`${isActive ? 'text-white dark:text-[#001A13]' : 'text-[#009E52] dark:text-[#00E878] group-hover:scale-110'} transition-transform duration-200 flex items-center`}>
                   {brand.svgLogo}
                 </div>
                 <div className="flex flex-col text-left leading-tight">
-                  <span className={`text-xs font-black tracking-tight ${isActive ? 'text-[#001A13]' : 'text-[#F2F7F3]'}`}>
+                  <span className={`text-xs font-black tracking-tight ${isActive ? 'text-white dark:text-[#001A13]' : 'text-[#0F241C] dark:text-[#F2F7F3]'}`}>
                     {brand.name}
                   </span>
                   {brand.count && (
-                    <span className={`text-[9px] font-extrabold ${isActive ? 'text-[#001A13]/80' : 'text-[#8EA79C]'}`}>
+                    <span className={`text-[9px] font-extrabold ${isActive ? 'text-white/80 dark:text-[#001A13]/80' : 'text-[#5F7E71] dark:text-[#8EA79C]'}`}>
                       {brand.count}
                     </span>
                   )}

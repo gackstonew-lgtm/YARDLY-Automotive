@@ -123,41 +123,41 @@ export const AccountDashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#001A13] text-[#F2F7F3] flex flex-col justify-center items-center">
+      <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col justify-center items-center">
         <Navbar />
-        <div className="my-auto text-xs font-bold text-[#8EA79C]">Loading your account dashboard...</div>
+        <div className="my-auto text-xs font-bold text-[#355347] dark:text-[#8EA79C]">Loading your account dashboard...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#001A13] text-[#F2F7F3] flex flex-col font-sans selection:bg-[#00E878] selection:text-[#001A13]">
+    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col font-sans selection:bg-[#009E52] selection:text-white dark:selection:bg-[#00E878] dark:selection:text-[#001A13]">
       <Navbar />
 
       {/* Account Header */}
-      <div className="bg-gradient-to-r from-[#00140F] via-[#00251B] to-[#001F17] border-b border-[rgba(180,255,210,0.12)] text-[#F2F7F3] py-10 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#E6F4ED] via-[#EDF7F2] to-[#F4F8F6] dark:from-[#00140F] dark:via-[#00251B] dark:to-[#001F17] border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] text-[#0F241C] dark:text-[#F2F7F3] py-10 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#00E878]/5 rounded-full blur-3xl pointer-events-none" />
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-[#001F17] border border-[rgba(180,255,210,0.2)] flex items-center justify-center text-[#00E878] text-2xl font-black shadow-inner">
+            <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#001F17] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.2)] flex items-center justify-center text-[#009E52] dark:text-[#00E878] text-2xl font-black shadow-xs">
               {currentUser?.full_name?.charAt(0) || 'U'}
             </div>
             <div>
-              <div className="flex items-center gap-2 text-xs font-bold text-[#00E878] uppercase tracking-wider">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#009E52] dark:text-[#00E878] uppercase tracking-wider">
                 <ShieldCheck className="w-4 h-4" />
                 <span>Yardly Automotives USER PORTAL</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-0.5 text-[#F2F7F3]">
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-0.5 text-[#0F241C] dark:text-[#F2F7F3]">
                 {currentUser?.full_name}
               </h1>
-              <div className="text-xs text-[#8EA79C] mt-0.5">
-                {currentUser?.email} • Role: <span className="uppercase font-bold text-[#00E878]">{currentUser?.role}</span>
+              <div className="text-xs text-[#355347] dark:text-[#8EA79C] mt-0.5">
+                {currentUser?.email} • Role: <span className="uppercase font-bold text-[#009E52] dark:text-[#00E878]">{currentUser?.role}</span>
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            {currentUser?.role === 'admin' && (
+            {(currentUser?.role === 'admin' || currentUser?.role === 'yard_admin') && (
               <Link to="/admin">
                 <Button size="sm" variant="secondary" icon={<ShieldCheck className="w-4 h-4" />}>
                   Admin Console
@@ -166,9 +166,9 @@ export const AccountDashboard: React.FC = () => {
             )}
             <button
               onClick={handleSignOut}
-              className="px-3.5 py-2 rounded-xl bg-[#001F17] hover:bg-[#003D2D] text-[#F2F7F3] text-xs font-bold border border-[rgba(180,255,210,0.2)] flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-white dark:bg-[#001F17] hover:bg-[#E6F4ED] dark:hover:bg-[#003D2D] text-[#0F241C] dark:text-[#F2F7F3] text-xs font-bold border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.2)] flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
             >
-              <LogOut className="w-3.5 h-3.5 text-[#00E878]" />
+              <LogOut className="w-3.5 h-3.5 text-[#009E52] dark:text-[#00E878]" />
               <span>Sign Out</span>
             </button>
           </div>
@@ -179,22 +179,22 @@ export const AccountDashboard: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pb-8 w-full flex-grow">
         
         {/* Navigation Tabs */}
-        <div className="flex flex-wrap items-center gap-2 border-b border-[rgba(180,255,210,0.12)] pb-4 mb-6">
+        <div className="flex flex-wrap items-center gap-2 border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] pb-4 mb-6">
           <button
             onClick={() => setActiveTab('profile')}
             className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 transition-all cursor-pointer ${
-              activeTab === 'profile' ? 'bg-[#00E878] text-[#001A13] shadow-md' : 'bg-[#001F17] text-[#8EA79C] border border-[rgba(180,255,210,0.2)] hover:border-[#00E878] hover:text-[#F2F7F3]'
+              activeTab === 'profile' ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-md' : 'bg-white dark:bg-[#001F17] text-[#355347] dark:text-[#8EA79C] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.2)] hover:border-[#009E52] dark:hover:border-[#00E878] hover:text-[#0F241C] dark:hover:text-[#F2F7F3]'
             }`}
           >
             <User className="w-4 h-4" />
             <span>My Profile</span>
           </button>
 
-          {(currentUser?.role === 'seller' || currentUser?.role === 'admin') && (
+          {(currentUser?.role === 'seller' || currentUser?.role === 'admin' || currentUser?.role === 'yard_admin') && (
             <button
               onClick={() => setActiveTab('listings')}
               className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 transition-all cursor-pointer ${
-                activeTab === 'listings' ? 'bg-[#00E878] text-[#001A13] shadow-md' : 'bg-[#001F17] text-[#8EA79C] border border-[rgba(180,255,210,0.2)] hover:border-[#00E878] hover:text-[#F2F7F3]'
+                activeTab === 'listings' ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-md' : 'bg-white dark:bg-[#001F17] text-[#355347] dark:text-[#8EA79C] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.2)] hover:border-[#009E52] dark:hover:border-[#00E878] hover:text-[#0F241C] dark:hover:text-[#F2F7F3]'
               }`}
             >
               <Car className="w-4 h-4" />
@@ -205,7 +205,7 @@ export const AccountDashboard: React.FC = () => {
           <button
             onClick={() => setActiveTab('favorites')}
             className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 transition-all cursor-pointer ${
-              activeTab === 'favorites' ? 'bg-[#00E878] text-[#001A13] shadow-md' : 'bg-[#001F17] text-[#8EA79C] border border-[rgba(180,255,210,0.2)] hover:border-[#00E878] hover:text-[#F2F7F3]'
+              activeTab === 'favorites' ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-md' : 'bg-white dark:bg-[#001F17] text-[#355347] dark:text-[#8EA79C] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.2)] hover:border-[#009E52] dark:hover:border-[#00E878] hover:text-[#0F241C] dark:hover:text-[#F2F7F3]'
             }`}
           >
             <Heart className="w-4 h-4" />
@@ -215,7 +215,7 @@ export const AccountDashboard: React.FC = () => {
           <button
             onClick={() => setActiveTab('tradeins')}
             className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 transition-all cursor-pointer ${
-              activeTab === 'tradeins' ? 'bg-[#00E878] text-[#001A13] shadow-md' : 'bg-[#001F17] text-[#8EA79C] border border-[rgba(180,255,210,0.2)] hover:border-[#00E878] hover:text-[#F2F7F3]'
+              activeTab === 'tradeins' ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-md' : 'bg-white dark:bg-[#001F17] text-[#355347] dark:text-[#8EA79C] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.2)] hover:border-[#009E52] dark:hover:border-[#00E878] hover:text-[#0F241C] dark:hover:text-[#F2F7F3]'
             }`}
           >
             <RefreshCw className="w-4 h-4" />
@@ -225,7 +225,7 @@ export const AccountDashboard: React.FC = () => {
           <button
             onClick={() => setActiveTab('imports')}
             className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 transition-all cursor-pointer ${
-              activeTab === 'imports' ? 'bg-[#00E878] text-[#001A13] shadow-md' : 'bg-[#001F17] text-[#8EA79C] border border-[rgba(180,255,210,0.2)] hover:border-[#00E878] hover:text-[#F2F7F3]'
+              activeTab === 'imports' ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-md' : 'bg-white dark:bg-[#001F17] text-[#355347] dark:text-[#8EA79C] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.2)] hover:border-[#009E52] dark:hover:border-[#00E878] hover:text-[#0F241C] dark:hover:text-[#F2F7F3]'
             }`}
           >
             <Globe className="w-4 h-4" />
@@ -235,7 +235,7 @@ export const AccountDashboard: React.FC = () => {
           <button
             onClick={() => setActiveTab('auctions')}
             className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 transition-all cursor-pointer ${
-              activeTab === 'auctions' ? 'bg-[#00E878] text-[#001A13] shadow-md' : 'bg-[#001F17] text-[#8EA79C] border border-[rgba(180,255,210,0.2)] hover:border-[#00E878] hover:text-[#F2F7F3]'
+              activeTab === 'auctions' ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-md' : 'bg-white dark:bg-[#001F17] text-[#355347] dark:text-[#8EA79C] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.2)] hover:border-[#009E52] dark:hover:border-[#00E878] hover:text-[#0F241C] dark:hover:text-[#F2F7F3]'
             }`}
           >
             <Gavel className="w-4 h-4" />
@@ -245,7 +245,7 @@ export const AccountDashboard: React.FC = () => {
           <button
             onClick={() => setActiveTab('notifications')}
             className={`px-4 py-2 rounded-xl text-xs font-extrabold flex items-center gap-2 transition-all cursor-pointer ${
-              activeTab === 'notifications' ? 'bg-[#00E878] text-[#001A13] shadow-md' : 'bg-[#001F17] text-[#8EA79C] border border-[rgba(180,255,210,0.2)] hover:border-[#00E878] hover:text-[#F2F7F3]'
+              activeTab === 'notifications' ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-md' : 'bg-white dark:bg-[#001F17] text-[#355347] dark:text-[#8EA79C] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.2)] hover:border-[#009E52] dark:hover:border-[#00E878] hover:text-[#0F241C] dark:hover:text-[#F2F7F3]'
             }`}
           >
             <Bell className="w-4 h-4" />
@@ -255,12 +255,12 @@ export const AccountDashboard: React.FC = () => {
 
         {/* TAB 1: Profile Settings */}
         {activeTab === 'profile' && (
-          <div className="bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(180,255,210,0.15)] p-6 sm:p-8 shadow-glass max-w-2xl space-y-6">
-            <h3 className="text-lg font-black text-[#F2F7F3]">Profile & Account Settings</h3>
+          <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-6 sm:p-8 shadow-sm dark:shadow-glass max-w-2xl space-y-6">
+            <h3 className="text-lg font-black text-[#0F241C] dark:text-[#F2F7F3]">Profile & Account Settings</h3>
             
             {saveSuccess && (
-              <div className="p-3.5 rounded-xl bg-[#00E878]/15 border border-[#00E878]/30 text-xs font-semibold text-[#00E878] flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 shrink-0 text-[#00E878]" />
+              <div className="p-3.5 rounded-xl bg-[#009E52]/10 dark:bg-[#00E878]/15 border border-[#009E52]/30 dark:border-[#00E878]/30 text-xs font-semibold text-[#009E52] dark:text-[#00E878] flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 shrink-0 text-[#009E52] dark:text-[#00E878]" />
                 <span>Profile updated successfully!</span>
               </div>
             )}
@@ -301,9 +301,9 @@ export const AccountDashboard: React.FC = () => {
 
         {/* TAB 2: My Listings */}
         {activeTab === 'listings' && (
-          <div className="bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(180,255,210,0.15)] p-6 shadow-glass space-y-4">
+          <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-6 shadow-sm dark:shadow-glass space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-black text-[#F2F7F3]">My Vehicles & Listings</h3>
+              <h3 className="text-lg font-black text-[#0F241C] dark:text-[#F2F7F3]">My Vehicles & Listings</h3>
               <Link to="/sell">
                 <Button size="sm" icon={<PlusCircle className="w-4 h-4" />}>
                   List New Vehicle
@@ -312,14 +312,14 @@ export const AccountDashboard: React.FC = () => {
             </div>
 
             {myListings.length === 0 ? (
-              <p className="text-xs text-[#8EA79C] py-6">You have no active vehicle listings. Click "List New Vehicle" to add your car.</p>
+              <p className="text-xs text-[#355347] dark:text-[#8EA79C] py-6">You have no active vehicle listings. Click "List New Vehicle" to add your car.</p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {myListings.map(v => (
-                  <div key={v.id} className="p-4 rounded-2xl border border-[rgba(180,255,210,0.12)] bg-[#001F17] flex items-center justify-between">
+                  <div key={v.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] bg-[#F4F8F6] dark:bg-[#001F17] flex items-center justify-between">
                     <div>
-                      <div className="font-bold text-[#F2F7F3] text-sm">{v.year} {v.make} {v.model}</div>
-                      <div className="text-xs text-[#00E878] font-black">KES {v.price.toLocaleString()}</div>
+                      <div className="font-bold text-[#0F241C] dark:text-[#F2F7F3] text-sm">{v.year} {v.make} {v.model}</div>
+                      <div className="text-xs text-[#009E52] dark:text-[#00E878] font-black">KES {v.price.toLocaleString()}</div>
                       <Badge variant={v.status === 'active' ? 'success' : 'secondary'} size="sm" className="mt-1">
                         {v.status}
                       </Badge>
@@ -336,17 +336,17 @@ export const AccountDashboard: React.FC = () => {
 
         {/* TAB 3: Saved Vehicles */}
         {activeTab === 'favorites' && (
-          <div className="bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(180,255,210,0.15)] p-6 shadow-glass space-y-4">
-            <h3 className="text-lg font-black text-[#F2F7F3]">Saved Vehicles & Bookmarks</h3>
+          <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-6 shadow-sm dark:shadow-glass space-y-4">
+            <h3 className="text-lg font-black text-[#0F241C] dark:text-[#F2F7F3]">Saved Vehicles & Bookmarks</h3>
             {favorites.length === 0 ? (
-              <p className="text-xs text-[#8EA79C] py-6">No saved vehicles found. Browse marketplace cars and tap the bookmark icon to save.</p>
+              <p className="text-xs text-[#355347] dark:text-[#8EA79C] py-6">No saved vehicles found. Browse marketplace cars and tap the bookmark icon to save.</p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {favorites.map(f => (
-                  <div key={f.id} className="p-4 rounded-2xl border border-[rgba(180,255,210,0.12)] bg-[#001F17] flex items-center justify-between">
+                  <div key={f.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] bg-[#F4F8F6] dark:bg-[#001F17] flex items-center justify-between">
                     <div>
-                      <div className="font-bold text-[#F2F7F3] text-sm">{f.vehicle ? `${f.vehicle.year} ${f.vehicle.make} ${f.vehicle.model}` : 'Vehicle'}</div>
-                      <div className="text-xs text-[#00E878] font-black">KES {f.vehicle?.price.toLocaleString()}</div>
+                      <div className="font-bold text-[#0F241C] dark:text-[#F2F7F3] text-sm">{f.vehicle ? `${f.vehicle.year} ${f.vehicle.make} ${f.vehicle.model}` : 'Vehicle'}</div>
+                      <div className="text-xs text-[#009E52] dark:text-[#00E878] font-black">KES {f.vehicle?.price.toLocaleString()}</div>
                     </div>
                     {f.vehicle && (
                       <Link to={`/vehicles/${f.vehicle.id}`}>
@@ -362,23 +362,23 @@ export const AccountDashboard: React.FC = () => {
 
         {/* TAB 4: Trade-Ins */}
         {activeTab === 'tradeins' && (
-          <div className="bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(180,255,210,0.15)] p-6 shadow-glass space-y-4">
+          <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-6 shadow-sm dark:shadow-glass space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-black text-[#F2F7F3]">My Trade-In Requests</h3>
+              <h3 className="text-lg font-black text-[#0F241C] dark:text-[#F2F7F3]">My Trade-In Requests</h3>
               <Link to="/trade-in">
                 <Button size="sm" variant="outline">Submit Trade-In</Button>
               </Link>
             </div>
             {tradeIns.length === 0 ? (
-              <p className="text-xs text-[#8EA79C] py-6">No trade-in requests logged.</p>
+              <p className="text-xs text-[#355347] dark:text-[#8EA79C] py-6">No trade-in requests logged.</p>
             ) : (
               <div className="space-y-3">
                 {tradeIns.map(t => (
-                  <div key={t.id} className="p-4 rounded-2xl border border-[rgba(180,255,210,0.12)] bg-[#001F17] flex justify-between items-center text-xs">
+                  <div key={t.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] bg-[#F4F8F6] dark:bg-[#001F17] flex justify-between items-center text-xs">
                     <div>
-                      <span className="font-mono font-bold text-[#00E878]">{t.reference_id}</span>
-                      <div className="font-bold text-[#F2F7F3] mt-0.5">{t.year} {t.make} {t.model}</div>
-                      <div className="text-[#8EA79C]">Expected: KES {t.expected_value.toLocaleString()}</div>
+                      <span className="font-mono font-bold text-[#009E52] dark:text-[#00E878]">{t.reference_id}</span>
+                      <div className="font-bold text-[#0F241C] dark:text-[#F2F7F3] mt-0.5">{t.year} {t.make} {t.model}</div>
+                      <div className="text-[#355347] dark:text-[#8EA79C]">Expected: KES {t.expected_value.toLocaleString()}</div>
                     </div>
                     <Badge variant={t.status === 'completed' ? 'success' : 'warning'}>{t.status}</Badge>
                   </div>
@@ -390,23 +390,23 @@ export const AccountDashboard: React.FC = () => {
 
         {/* TAB 5: Imports */}
         {activeTab === 'imports' && (
-          <div className="bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(180,255,210,0.15)] p-6 shadow-glass space-y-4">
+          <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-6 shadow-sm dark:shadow-glass space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-black text-[#F2F7F3]">Direct Import Sourcing Orders</h3>
+              <h3 className="text-lg font-black text-[#0F241C] dark:text-[#F2F7F3]">Direct Import Sourcing Orders</h3>
               <Link to="/import">
                 <Button size="sm" variant="outline">Request Direct Import</Button>
               </Link>
             </div>
             {imports.length === 0 ? (
-              <p className="text-xs text-[#8EA79C] py-6">No direct import requests active.</p>
+              <p className="text-xs text-[#355347] dark:text-[#8EA79C] py-6">No direct import requests active.</p>
             ) : (
               <div className="space-y-3">
                 {imports.map(i => (
-                  <div key={i.id} className="p-4 rounded-2xl border border-[rgba(180,255,210,0.12)] bg-[#001F17] flex justify-between items-center text-xs">
+                  <div key={i.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] bg-[#F4F8F6] dark:bg-[#001F17] flex justify-between items-center text-xs">
                     <div>
-                      <span className="font-mono font-bold text-[#00E878]">{i.reference_number}</span>
-                      <div className="font-bold text-[#F2F7F3] mt-0.5">{i.make} {i.model} ({i.preferred_source_country})</div>
-                      <div className="text-[#8EA79C]">Budget: KES {i.budget.toLocaleString()}</div>
+                      <span className="font-mono font-bold text-[#009E52] dark:text-[#00E878]">{i.reference_number}</span>
+                      <div className="font-bold text-[#0F241C] dark:text-[#F2F7F3] mt-0.5">{i.make} {i.model} ({i.preferred_source_country})</div>
+                      <div className="text-[#355347] dark:text-[#8EA79C]">Budget: KES {i.budget.toLocaleString()}</div>
                     </div>
                     <Badge variant="primary">{i.status}</Badge>
                   </div>
@@ -418,18 +418,18 @@ export const AccountDashboard: React.FC = () => {
 
         {/* TAB 6: Notifications */}
         {activeTab === 'notifications' && (
-          <div className="bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(180,255,210,0.15)] p-6 shadow-glass space-y-4">
-            <h3 className="text-lg font-black text-[#F2F7F3]">Notifications & Activity Alerts</h3>
+          <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-6 shadow-sm dark:shadow-glass space-y-4">
+            <h3 className="text-lg font-black text-[#0F241C] dark:text-[#F2F7F3]">Notifications & Activity Alerts</h3>
             {notifications.length === 0 ? (
-              <p className="text-xs text-[#8EA79C] py-6">No notifications to display.</p>
+              <p className="text-xs text-[#355347] dark:text-[#8EA79C] py-6">No notifications to display.</p>
             ) : (
               <div className="space-y-3">
                 {notifications.map(n => (
-                  <div key={n.id} className="p-4 rounded-2xl border border-[rgba(180,255,210,0.12)] bg-[#001F17] flex items-center justify-between text-xs">
+                  <div key={n.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] bg-[#F4F8F6] dark:bg-[#001F17] flex items-center justify-between text-xs">
                     <div>
-                      <div className="font-bold text-[#F2F7F3]">{n.title}</div>
-                      <div className="text-[#8EA79C] mt-0.5">{n.message}</div>
-                      <div className="text-[10px] text-[#8EA79C] mt-1">{new Date(n.created_at).toLocaleString()}</div>
+                      <div className="font-bold text-[#0F241C] dark:text-[#F2F7F3]">{n.title}</div>
+                      <div className="text-[#355347] dark:text-[#8EA79C] mt-0.5">{n.message}</div>
+                      <div className="text-[10px] text-[#355347] dark:text-[#8EA79C] mt-1">{new Date(n.created_at).toLocaleString()}</div>
                     </div>
                     <Badge variant={n.read ? 'secondary' : 'warning'}>
                       {n.read ? 'Read' : 'New'}

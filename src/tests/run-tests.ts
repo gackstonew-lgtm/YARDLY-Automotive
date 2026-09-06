@@ -1,5 +1,5 @@
 import { getPaymentProvider } from '../lib/payments/factory.js';
-import { VehicleService } from '../lib/supabase/client.js';
+import { VehicleService, AuthService, requireAdminRole } from '../lib/supabase/client.js';
 import { EmailService } from '../lib/email/resend.js';
 
 async function runVerificationSuite() {
@@ -77,6 +77,58 @@ async function runVerificationSuite() {
     assert(html.includes('Jane Doe') && html.includes('Toyota Harrier') && html.includes('50,000'), 'Transactional Reservation Email HTML Generation');
   } catch (e) {
     assert(false, `Email HTML Generation Exception: ${e}`);
+  }
+
+  // TEST 6: Dedicated Yard Admin Authentication (yardlyauto@admin.com / Admin123.)
+  try {
+    const adminAuthRes = await AuthService.signIn('yardlyauto@admin.com', 'Admin123.');
+    assert(
+      adminAuthRes.success === true &&
+      adminAuthRes.user?.email === 'yardlyauto@admin.com' &&
+      adminAuthRes.user?.role === 'yard_admin',
+      'Yard Admin Sign In with yardlyauto@admin.com & role=yard_admin'
+    );
+  } catch (e) {
+    assert(false, `Yard Admin Sign In Exception: ${e}`);
+  }
+
+  // TEST 7: Dedicated Yard Admin Executive Access & requireAdminRole Guard
+  try {
+    const adminPortalRes = await AuthService.adminSignIn('yardlyauto@admin.com', 'Admin123.');
+    const validatedAdmin = await requireAdminRole();
+    assert(
+      adminPortalRes.success === true &&
+      adminPortalRes.user?.role === 'yard_admin' &&
+      validatedAdmin.role === 'yard_admin',
+      'Yard Admin AdminSignIn & Server-level Guard Authorization'
+    );
+  } catch (e) {
+    assert(false, `Yard Admin Portal Login Exception: ${e}`);
+  }
+
+  // TEST 8: Invalid Admin Credentials Rejection
+  try {
+    const badLogin = await AuthService.signIn('yardlyauto@admin.com', 'WrongPassword123');
+    assert(badLogin.success === false, 'Invalid Admin Password Properly Rejected');
+  } catch (e) {
+    assert(false, `Bad Admin Password Exception: ${e}`);
+  }
+
+  // TEST 9: Public Registration Cannot Assign Administrative Roles
+  try {
+    const attemptAdminSignUp = await AuthService.signUp(
+      'intruder@test.com',
+      'TestPass123.',
+      'Intruder Test',
+      'yard_admin' as any
+    );
+    assert(
+      attemptAdminSignUp.success === true &&
+      attemptAdminSignUp.user?.role === 'buyer',
+      'Public Registration Role Sanitization (cannot self-assign admin/yard_admin)'
+    );
+  } catch (e) {
+    assert(false, `Sign Up Role Sanitization Exception: ${e}`);
   }
 
   console.log('\n====================================================');

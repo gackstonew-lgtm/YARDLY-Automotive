@@ -4,44 +4,73 @@
 
 @layer base {
   :root {
-    --primary: 0 232 120;        /* #00E878 Emerald */
+    --primary: 0 158 82;         /* #009E52 Deep Emerald for Light Mode */
+    --primary-dark: 0 135 68;     /* #008744 */
+    --primary-glow: 0 232 120;   /* #00E878 */
+    --bg-main: 244 248 246;       /* #F4F8F6 Soft Mint Alabaster */
+    --bg-sub: 235 242 238;        /* #EBF2EE Subtle Mint Contrast */
+    --bg-card: 255 255 255;       /* #FFFFFF Pure Crisp White */
+    --bg-elevated: 240 246 243;   /* #F0F6F3 */
+    --text-main: 15 36 28;        /* #0F241C Deep Forest Slate */
+    --text-secondary: 53 83 71;   /* #355347 Medium Forest Slate */
+    --text-muted: 95 126 113;     /* #5F7E71 Muted Slate */
+    --border-main: 0 60 40 / 0.12;
+  }
+
+  .dark {
+    --primary: 0 232 120;        /* #00E878 Luminous Emerald */
     --primary-dark: 0 184 94;    /* #00B85E */
     --primary-glow: 85 255 120;  /* #55FF78 Luminous Green */
     --bg-main: 0 26 19;          /* #001A13 Very Dark Forest */
-    --bg-card: 0 43 31;          /* #002B1F Deep Forest */
+    --bg-sub: 0 20 15;           /* #00140F Deep Forest */
+    --bg-card: 0 37 27;          /* #00251B Forest Card */
     --bg-elevated: 0 61 45;      /* #003D2D Forest Surface */
     --text-main: 242 247 243;    /* #F2F7F3 Warm Off-White */
+    --text-secondary: 167 189 179; /* #A7BDB3 */
     --text-muted: 142 167 156;   /* #8EA79C Muted Green-Gray */
+    --border-main: 180 255 210 / 0.12;
   }
 
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    background-color: #001A13;
-    color: #F2F7F3;
     overflow-x: hidden;
   }
 }
 
-/* Glassmorphism & Luxury Forest Floating Cards */
+/* Glassmorphism & Luxury Floating Cards */
 .glass-card {
-  background: rgba(0, 43, 31, 0.7);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 60, 40, 0.1);
+  box-shadow: 0 8px 30px -8px rgba(0, 43, 31, 0.08);
+}
+.dark .glass-card {
+  background: rgba(0, 43, 31, 0.7);
   border: 1px solid rgba(180, 255, 210, 0.12);
   box-shadow: 0 10px 30px -10px rgba(0, 20, 15, 0.6);
 }
 
 .glass-card-dark {
-  background: rgba(0, 26, 19, 0.85);
+  background: rgba(244, 248, 246, 0.95);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 158, 82, 0.2);
+  box-shadow: 0 12px 32px -10px rgba(0, 43, 31, 0.1);
+}
+.dark .glass-card-dark {
+  background: rgba(0, 26, 19, 0.85);
   border: 1px solid rgba(0, 232, 120, 0.2);
   box-shadow: 0 20px 40px -15px rgba(0, 15, 10, 0.8);
 }
 
 .glass-pill {
-  background: rgba(0, 43, 31, 0.7);
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 60, 40, 0.12);
+}
+.dark .glass-pill {
+  background: rgba(0, 43, 31, 0.7);
   border: 1px solid rgba(180, 255, 210, 0.15);
 }
 

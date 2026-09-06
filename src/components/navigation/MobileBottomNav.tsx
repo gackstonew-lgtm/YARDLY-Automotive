@@ -9,7 +9,7 @@ export const MobileBottomNav: React.FC = () => {
       name: 'Buy',
       path: '/buy',
       icon: (isActive: boolean) => (
-        <svg className={`w-5 h-5 ${isActive ? 'text-[#001A13]' : 'text-[#00E878]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg className={`w-5 h-5 ${isActive ? 'text-white dark:text-[#001A13]' : 'text-[#009E52] dark:text-[#00E878]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H7c-.7 0-1.3.3-1.8.7C4.3 8.6 3 10 3 10s-2.7.6-4.5 1.1C-.7 11.3-1.4 12.1-1.4 13v3c0 .6.4 1 1 1h2" />
           <circle cx="7" cy="17" r="2" />
           <circle cx="17" cy="17" r="2" />
@@ -21,7 +21,7 @@ export const MobileBottomNav: React.FC = () => {
       name: 'Sell',
       path: '/sell',
       icon: (isActive: boolean) => (
-        <svg className={`w-5 h-5 ${isActive ? 'text-[#001A13]' : 'text-[#00E878]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg className={`w-5 h-5 ${isActive ? 'text-white dark:text-[#001A13]' : 'text-[#009E52] dark:text-[#00E878]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M4 14l1.5-4.5c.3-.9 1.1-1.5 2-1.5h9c.9 0 1.7.6 2 1.5L20 14v6H4v-6z" />
           <circle cx="7" cy="17" r="1.5" />
           <circle cx="17" cy="17" r="1.5" />
@@ -33,7 +33,7 @@ export const MobileBottomNav: React.FC = () => {
       name: 'Import',
       path: '/import',
       icon: (isActive: boolean) => (
-        <svg className={`w-5 h-5 ${isActive ? 'text-[#001A13]' : 'text-[#00E878]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg className={`w-5 h-5 ${isActive ? 'text-white dark:text-[#001A13]' : 'text-[#009E52] dark:text-[#00E878]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="9" />
           <path d="M3.6 9h16.8M3.6 15h16.8" />
           <path d="M11.5 3a17 17 0 0 0 0 18M12.5 3a17 17 0 0 1 0 18" />
@@ -44,7 +44,7 @@ export const MobileBottomNav: React.FC = () => {
       name: 'Auction',
       path: '/auction',
       icon: (isActive: boolean) => (
-        <svg className={`w-5 h-5 ${isActive ? 'text-[#001A13]' : 'text-[#00E878]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg className={`w-5 h-5 ${isActive ? 'text-white dark:text-[#001A13]' : 'text-[#009E52] dark:text-[#00E878]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="m14 13 5 5m-4-1 2 2" />
           <path d="m16 16 2-2" />
           <path d="m8.7 10.7 6.6-6.6a1 1 0 0 1 1.4 0l2.2 2.2a1 1 0 0 1 0 1.4l-6.6 6.6" />
@@ -57,7 +57,7 @@ export const MobileBottomNav: React.FC = () => {
       name: 'Trade In',
       path: '/trade-in',
       icon: (isActive: boolean) => (
-        <svg className={`w-5 h-5 ${isActive ? 'text-[#001A13]' : 'text-[#00E878]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg className={`w-5 h-5 ${isActive ? 'text-white dark:text-[#001A13]' : 'text-[#009E52] dark:text-[#00E878]'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
           <path d="M3 3v5h5" />
           <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
@@ -68,7 +68,7 @@ export const MobileBottomNav: React.FC = () => {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-[#001A13]/95 backdrop-blur-lg border-t border-[rgba(180,255,210,0.15)] shadow-[0_-4px_25px_rgba(0,0,0,0.7)] pb-[env(safe-area-inset-bottom,0px)]">
+    <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white/95 dark:bg-[#001A13]/95 backdrop-blur-lg border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] shadow-[0_-4px_25px_rgba(0,0,0,0.08)] dark:shadow-[0_-4px_25px_rgba(0,0,0,0.7)] pb-[env(safe-area-inset-bottom,0px)]">
       <div className="max-w-md mx-auto py-2 px-1 grid grid-cols-5 items-center">
         
         {items.map((item) => {
@@ -83,15 +83,15 @@ export const MobileBottomNav: React.FC = () => {
               {/* Circular Backdrop for Icon */}
               <div className={`w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 group-active:scale-95 ${
                 isActive 
-                  ? 'bg-[#00E878] shadow-md shadow-[#00E878]/30' 
-                  : 'bg-[#002B1F] hover:bg-[#003D2D]'
+                  ? 'bg-[#009E52] dark:bg-[#00E878] shadow-md shadow-[#009E52]/25 dark:shadow-[#00E878]/30' 
+                  : 'bg-[#EBF2EE] dark:bg-[#002B1F] hover:bg-[#D8E6DE] dark:hover:bg-[#003D2D]'
               }`}>
                 {item.icon(isActive)}
               </div>
 
               {/* Label Centered Below Icon */}
               <span className={`text-[11px] font-extrabold mt-1 tracking-tight transition-colors whitespace-nowrap ${
-                isActive ? 'text-[#00E878]' : 'text-[#8EA79C] group-hover:text-[#F2F7F3]'
+                isActive ? 'text-[#009E52] dark:text-[#00E878]' : 'text-[#5F7E71] dark:text-[#8EA79C] group-hover:text-[#0F241C] dark:group-hover:text-[#F2F7F3]'
               }`}>
                 {item.name}
               </span>
