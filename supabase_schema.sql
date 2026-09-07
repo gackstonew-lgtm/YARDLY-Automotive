@@ -1,6 +1,6 @@
 -- ============================================================
 -- YARDLY AUTOMOTIVE
--- SUPABASE / POSTGRES DATABASE SCHEMA
+-- SUPABASE / POSTGRES DATABASE SCHEMA (HARDENED & PRODUCTION READY)
 -- ============================================================
 -- Purpose:
 --   - Vehicle Inventory & Image Storage Management
@@ -210,8 +210,8 @@ end $$;
 -- ============================================================
 -- 3. PROFILES & USER ACCOUNTS
 -- ============================================================
--- Supabase Auth owns credentials. This table stores app user metadata.
--- Dedicated Primary Administrator Email: Varbanauto@admin.com (Role: admin)
+-- Supabase Auth owns credentials in auth.users.
+-- This table stores application user metadata and roles.
 
 create table if not exists public.profiles (
     id uuid primary key references auth.users(id) on delete cascade,
@@ -477,8 +477,10 @@ create table if not exists public.vehicle_inquiries (
     updated_at timestamptz not null default now()
 );
 
--- Alias view/table compatibility for public.inquiries
-create or replace view public.inquiries as
+-- Alias view compatibility for public.inquiries (Enforces Security Invoker RLS)
+create or replace view public.inquiries
+with (security_invoker = true)
+as
 select
     id,
     vehicle_id,
@@ -1050,7 +1052,7 @@ $$;
 
 
 -- ============================================================
--- 20. ROW LEVEL SECURITY (RLS) POLICIES
+-- 20. ROW LEVEL SECURITY (RLS) POLICIES ON ALL APPLICATION TABLES
 -- ============================================================
 
 alter table public.profiles enable row level security;
@@ -1084,10 +1086,44 @@ drop policy if exists "Users can update own profile" on public.profiles;
 create policy "Users can update own profile" on public.profiles
 for update using (auth.uid() = id) with check (auth.uid() = id);
 
--- Vehicles Policies (Public reads active/available, staff/admin full control)
+drop policy if exists "Users can insert own profile" on public.profiles;
+create policy "Users can insert own profile" on public.profiles
+for insert with check (auth.uid() = id or public.has_role('staff'));
+
+-- Buyer Profiles Policies
+drop policy if exists "Users view own buyer profile" on public.buyer_profiles;
+create policy "Users view own buyer profile" on public.buyer_profiles
+for select using (auth.uid() = id or public.has_role('staff'));
+
+drop policy if exists "Users update own buyer profile" on public.buyer_profiles;
+create policy "Users update own buyer profile" on public.buyer_profiles
+for update using (auth.uid() = id) with check (auth.uid() = id);
+
+drop policy if exists "Users insert own buyer profile" on public.buyer_profiles;
+create policy "Users insert own buyer profile" on public.buyer_profiles
+for insert with check (auth.uid() = id);
+
+-- Seller Profiles Policies
+drop policy if exists "Users view own seller profile" on public.seller_profiles;
+create policy "Users view own seller profile" on public.seller_profiles
+for select using (auth.uid() = id or public.has_role('staff'));
+
+drop policy if exists "Users update own seller profile" on public.seller_profiles;
+create policy "Users update own seller profile" on public.seller_profiles
+for update using (auth.uid() = id) with check (auth.uid() = id);
+
+drop policy if exists "Users insert own seller profile" on public.seller_profiles;
+create policy "Users insert own seller profile" on public.seller_profiles
+for insert with check (auth.uid() = id);
+
+-- Vehicles Policies (Public reads active/available/reserved, owners view own, staff/admin full control)
 drop policy if exists "Public can view active vehicles" on public.vehicles;
 create policy "Public can view active vehicles" on public.vehicles
-for select using (status in ('active', 'available', 'reserved'));
+for select using (
+    status in ('active', 'available', 'reserved')
+    or (auth.uid() is not null and (auth.uid() = seller_id or auth.uid() = created_by))
+    or public.has_role('staff')
+);
 
 drop policy if exists "Staff can manage vehicles" on public.vehicles;
 create policy "Staff can manage vehicles" on public.vehicles
@@ -1108,24 +1144,53 @@ create policy "Staff can manage vehicle features" on public.vehicle_features for
 
 -- Favorites
 drop policy if exists "Users manage own favorites" on public.favorites;
-create policy "Users manage own favorites" on public.favorites for all using (auth.uid() = user_id);
+create policy "Users manage own favorites" on public.favorites for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
 -- Inquiries
 drop policy if exists "Anyone can create inquiries" on public.vehicle_inquiries;
-create policy "Anyone can create inquiries" on public.vehicle_inquiries for insert with check (user_id is null or buyer_id is null or auth.uid() in (user_id, buyer_id));
+create policy "Anyone can create inquiries" on public.vehicle_inquiries 
+for insert with check (user_id is null or buyer_id is null or auth.uid() in (user_id, buyer_id));
 
 drop policy if exists "Users can view relevant inquiries" on public.vehicle_inquiries;
-create policy "Users can view relevant inquiries" on public.vehicle_inquiries for select using (auth.uid() in (user_id, buyer_id, seller_id) or public.has_role('staff'));
+create policy "Users can view relevant inquiries" on public.vehicle_inquiries 
+for select using ((auth.uid() is not null and auth.uid() in (user_id, buyer_id, seller_id)) or public.has_role('staff'));
+
+drop policy if exists "Staff can update inquiries" on public.vehicle_inquiries;
+create policy "Staff can update inquiries" on public.vehicle_inquiries
+for update using (public.has_role('staff')) with check (public.has_role('staff'));
+
+drop policy if exists "Staff can delete inquiries" on public.vehicle_inquiries;
+create policy "Staff can delete inquiries" on public.vehicle_inquiries
+for delete using (public.has_role('staff'));
+
+-- Test Drive Requests
+drop policy if exists "Anyone create test drive requests" on public.test_drive_requests;
+create policy "Anyone create test drive requests" on public.test_drive_requests
+for insert with check (user_id is null or auth.uid() = user_id);
+
+drop policy if exists "Users view own test drive requests" on public.test_drive_requests;
+create policy "Users view own test drive requests" on public.test_drive_requests
+for select using (auth.uid() = user_id or public.has_role('staff'));
+
+drop policy if exists "Staff manage test drive requests" on public.test_drive_requests;
+create policy "Staff manage test drive requests" on public.test_drive_requests
+for update using (public.has_role('staff')) with check (public.has_role('staff'));
 
 -- Inspection Requests
 drop policy if exists "Anyone create inspection requests" on public.inspection_requests;
 create policy "Anyone create inspection requests" on public.inspection_requests for insert with check (true);
 
 drop policy if exists "Users view relevant inspection requests" on public.inspection_requests;
-create policy "Users view relevant inspection requests" on public.inspection_requests for select using (auth.uid() in (buyer_id, seller_id) or public.has_role('staff'));
+create policy "Users view relevant inspection requests" on public.inspection_requests 
+for select using ((auth.uid() is not null and auth.uid() in (buyer_id, seller_id)) or public.has_role('staff'));
 
 drop policy if exists "Staff update inspection requests" on public.inspection_requests;
-create policy "Staff update inspection requests" on public.inspection_requests for update using (auth.uid() = seller_id or public.has_role('staff'));
+create policy "Staff update inspection requests" on public.inspection_requests 
+for update using (auth.uid() = seller_id or public.has_role('staff')) with check (auth.uid() = seller_id or public.has_role('staff'));
+
+drop policy if exists "Staff delete inspection requests" on public.inspection_requests;
+create policy "Staff delete inspection requests" on public.inspection_requests
+for delete using (public.has_role('staff'));
 
 -- Reservations & Payments
 drop policy if exists "Users view own reservations" on public.reservations;
@@ -1134,25 +1199,56 @@ create policy "Users view own reservations" on public.reservations for select us
 drop policy if exists "Anyone create reservations" on public.reservations;
 create policy "Anyone create reservations" on public.reservations for insert with check (user_id is null or auth.uid() = user_id);
 
+drop policy if exists "Staff manage reservations" on public.reservations;
+create policy "Staff manage reservations" on public.reservations
+for update using (public.has_role('staff')) with check (public.has_role('staff'));
+
+drop policy if exists "Staff delete reservations" on public.reservations;
+create policy "Staff delete reservations" on public.reservations
+for delete using (public.has_role('staff'));
+
 drop policy if exists "Users view own payments" on public.payments;
 create policy "Users view own payments" on public.payments for select using (user_id = auth.uid() or public.has_role('staff'));
+
+drop policy if exists "Authenticated or staff insert payments" on public.payments;
+create policy "Authenticated or staff insert payments" on public.payments
+for insert with check (user_id is null or auth.uid() = user_id or public.has_role('staff'));
+
+drop policy if exists "Staff manage payments" on public.payments;
+create policy "Staff manage payments" on public.payments
+for update using (public.has_role('staff')) with check (public.has_role('staff'));
+
+-- Payment Events (Staff/Admin Only)
+drop policy if exists "Staff view payment events" on public.payment_events;
+create policy "Staff view payment events" on public.payment_events
+for select using (public.has_role('staff'));
+
+drop policy if exists "Staff insert payment events" on public.payment_events;
+create policy "Staff insert payment events" on public.payment_events
+for insert with check (public.has_role('staff'));
 
 -- Seller Listings
 drop policy if exists "Anyone submit seller listing" on public.seller_listings;
 create policy "Anyone submit seller listing" on public.seller_listings for insert with check (true);
 
 drop policy if exists "Staff manage seller listings" on public.seller_listings;
-create policy "Staff manage seller listings" on public.seller_listings for all using (public.has_role('staff'));
+create policy "Staff manage seller listings" on public.seller_listings for all using (public.has_role('staff')) with check (public.has_role('staff'));
 
 -- Auctions & Bids
 drop policy if exists "Public view live auctions" on public.auctions;
 create policy "Public view live auctions" on public.auctions for select using (true);
+
+drop policy if exists "Staff manage auctions" on public.auctions;
+create policy "Staff manage auctions" on public.auctions for all using (public.has_role('staff')) with check (public.has_role('staff'));
 
 drop policy if exists "Public view auction bids" on public.auction_bids;
 create policy "Public view auction bids" on public.auction_bids for select using (true);
 
 drop policy if exists "Users place auction bids" on public.auction_bids;
 create policy "Users place auction bids" on public.auction_bids for insert with check (auth.uid() = buyer_id);
+
+drop policy if exists "Staff manage auction bids" on public.auction_bids;
+create policy "Staff manage auction bids" on public.auction_bids for delete using (public.has_role('staff'));
 
 -- Trade-In & Import Requests
 drop policy if exists "Users manage own trade-ins" on public.trade_in_requests;
@@ -1161,66 +1257,68 @@ create policy "Users manage own trade-ins" on public.trade_in_requests for selec
 drop policy if exists "Anyone insert trade-ins" on public.trade_in_requests;
 create policy "Anyone insert trade-ins" on public.trade_in_requests for insert with check (true);
 
+drop policy if exists "Staff update trade-ins" on public.trade_in_requests;
+create policy "Staff update trade-ins" on public.trade_in_requests for update using (public.has_role('staff')) with check (public.has_role('staff'));
+
 drop policy if exists "Users manage own imports" on public.import_requests;
 create policy "Users manage own imports" on public.import_requests for select using (user_id = auth.uid() or public.has_role('staff'));
 
 drop policy if exists "Anyone insert imports" on public.import_requests;
 create policy "Anyone insert imports" on public.import_requests for insert with check (true);
 
+drop policy if exists "Staff update imports" on public.import_requests;
+create policy "Staff update imports" on public.import_requests for update using (public.has_role('staff')) with check (public.has_role('staff'));
+
 -- Notifications
 drop policy if exists "Users view own notifications" on public.notifications;
 create policy "Users view own notifications" on public.notifications for select using (user_id = auth.uid());
 
+drop policy if exists "Users update own notifications" on public.notifications;
+create policy "Users update own notifications" on public.notifications for update using (user_id = auth.uid()) with check (user_id = auth.uid());
+
+drop policy if exists "Staff insert notifications" on public.notifications;
+create policy "Staff insert notifications" on public.notifications for insert with check (public.has_role('staff') or user_id = auth.uid());
+
+-- Vehicle History & Audit Logs
+drop policy if exists "Staff view vehicle history" on public.vehicle_history;
+create policy "Staff view vehicle history" on public.vehicle_history for select using (public.has_role('staff'));
+
+drop policy if exists "Staff manage vehicle history" on public.vehicle_history;
+create policy "Staff manage vehicle history" on public.vehicle_history for all using (public.has_role('staff')) with check (public.has_role('staff'));
+
+drop policy if exists "Admin view audit logs" on public.audit_logs;
+create policy "Admin view audit logs" on public.audit_logs for select using (public.has_role('admin') or public.has_role('super_admin'));
+
+drop policy if exists "Staff insert audit logs" on public.audit_logs;
+create policy "Staff insert audit logs" on public.audit_logs for insert with check (auth.uid() is not null or public.has_role('staff'));
+
 
 -- ============================================================
--- 21. STORAGE BUCKETS & STORAGE POLICIES
+-- 21. STORAGE BUCKETS CONFIGURATION
 -- ============================================================
+-- Note: Supabase manages storage.objects and its internal RLS policies
+-- through the storage extension owned by supabase_storage_admin.
+-- Creating storage buckets in storage.buckets is safe and supported.
+-- For bucket 'vehicles' (public = true), public read access is enabled natively.
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values (
-  'vehicles', 
-  'vehicles', 
-  true, 
-  15728640, -- 15MB max file size
-  array['image/jpeg', 'image/png', 'image/webp', 'image/jpg']
-)
-on conflict (id) do update set public = true;
-
-alter table storage.objects enable row level security;
-
-do $$ begin
-    create policy "Public read access for vehicle storage images"
-    on storage.objects for select using (bucket_id = 'vehicles');
-exception when duplicate_object then null; end $$;
-
-do $$ begin
-    create policy "Staff upload access for vehicle storage images"
-    on storage.objects for insert
-    with check (
-      bucket_id = 'vehicles'
-      and (
-        auth.role() = 'service_role' or public.has_role('staff')
-      )
-    );
-exception when duplicate_object then null; end $$;
-
-do $$ begin
-    create policy "Staff delete access for vehicle storage images"
-    on storage.objects for delete
-    using (
-      bucket_id = 'vehicles'
-      and (
-        auth.role() = 'service_role' or public.has_role('staff')
-      )
-    );
-exception when duplicate_object then null; end $$;
+values 
+  ('vehicles', 'vehicles', true, 15728640, array['image/jpeg', 'image/png', 'image/webp', 'image/jpg']),
+  ('avatars', 'avatars', true, 5242880, array['image/jpeg', 'image/png', 'image/webp', 'image/jpg']),
+  ('logbooks', 'logbooks', false, 10485760, array['image/jpeg', 'image/png', 'image/webp', 'application/pdf']),
+  ('documents', 'documents', false, 10485760, array['image/jpeg', 'image/png', 'image/webp', 'application/pdf'])
+on conflict (id) do update set 
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
 
 
 -- ============================================================
--- 22. INVENTORY SEARCH VIEW
+-- 22. INVENTORY SEARCH VIEW (SECURITY INVOKER ENFORCED)
 -- ============================================================
 
 create or replace view public.available_inventory
+with (security_invoker = true)
 as
 select
     v.id,

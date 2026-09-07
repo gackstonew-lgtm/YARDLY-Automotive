@@ -34,7 +34,7 @@ import { saveVehicleImageToIndexedDB, getAllVehicleImagesFromIndexedDB } from '.
 
 const env = (import.meta as any).env || {};
 const supabaseUrl = env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = env.VITE_SUPABASE_ANON_KEY || '';
+const supabaseAnonKey = env.VITE_SUPABASE_ANON_KEY || env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
 
 export const isSupabaseConfigured = Boolean(
   supabaseUrl && 
@@ -474,15 +474,41 @@ export const AuthService = {
     if (isSupabaseConfigured && supabase) {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        return {
+        let role = (user.user_metadata?.role as UserRole) || 'buyer';
+        let fullName = user.user_metadata?.full_name || 'Yardly User';
+        let phone = user.user_metadata?.phone;
+        let sellerType = user.user_metadata?.seller_type;
+        let businessName = user.user_metadata?.business_name;
+
+        try {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .maybeSingle();
+
+          if (profile) {
+            role = (profile.role as UserRole) || role;
+            fullName = profile.full_name || fullName;
+            phone = profile.phone || phone;
+            sellerType = profile.seller_type || sellerType;
+            businessName = profile.business_name || businessName;
+          }
+        } catch (err) {
+          // Profile lookup warning suppressed
+        }
+
+        const authUser: AuthUser = {
           id: user.id,
           email: user.email || '',
-          full_name: user.user_metadata?.full_name || 'Yardly User',
-          phone: user.user_metadata?.phone,
-          role: (user.user_metadata?.role as UserRole) || 'buyer',
-          seller_type: user.user_metadata?.seller_type,
-          business_name: user.user_metadata?.business_name
+          full_name: fullName,
+          phone,
+          role,
+          seller_type: sellerType,
+          business_name: businessName
         };
+        setStored(LOCAL_STORAGE_KEY_CURRENT_USER, authUser);
+        return authUser;
       }
     }
     const currentUser = getStored<AuthUser | null>(LOCAL_STORAGE_KEY_CURRENT_USER, null);
@@ -494,6 +520,62 @@ export const AuthService = {
     }
 
     return null;
+  },
+
+  async updateProfile(updates: {
+    full_name?: string;
+    phone?: string;
+    business_name?: string;
+    seller_type?: SellerType;
+    avatar_url?: string;
+  }): Promise<{ success: boolean; user?: AuthUser; error?: string }> {
+    const currentUser = await this.getCurrentUser();
+    if (!currentUser) {
+      return { success: false, error: 'User must be signed in to update profile.' };
+    }
+
+    const updatedMetadata: any = {};
+    if (updates.full_name !== undefined) updatedMetadata.full_name = updates.full_name;
+    if (updates.phone !== undefined) updatedMetadata.phone = updates.phone;
+    if (updates.business_name !== undefined) updatedMetadata.business_name = updates.business_name;
+    if (updates.seller_type !== undefined) updatedMetadata.seller_type = updates.seller_type;
+    if (updates.avatar_url !== undefined) updatedMetadata.avatar_url = updates.avatar_url;
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.auth.updateUser({
+          data: updatedMetadata
+        });
+
+        await supabase
+          .from('profiles')
+          .update({
+            ...updatedMetadata,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', currentUser.id);
+      } catch (err: any) {
+        console.warn('Supabase profile update warning:', err);
+      }
+    }
+
+    const updatedUser: AuthUser = {
+      ...currentUser,
+      ...updates
+    };
+    setStored(LOCAL_STORAGE_KEY_CURRENT_USER, updatedUser);
+
+    const users = await getStoredUsers();
+    const userIdx = users.findIndex(u => u.id === currentUser.id || u.email.toLowerCase() === currentUser.email.toLowerCase());
+    if (userIdx !== -1) {
+      users[userIdx] = {
+        ...users[userIdx],
+        ...updates
+      };
+      setStored(LOCAL_STORAGE_KEY_USERS, users);
+    }
+
+    return { success: true, user: updatedUser };
   },
 
   async signIn(email: string, password: string): Promise<{ success: boolean; user?: AuthUser; error?: string }> {
@@ -1094,24 +1176,134 @@ export const VehicleService = {
 // Seller Submission Service
 export const SellerSubmissionService = {
   async getAll(): Promise<SellerListingSubmission[]> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('seller_listings')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && data) {
+          return data.map(item => ({
+            id: item.id,
+            seller_name: item.seller_name,
+            seller_phone: item.seller_phone,
+            seller_email: item.seller_email,
+            seller_type: item.seller_type || 'private',
+            make: item.make,
+            model: item.model,
+            year: item.year,
+            registration_number: item.registration_number,
+            mileage: item.mileage,
+            engine_cc: item.engine_cc,
+            transmission: item.transmission,
+            fuel_type: item.fuel_type,
+            body_type: item.body_type,
+            location: item.location,
+            asking_price: Number(item.asking_price),
+            description: item.description,
+            condition: item.condition || 'Foreign Used',
+            images: Array.isArray(item.images) ? item.images : [],
+            logbook_document_url: item.logbook_document_url,
+            status: item.status || 'pending_review',
+            rejection_reason: item.rejection_reason,
+            created_at: item.created_at
+          }));
+        }
+      } catch (err) {
+        console.warn('Supabase seller listings fetch notice:', err);
+      }
+    }
     return getStored<SellerListingSubmission[]>(LOCAL_STORAGE_KEY_SUBMISSIONS, INITIAL_MOCK_SUBMISSIONS);
   },
 
   async create(submission: Omit<SellerListingSubmission, 'id' | 'status' | 'created_at'>): Promise<SellerListingSubmission> {
+    const submissionId = 'sub-' + Date.now();
+    
+    // Process & upload any Base64 images to Supabase Storage
+    let uploadedImages: string[] = [];
+    if (submission.images && submission.images.length > 0) {
+      uploadedImages = await Promise.all(
+        submission.images.map(img => uploadVehicleImageToSupabase(`submission-${Date.now()}`, img))
+      );
+    }
+
+    let uploadedLogbook = submission.logbook_document_url;
+    if (uploadedLogbook && uploadedLogbook.startsWith('data:')) {
+      uploadedLogbook = await uploadVehicleImageToSupabase(`logbook-${Date.now()}`, uploadedLogbook);
+    }
+
     const record: SellerListingSubmission = {
       ...submission,
-      id: 'sub-' + Date.now(),
+      id: submissionId,
+      images: uploadedImages.length > 0 ? uploadedImages : (submission.images || []),
+      logbook_document_url: uploadedLogbook,
       status: 'pending_review',
       created_at: new Date().toISOString()
     };
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('seller_listings')
+          .insert([{
+            seller_name: record.seller_name,
+            seller_phone: record.seller_phone,
+            seller_email: record.seller_email,
+            seller_type: record.seller_type || 'private',
+            make: record.make,
+            model: record.model,
+            year: record.year,
+            registration_number: record.registration_number,
+            mileage: record.mileage,
+            engine_cc: record.engine_cc,
+            transmission: record.transmission,
+            fuel_type: record.fuel_type,
+            body_type: record.body_type,
+            location: record.location,
+            asking_price: record.asking_price,
+            description: record.description,
+            condition: record.condition || 'Foreign Used',
+            images: record.images,
+            logbook_document_url: record.logbook_document_url || null,
+            status: 'pending_review'
+          }])
+          .select()
+          .single();
+
+        if (!error && data) {
+          record.id = data.id;
+        }
+      } catch (err) {
+        console.warn('Supabase seller listing insert notice:', err);
+      }
+    }
+
     const list = getStored<SellerListingSubmission[]>(LOCAL_STORAGE_KEY_SUBMISSIONS, INITIAL_MOCK_SUBMISSIONS);
     list.unshift(record);
     setStored(LOCAL_STORAGE_KEY_SUBMISSIONS, list);
+
+    RealtimeService.broadcastLocalEvent('seller_listings', record);
     return record;
   },
 
   async updateStatus(id: string, status: SellerListingSubmission['status'], rejection_reason?: string): Promise<void> {
     await requireAdminRole();
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase
+          .from('seller_listings')
+          .update({
+            status,
+            rejection_reason: rejection_reason || null,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', id);
+      } catch (err) {
+        console.warn('Supabase seller listing status update notice:', err);
+      }
+    }
+
     const list = getStored<SellerListingSubmission[]>(LOCAL_STORAGE_KEY_SUBMISSIONS, INITIAL_MOCK_SUBMISSIONS);
     const item = list.find(s => s.id === id);
     if (item) {
@@ -1157,6 +1349,8 @@ export const SellerSubmissionService = {
           }))
         });
       }
+
+      RealtimeService.broadcastLocalEvent('seller_listings', item);
     }
   }
 };
@@ -1164,12 +1358,40 @@ export const SellerSubmissionService = {
 // Buyer & Seller Profiles Management Service
 export const BuyerService = {
   async getAll(): Promise<Profile[]> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('role', 'buyer')
+          .order('created_at', { ascending: false });
+        if (!error && data) return data as Profile[];
+      } catch (err) {
+        console.warn('Supabase buyers fetch notice:', err);
+      }
+    }
     const users = getStored<Profile[]>(LOCAL_STORAGE_KEY_USERS, INITIAL_MOCK_BUYERS);
     return users.filter(u => u.role === 'buyer');
   },
 
   async updateStatus(id: string, status: 'active' | 'suspended'): Promise<void> {
     await requireAdminRole();
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase
+          .from('profiles')
+          .update({
+            status,
+            is_active: status === 'active',
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', id);
+      } catch (err) {
+        console.warn('Supabase buyer status update notice:', err);
+      }
+    }
+
     const users = getStored<Profile[]>(LOCAL_STORAGE_KEY_USERS, INITIAL_MOCK_BUYERS);
     const found = users.find(u => u.id === id);
     if (found) {
@@ -1181,12 +1403,40 @@ export const BuyerService = {
 
 export const SellerService = {
   async getAll(): Promise<Profile[]> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .in('role', ['seller', 'dealer'])
+          .order('created_at', { ascending: false });
+        if (!error && data) return data as Profile[];
+      } catch (err) {
+        console.warn('Supabase sellers fetch notice:', err);
+      }
+    }
     const users = getStored<Profile[]>(LOCAL_STORAGE_KEY_USERS, INITIAL_MOCK_SELLERS);
     return users.filter(u => u.role === 'seller' || u.role === 'dealer');
   },
 
   async updateVerification(id: string, status: 'verified' | 'rejected'): Promise<void> {
     await requireAdminRole();
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase
+          .from('profiles')
+          .update({
+            status: status === 'verified' ? 'active' : 'suspended',
+            is_active: status === 'verified',
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', id);
+      } catch (err) {
+        console.warn('Supabase seller verification update notice:', err);
+      }
+    }
+
     const users = getStored<Profile[]>(LOCAL_STORAGE_KEY_USERS, INITIAL_MOCK_SELLERS);
     const found = users.find(u => u.id === id);
     if (found) {
@@ -1199,6 +1449,60 @@ export const SellerService = {
 // Auction Service
 export const AuctionService = {
   async getAll(): Promise<Auction[]> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('auctions')
+          .select('*, vehicle:vehicles(*, images:vehicle_images(*)), bids:auction_bids(*)')
+          .order('created_at', { ascending: false });
+
+        if (!error && data && data.length > 0) {
+          const now = new Date().getTime();
+          return data.map((auc: any) => {
+            let status = auc.status;
+            const start = new Date(auc.start_time).getTime();
+            const end = new Date(auc.end_time).getTime();
+
+            if (status !== 'cancelled') {
+              if (now < start) {
+                status = 'upcoming';
+              } else if (now >= start && now < end) {
+                status = (end - now <= 24 * 3600 * 1000) ? 'ending_soon' : 'live';
+              } else if (now >= end) {
+                status = 'ended';
+              }
+            }
+
+            const vehicle = auc.vehicle ? {
+              ...auc.vehicle,
+              images: (auc.vehicle.images && auc.vehicle.images.length > 0)
+                ? auc.vehicle.images
+                : resolveVehicleImages(auc.vehicle)
+            } : undefined;
+
+            return {
+              id: auc.id,
+              vehicle_id: auc.vehicle_id,
+              seller_id: auc.seller_id,
+              starting_bid: Number(auc.starting_bid),
+              current_bid: Number(auc.current_bid),
+              minimum_increment: Number(auc.minimum_increment || 10000),
+              bid_count: Number(auc.bid_count || 0),
+              start_time: auc.start_time,
+              end_time: auc.end_time,
+              status,
+              created_at: auc.created_at,
+              updated_at: auc.updated_at,
+              vehicle,
+              bids: auc.bids ? auc.bids.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()) : []
+            };
+          });
+        }
+      } catch (err) {
+        console.warn('Supabase auctions fetch notice:', err);
+      }
+    }
+
     const auctions = getStored<Auction[]>(LOCAL_STORAGE_KEY_AUCTIONS, INITIAL_MOCK_AUCTIONS);
     const vehicles = await VehicleService.getAll();
     
@@ -1242,6 +1546,33 @@ export const AuctionService = {
       bid_count: 0,
       created_at: new Date().toISOString()
     };
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data: inserted, error } = await supabase
+          .from('auctions')
+          .insert([{
+            vehicle_id: data.vehicle_id,
+            seller_id: data.seller_id || null,
+            starting_bid: data.starting_bid,
+            current_bid: data.starting_bid,
+            minimum_increment: data.minimum_increment || 10000,
+            bid_count: 0,
+            start_time: data.start_time,
+            end_time: data.end_time,
+            status: data.status || 'upcoming'
+          }])
+          .select()
+          .single();
+
+        if (!error && inserted) {
+          newAuc.id = inserted.id;
+        }
+      } catch (err) {
+        console.warn('Supabase auction create notice:', err);
+      }
+    }
+
     const list = getStored<Auction[]>(LOCAL_STORAGE_KEY_AUCTIONS, INITIAL_MOCK_AUCTIONS);
     list.unshift(newAuc);
     setStored(LOCAL_STORAGE_KEY_AUCTIONS, list);
@@ -1249,7 +1580,7 @@ export const AuctionService = {
   },
 
   async placeBid(auctionId: string, buyer: AuthUser, amount: number): Promise<{ success: boolean; auction?: Auction; error?: string }> {
-    const list = getStored<Auction[]>(LOCAL_STORAGE_KEY_AUCTIONS, INITIAL_MOCK_AUCTIONS);
+    const list = await this.getAll();
     const auc = list.find(a => a.id === auctionId);
     if (!auc) return { success: false, error: 'Auction not found.' };
 
@@ -1274,13 +1605,47 @@ export const AuctionService = {
       created_at: new Date().toISOString()
     };
 
-    if (!auc.bids) auc.bids = [];
-    auc.bids.unshift(newBid);
-    auc.current_bid = amount;
-    auc.bid_count = (auc.bid_count || 0) + 1;
-    auc.updated_at = new Date().toISOString();
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data: bidData, error: bidErr } = await supabase
+          .from('auction_bids')
+          .insert([{
+            auction_id: auctionId,
+            buyer_id: buyer.id,
+            buyer_name: buyer.full_name,
+            buyer_email: buyer.email,
+            amount
+          }])
+          .select()
+          .single();
 
-    setStored(LOCAL_STORAGE_KEY_AUCTIONS, list);
+        if (!bidErr && bidData) {
+          newBid.id = bidData.id;
+        }
+
+        await supabase
+          .from('auctions')
+          .update({
+            current_bid: amount,
+            bid_count: (auc.bid_count || 0) + 1,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', auctionId);
+      } catch (err) {
+        console.warn('Supabase bid place notice:', err);
+      }
+    }
+
+    const localAuctions = getStored<Auction[]>(LOCAL_STORAGE_KEY_AUCTIONS, INITIAL_MOCK_AUCTIONS);
+    const localAuc = localAuctions.find(a => a.id === auctionId);
+    if (localAuc) {
+      if (!localAuc.bids) localAuc.bids = [];
+      localAuc.bids.unshift(newBid);
+      localAuc.current_bid = amount;
+      localAuc.bid_count = (localAuc.bid_count || 0) + 1;
+      localAuc.updated_at = new Date().toISOString();
+      setStored(LOCAL_STORAGE_KEY_AUCTIONS, localAuctions);
+    }
 
     // Notify user
     await NotificationService.createNotification({
@@ -1291,11 +1656,28 @@ export const AuctionService = {
       link: '/auction'
     });
 
+    if (!auc.bids) auc.bids = [];
+    auc.bids.unshift(newBid);
+    auc.current_bid = amount;
+    auc.bid_count = (auc.bid_count || 0) + 1;
+
     return { success: true, auction: auc };
   },
 
   async updateStatus(id: string, status: Auction['status']): Promise<void> {
     await requireAdminRole();
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase
+          .from('auctions')
+          .update({ status, updated_at: new Date().toISOString() })
+          .eq('id', id);
+      } catch (err) {
+        console.warn('Supabase auction status update notice:', err);
+      }
+    }
+
     const list = getStored<Auction[]>(LOCAL_STORAGE_KEY_AUCTIONS, INITIAL_MOCK_AUCTIONS);
     const auc = list.find(a => a.id === id);
     if (auc) {
@@ -1308,18 +1690,76 @@ export const AuctionService = {
 // Trade-In Service
 export const TradeInService = {
   async getAll(): Promise<TradeInRequest[]> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('trade_in_requests')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && data) return data as TradeInRequest[];
+      } catch (err) {
+        console.warn('Supabase trade-in fetch notice:', err);
+      }
+    }
     return getStored<TradeInRequest[]>(LOCAL_STORAGE_KEY_TRADE_INS, INITIAL_MOCK_TRADE_INS);
   },
 
   async create(req: Omit<TradeInRequest, 'id' | 'reference_id' | 'status' | 'created_at'>): Promise<TradeInRequest> {
     const randomCode = Math.floor(1000 + Math.random() * 9000);
+    const tradeInId = 'trd-' + Date.now();
+
+    // Process & upload any Base64 images to Supabase Storage
+    let uploadedImages: string[] = [];
+    if (req.images && req.images.length > 0) {
+      uploadedImages = await Promise.all(
+        req.images.map(img => uploadVehicleImageToSupabase(`tradein-${Date.now()}`, img))
+      );
+    }
+
     const record: TradeInRequest = {
       ...req,
-      id: 'trd-' + Date.now(),
+      id: tradeInId,
       reference_id: `TRD-${new Date().getFullYear()}-${randomCode}`,
+      images: uploadedImages.length > 0 ? uploadedImages : (req.images || []),
       status: 'new',
       created_at: new Date().toISOString()
     };
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('trade_in_requests')
+          .insert([{
+            reference_id: record.reference_id,
+            user_id: req.user_id || null,
+            full_name: req.full_name,
+            email: req.email,
+            phone: req.phone,
+            make: req.make,
+            model: req.model,
+            year: req.year,
+            mileage: req.mileage,
+            registration_status: req.registration_status || 'locally_registered',
+            transmission: req.transmission,
+            fuel_type: req.fuel_type,
+            condition: req.condition || 'Used',
+            location: req.location,
+            expected_value: req.expected_value,
+            description: req.description,
+            images: record.images,
+            status: 'new'
+          }])
+          .select()
+          .single();
+
+        if (!error && data) {
+          record.id = data.id;
+        }
+      } catch (err) {
+        console.warn('Supabase trade-in insert notice:', err);
+      }
+    }
+
     const list = getStored<TradeInRequest[]>(LOCAL_STORAGE_KEY_TRADE_INS, INITIAL_MOCK_TRADE_INS);
     list.unshift(record);
     setStored(LOCAL_STORAGE_KEY_TRADE_INS, list);
@@ -1328,6 +1768,23 @@ export const TradeInService = {
 
   async updateStatus(id: string, status: TradeInRequest['status'], adminValuation?: number, adminNotes?: string): Promise<void> {
     await requireAdminRole();
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase
+          .from('trade_in_requests')
+          .update({
+            status,
+            admin_valuation: adminValuation !== undefined ? adminValuation : null,
+            admin_notes: adminNotes !== undefined ? adminNotes : null,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', id);
+      } catch (err) {
+        console.warn('Supabase trade-in update notice:', err);
+      }
+    }
+
     const list = getStored<TradeInRequest[]>(LOCAL_STORAGE_KEY_TRADE_INS, INITIAL_MOCK_TRADE_INS);
     const item = list.find(t => t.id === id);
     if (item) {
@@ -1343,6 +1800,17 @@ export const TradeInService = {
 // Import Service
 export const ImportService = {
   async getAll(): Promise<ImportRequest[]> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('import_requests')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && data) return data as ImportRequest[];
+      } catch (err) {
+        console.warn('Supabase import fetch notice:', err);
+      }
+    }
     return getStored<ImportRequest[]>(LOCAL_STORAGE_KEY_IMPORTS, INITIAL_MOCK_IMPORTS);
   },
 
@@ -1355,6 +1823,39 @@ export const ImportService = {
       status: 'new',
       created_at: new Date().toISOString()
     };
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('import_requests')
+          .insert([{
+            reference_number: record.reference_number,
+            user_id: req.user_id || null,
+            full_name: req.full_name,
+            email: req.email,
+            phone: req.phone,
+            country: req.country || 'Kenya',
+            preferred_source_country: req.preferred_source_country,
+            make: req.make,
+            model: req.model,
+            year_min: req.year_min,
+            budget: req.budget,
+            preferred_specs: req.preferred_specs || null,
+            shipping_preference: req.shipping_preference || 'RoRo',
+            additional_requirements: req.additional_requirements || null,
+            status: 'new'
+          }])
+          .select()
+          .single();
+
+        if (!error && data) {
+          record.id = data.id;
+        }
+      } catch (err) {
+        console.warn('Supabase import insert notice:', err);
+      }
+    }
+
     const list = getStored<ImportRequest[]>(LOCAL_STORAGE_KEY_IMPORTS, INITIAL_MOCK_IMPORTS);
     list.unshift(record);
     setStored(LOCAL_STORAGE_KEY_IMPORTS, list);
@@ -1363,6 +1864,23 @@ export const ImportService = {
 
   async updateStatus(id: string, status: ImportRequest['status'], notes?: string, assignedTo?: string): Promise<void> {
     await requireAdminRole();
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase
+          .from('import_requests')
+          .update({
+            status,
+            admin_notes: notes !== undefined ? notes : null,
+            assigned_to: assignedTo !== undefined ? assignedTo : null,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', id);
+      } catch (err) {
+        console.warn('Supabase import status update notice:', err);
+      }
+    }
+
     const list = getStored<ImportRequest[]>(LOCAL_STORAGE_KEY_IMPORTS, INITIAL_MOCK_IMPORTS);
     const item = list.find(i => i.id === id);
     if (item) {
@@ -1378,6 +1896,33 @@ export const ImportService = {
 // Favorites / Saved Vehicles Service
 export const FavoriteService = {
   async getByUserId(userId: string): Promise<Favorite[]> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('favorites')
+          .select('*, vehicle:vehicles(*, images:vehicle_images(*))')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false });
+
+        if (!error && data) {
+          return data.map((f: any) => ({
+            id: f.id,
+            user_id: f.user_id,
+            vehicle_id: f.vehicle_id,
+            created_at: f.created_at,
+            vehicle: f.vehicle ? {
+              ...f.vehicle,
+              images: (f.vehicle.images && f.vehicle.images.length > 0)
+                ? f.vehicle.images
+                : resolveVehicleImages(f.vehicle)
+            } : undefined
+          }));
+        }
+      } catch (err) {
+        console.warn('Supabase favorites fetch notice:', err);
+      }
+    }
+
     const list = getStored<Favorite[]>(LOCAL_STORAGE_KEY_FAVORITES, INITIAL_MOCK_FAVORITES);
     const userFavs = list.filter(f => f.user_id === userId);
     const vehicles = await VehicleService.getAll();
@@ -1388,6 +1933,28 @@ export const FavoriteService = {
   },
 
   async toggleFavorite(userId: string, vehicleId: string): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data: existing } = await supabase
+          .from('favorites')
+          .select('id')
+          .eq('user_id', userId)
+          .eq('vehicle_id', vehicleId)
+          .maybeSingle();
+
+        if (existing) {
+          await supabase.from('favorites').delete().eq('id', existing.id);
+        } else {
+          await supabase.from('favorites').insert([{
+            user_id: userId,
+            vehicle_id: vehicleId
+          }]);
+        }
+      } catch (err) {
+        console.warn('Supabase toggle favorite notice:', err);
+      }
+    }
+
     const list = getStored<Favorite[]>(LOCAL_STORAGE_KEY_FAVORITES, INITIAL_MOCK_FAVORITES);
     const existingIndex = list.findIndex(f => f.user_id === userId && f.vehicle_id === vehicleId);
 
@@ -1408,6 +1975,21 @@ export const FavoriteService = {
   },
 
   async isFavorite(userId: string, vehicleId: string): Promise<boolean> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('favorites')
+          .select('id')
+          .eq('user_id', userId)
+          .eq('vehicle_id', vehicleId)
+          .maybeSingle();
+        if (!error && data) return true;
+        if (!error && !data) return false;
+      } catch (err) {
+        console.warn('Supabase check favorite notice:', err);
+      }
+    }
+
     const list = getStored<Favorite[]>(LOCAL_STORAGE_KEY_FAVORITES, INITIAL_MOCK_FAVORITES);
     return list.some(f => f.user_id === userId && f.vehicle_id === vehicleId);
   }
@@ -1416,6 +1998,19 @@ export const FavoriteService = {
 // Notification Service
 export const NotificationService = {
   async getByUserId(userId: string): Promise<NotificationItem[]> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('notifications')
+          .select('*')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false });
+        if (!error && data) return data as NotificationItem[];
+      } catch (err) {
+        console.warn('Supabase notifications fetch notice:', err);
+      }
+    }
+
     const list = getStored<NotificationItem[]>(LOCAL_STORAGE_KEY_NOTIFICATIONS, INITIAL_MOCK_NOTIFICATIONS);
     return list.filter(n => n.user_id === userId).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   },
@@ -1427,6 +2022,30 @@ export const NotificationService = {
       read: false,
       created_at: new Date().toISOString()
     };
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('notifications')
+          .insert([{
+            user_id: notif.user_id,
+            type: notif.type,
+            title: notif.title,
+            message: notif.message,
+            read: false,
+            link: notif.link || null
+          }])
+          .select()
+          .single();
+
+        if (!error && data) {
+          newNotif.id = data.id;
+        }
+      } catch (err) {
+        console.warn('Supabase notification insert notice:', err);
+      }
+    }
+
     const list = getStored<NotificationItem[]>(LOCAL_STORAGE_KEY_NOTIFICATIONS, INITIAL_MOCK_NOTIFICATIONS);
     list.unshift(newNotif);
     setStored(LOCAL_STORAGE_KEY_NOTIFICATIONS, list);
@@ -1434,6 +2053,17 @@ export const NotificationService = {
   },
 
   async markAsRead(id: string): Promise<void> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase
+          .from('notifications')
+          .update({ read: true })
+          .eq('id', id);
+      } catch (err) {
+        console.warn('Supabase notification mark read notice:', err);
+      }
+    }
+
     const list = getStored<NotificationItem[]>(LOCAL_STORAGE_KEY_NOTIFICATIONS, INITIAL_MOCK_NOTIFICATIONS);
     const found = list.find(n => n.id === id);
     if (found) {
@@ -1525,6 +2155,17 @@ export const ReservationService = {
 
 export const PaymentService = {
   async getAll(): Promise<PaymentRecord[]> {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('payments')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && data) return data as PaymentRecord[];
+      } catch (err) {
+        console.warn('Supabase payment fetch notice:', err);
+      }
+    }
     return getStored<PaymentRecord[]>(LOCAL_STORAGE_KEY_PAYMENTS, INITIAL_MOCK_PAYMENTS);
   },
 
@@ -1535,6 +2176,37 @@ export const PaymentService = {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('payments')
+          .insert([{
+            reservation_id: payment.reservation_id || null,
+            vehicle_id: payment.vehicle_id,
+            user_id: payment.user_id || null,
+            amount: payment.amount,
+            currency: payment.currency || 'KES',
+            provider: payment.provider || 'test',
+            checkout_request_id: payment.checkout_request_id || null,
+            merchant_request_id: payment.merchant_request_id || null,
+            mpesa_receipt_number: payment.mpesa_receipt_number || null,
+            phone_number: payment.phone_number || '',
+            status: payment.status || 'pending',
+            idempotency_key: payment.idempotency_key || `idemp-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+            raw_response: payment.raw_response || null
+          }])
+          .select()
+          .single();
+
+        if (!error && data) {
+          record.id = data.id;
+        }
+      } catch (err) {
+        console.warn('Supabase payment record insert notice:', err);
+      }
+    }
+
     const list = getStored<PaymentRecord[]>(LOCAL_STORAGE_KEY_PAYMENTS, INITIAL_MOCK_PAYMENTS);
     list.unshift(record);
     setStored(LOCAL_STORAGE_KEY_PAYMENTS, list);

@@ -1,14 +1,13 @@
 import { INITIAL_MOCK_VEHICLES } from '../src/lib/supabase/mockData';
-import { LOCAL_CAR_IMAGES_MANIFEST } from '../src/data/vehicleImageManifest';
+import { AUTOMATIC_VEHICLE_CLUSTERS } from '../src/data/vehicleImageManifest';
 
 export function runInventoryValidation() {
   const totalVehicles = INITIAL_MOCK_VEHICLES.length;
   const vehiclesWithImages = INITIAL_MOCK_VEHICLES.filter(v => v.images && v.images.length > 0 && v.images.some(img => img.image_url !== ''));
   const vehiclesWithoutImages = INITIAL_MOCK_VEHICLES.filter(v => !v.images || v.images.length === 0 || v.images.every(img => img.image_url === ''));
 
-  const totalManifestImages = LOCAL_CAR_IMAGES_MANIFEST.length;
-  const matchedImages = LOCAL_CAR_IMAGES_MANIFEST.filter(m => m.vehicle_match_status === 'verified').length;
-  const unmatchedImages = LOCAL_CAR_IMAGES_MANIFEST.filter(m => m.vehicle_match_status === 'unverified').length;
+  const clusters = Object.values(AUTOMATIC_VEHICLE_CLUSTERS);
+  const totalManifestImages = clusters.reduce((acc, c) => acc + (c.images ? c.images.length : 0), 0);
 
   const mainstreamCount = INITIAL_MOCK_VEHICLES.filter(v => v.category === 'mainstream').length;
   const premiumCount = INITIAL_MOCK_VEHICLES.filter(v => v.category === 'premium').length;
@@ -20,15 +19,14 @@ export function runInventoryValidation() {
 
   console.log(`
 ===============================================================
-YARDY INVENTORY VALIDATION REPORT
+YARDLY INVENTORY VALIDATION REPORT
 ===============================================================
 Vehicles Total:              ${totalVehicles}
 Vehicles with Local Images:   ${vehiclesWithImages.length}
 Vehicles with Pending State: ${vehiclesWithoutImages.length}
 
 Manifest Local Images:       ${totalManifestImages}
-Matched Images:              ${matchedImages}
-Unmatched Images:            ${unmatchedImages}
+Matched Image Clusters:      ${clusters.length}
 Duplicate Image Assignments: 0
 
 Vehicle Categories Breakdown:
@@ -45,8 +43,8 @@ Vehicle Categories Breakdown:
 
   return {
     totalVehicles,
-    matchedImages,
-    unmatchedImages,
+    clustersCount: clusters.length,
+    totalManifestImages,
     mainstreamCount,
     premiumCount,
     sportsCount,
@@ -55,7 +53,4 @@ Vehicle Categories Breakdown:
   };
 }
 
-// Run directly if executed via CLI
-if (require.main === module) {
-  runInventoryValidation();
-}
+runInventoryValidation();

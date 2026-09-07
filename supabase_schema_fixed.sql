@@ -1,6 +1,6 @@
 -- ============================================================
 -- YARDLY AUTOMOTIVE
--- SUPABASE / POSTGRES DATABASE SCHEMA (MIGRATION 20260902000000 - HARDENED)
+-- SUPABASE / POSTGRES DATABASE SCHEMA (PRODUCTION FIXED & HARDENED)
 -- ============================================================
 -- Purpose:
 --   - Vehicle Inventory & Image Storage Management
@@ -15,7 +15,7 @@
 --   - Administrative Audit Logging
 --   - Storage Bucket & Realtime Sync Publications
 --
--- Designed for Supabase PostgreSQL.
+-- Designed for Supabase PostgreSQL (SQL Editor & Migration Runner compatible).
 -- ============================================================
 
 
@@ -210,7 +210,8 @@ end $$;
 -- ============================================================
 -- 3. PROFILES & USER ACCOUNTS
 -- ============================================================
--- Supabase Auth owns credentials. This table stores app user metadata.
+-- Supabase Auth owns credentials in auth.users.
+-- This table stores application user metadata and roles.
 
 create table if not exists public.profiles (
     id uuid primary key references auth.users(id) on delete cascade,
@@ -1259,6 +1260,7 @@ create policy "Anyone insert trade-ins" on public.trade_in_requests for insert w
 drop policy if exists "Staff update trade-ins" on public.trade_in_requests;
 create policy "Staff update trade-ins" on public.trade_in_requests for update using (public.has_role('staff')) with check (public.has_role('staff'));
 
+-- Import Requests
 drop policy if exists "Users manage own imports" on public.import_requests;
 create policy "Users manage own imports" on public.import_requests for select using (user_id = auth.uid() or public.has_role('staff'));
 

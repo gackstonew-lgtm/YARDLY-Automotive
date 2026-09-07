@@ -14,7 +14,8 @@ import {
   CheckCircle2, 
   PlusCircle,
   Eye,
-  Lock
+  Lock,
+  AlertCircle
 } from 'lucide-react';
 import { Navbar } from '../components/navigation/Navbar';
 import { Button } from '../components/ui/Button';
@@ -62,6 +63,8 @@ export const AccountDashboard: React.FC = () => {
   const [editPhone, setEditPhone] = useState('');
   const [editBusiness, setEditBusiness] = useState('');
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadAccountData() {
@@ -110,14 +113,28 @@ export const AccountDashboard: React.FC = () => {
     navigate('/');
   };
 
-  const handleSaveProfile = (e: React.FormEvent) => {
+  const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (currentUser) {
-      currentUser.full_name = editName;
-      currentUser.phone = editPhone;
-      currentUser.business_name = editBusiness;
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000);
+    if (!currentUser) return;
+    setSavingProfile(true);
+    setProfileError(null);
+    try {
+      const res = await AuthService.updateProfile({
+        full_name: editName,
+        phone: editPhone,
+        business_name: editBusiness
+      });
+      if (res.success && res.user) {
+        setCurrentUser(res.user);
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 3000);
+      } else {
+        setProfileError(res.error || 'Failed to update profile.');
+      }
+    } catch (err: any) {
+      setProfileError(err.message || 'An error occurred while saving profile.');
+    } finally {
+      setSavingProfile(false);
     }
   };
 
@@ -265,6 +282,13 @@ export const AccountDashboard: React.FC = () => {
               </div>
             )}
 
+            {profileError && (
+              <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-xs font-semibold text-red-600 dark:text-red-400 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 text-red-500" />
+                <span>{profileError}</span>
+              </div>
+            )}
+
             <form onSubmit={handleSaveProfile} className="space-y-4">
               <Input
                 label="Full Name *"
@@ -292,8 +316,8 @@ export const AccountDashboard: React.FC = () => {
                 />
               )}
 
-              <Button type="submit" className="font-extrabold btn-glow">
-                Save Profile Changes
+              <Button type="submit" className="font-extrabold btn-glow" disabled={savingProfile}>
+                {savingProfile ? 'Saving Changes...' : 'Save Profile Changes'}
               </Button>
             </form>
           </div>
