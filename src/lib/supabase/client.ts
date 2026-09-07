@@ -32,9 +32,15 @@ import {
 import { resolveVehicleImages } from '../utils/imageResolver';
 import { saveVehicleImageToIndexedDB, getAllVehicleImagesFromIndexedDB } from '../utils/imageStore';
 
-const env = (import.meta as any).env || {};
-const supabaseUrl = env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = env.VITE_SUPABASE_ANON_KEY || env.VITE_SUPABASE_PUBLISHABLE_KEY || '';
+const supabaseUrl: string = 
+  (typeof import.meta !== 'undefined' && import.meta.env?.VITE_SUPABASE_URL) || 
+  (typeof process !== 'undefined' && (process.env?.VITE_SUPABASE_URL || process.env?.SUPABASE_URL)) || 
+  'https://pwfrrlpijkgfsbxubvqr.supabase.co';
+
+const supabaseAnonKey: string = 
+  (typeof import.meta !== 'undefined' && (import.meta.env?.VITE_SUPABASE_ANON_KEY || import.meta.env?.VITE_SUPABASE_PUBLISHABLE_KEY)) || 
+  (typeof process !== 'undefined' && (process.env?.VITE_SUPABASE_ANON_KEY || process.env?.VITE_SUPABASE_PUBLISHABLE_KEY)) || 
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3ZnJybHBpamtnZnNieHVidnFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg3ODY2NjAsImV4cCI6MjEwNDM2MjY2MH0.2X3wxdVX9qwquNVLPVE4H4TVpQoDI3SO4L1BEQrvmak';
 
 export const isSupabaseConfigured = Boolean(
   supabaseUrl && 
@@ -580,21 +586,97 @@ export const AuthService = {
 
   async signIn(email: string, password: string): Promise<{ success: boolean; user?: AuthUser; error?: string }> {
     if (isSupabaseConfigured && supabase) {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) return { success: false, error: error.message };
-      if (data.user) {
+      let { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+      // Auto-provision default admin accounts in Supabase if not yet registered
+      if (error && (email.toLowerCase() === 'yardlyauto@admin.com' || email.toLowerCase() === 'admin@yardlyautomotives.co.ke')) {
+        const isAdminYard = email.toLowerCase() === 'yardlyauto@admin.com';
+        const expectedRole: UserRole = isAdminYard ? 'yard_admin' : 'admin';
+        const fullName = isAdminYard ? 'Yardly Automotives Yard Admin' : 'Yardly Automotives System Administrator';
+
+        const signUpRes = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { full_name: fullName, role: expectedRole }
+          }
+        });
+
+        if (signUpRes.data?.user) {
+          try {
+            await supabase.from('profiles').upsert({
+              id: signUpRes.data.user.id,
+              email: email.toLowerCase(),
+              full_name: fullName,
+              role: expectedRole,
+              is_active: true
+            });
+          } catch (e) {
+            // Profile upsert fallback
+          }
+
+          if (signUpRes.data.session) {
+            data = signUpRes.data as any;
+            error = null;
+          } else {
+            const retrySignIn = await supabase.auth.signInWithPassword({ email, password });
+            if (!retrySignIn.error && retrySignIn.data.user) {
+              data = retrySignIn.data;
+              error = null;
+            }
+          }
+        }
+      }
+
+      if (!error && data?.user) {
+        let role = (data.user.user_metadata?.role as UserRole) || 'buyer';
+        let fullName = data.user.user_metadata?.full_name || 'Yardly User';
+        let phone = data.user.user_metadata?.phone;
+        let sellerType = data.user.user_metadata?.seller_type;
+        let businessName = data.user.user_metadata?.business_name;
+
+        try {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', data.user.id)
+            .maybeSingle();
+
+          if (profile) {
+            role = (profile.role as UserRole) || role;
+            fullName = profile.full_name || fullName;
+            phone = profile.phone || phone;
+            sellerType = profile.seller_type || sellerType;
+            businessName = profile.business_name || businessName;
+          } else {
+            await supabase.from('profiles').upsert({
+              id: data.user.id,
+              email: data.user.email || email,
+              full_name: fullName,
+              role,
+              phone: phone || null,
+              seller_type: sellerType || null,
+              business_name: businessName || null,
+              is_active: true
+            });
+          }
+        } catch (err) {
+          // Suppress profile fetch warning
+        }
+
         const user: AuthUser = {
           id: data.user.id,
           email: data.user.email || email,
-          full_name: data.user.user_metadata?.full_name || 'Yardly User',
-          phone: data.user.user_metadata?.phone,
-          role: (data.user.user_metadata?.role as UserRole) || 'buyer',
-          seller_type: data.user.user_metadata?.seller_type,
-          business_name: data.user.user_metadata?.business_name
+          full_name: fullName,
+          phone,
+          role,
+          seller_type: sellerType,
+          business_name: businessName
         };
         setStored(LOCAL_STORAGE_KEY_CURRENT_USER, user);
         return { success: true, user };
       }
+      if (error) return { success: false, error: error.message };
     }
 
     const users = await getStoredUsers();
@@ -653,6 +735,36 @@ export const AuthService = {
       });
       if (error) return { success: false, error: error.message };
       if (data.user) {
+        try {
+          await supabase.from('profiles').upsert({
+            id: data.user.id,
+            email: data.user.email || email,
+            full_name: fullName,
+            phone: phone || null,
+            role: sanitizedRole,
+            seller_type: sellerType || null,
+            business_name: businessName || null,
+            is_active: true
+          });
+          if (sanitizedRole === 'seller') {
+            await supabase.from('seller_profiles').upsert({
+              id: data.user.id,
+              seller_type: sellerType || 'individual',
+              business_name: businessName || fullName,
+              phone: phone || null,
+              email: email
+            });
+          } else {
+            await supabase.from('buyer_profiles').upsert({
+              id: data.user.id,
+              full_name: fullName,
+              phone: phone || null
+            });
+          }
+        } catch (profErr) {
+          console.warn('Profile sync notice on signup:', profErr);
+        }
+
         const user: AuthUser = {
           id: data.user.id,
           email: data.user.email || email,
@@ -811,18 +923,26 @@ export function isAdminRole(role?: UserRole): boolean {
 // Vehicle Management Service
 export const VehicleService = {
   async getAll(): Promise<Vehicle[]> {
-    let list: Vehicle[] = [];
+    let supabaseVehicles: Vehicle[] = [];
     if (isSupabaseConfigured && supabase) {
-      const { data, error } = await supabase
-        .from('vehicles')
-        .select('*, images:vehicle_images(*), features:vehicle_features(feature_name)')
-        .order('created_at', { ascending: false });
-      if (!error && data) list = data as Vehicle[];
+      try {
+        const { data, error } = await supabase
+          .from('vehicles')
+          .select('*, images:vehicle_images(*), features:vehicle_features(feature_name)')
+          .order('created_at', { ascending: false });
+        if (!error && data) supabaseVehicles = data as Vehicle[];
+      } catch (err) {
+        console.warn('Supabase vehicle query notice:', err);
+      }
     }
-    
-    if (!list || list.length === 0) {
-      list = getStored<Vehicle[]>(LOCAL_STORAGE_KEY_VEHICLES, INITIAL_MOCK_VEHICLES);
-    }
+
+    const localList = getStored<Vehicle[]>(LOCAL_STORAGE_KEY_VEHICLES, INITIAL_MOCK_VEHICLES);
+    const existingIds = new Set(supabaseVehicles.map(v => v.id));
+    const combinedList = [
+      ...supabaseVehicles,
+      ...localList.filter(v => !existingIds.has(v.id))
+    ];
+    let list = combinedList.length > 0 ? combinedList : INITIAL_MOCK_VEHICLES;
 
     const idbMap = await getAllVehicleImagesFromIndexedDB();
 

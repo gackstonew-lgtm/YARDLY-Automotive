@@ -116,8 +116,9 @@ async function runVerificationSuite() {
 
   // TEST 9: Public Registration Cannot Assign Administrative Roles
   try {
+    const testEmail = `intruder_${Date.now()}@test.com`;
     const attemptAdminSignUp = await AuthService.signUp(
-      'intruder@test.com',
+      testEmail,
       'TestPass123.',
       'Intruder Test',
       'yard_admin' as any
@@ -158,6 +159,90 @@ async function runVerificationSuite() {
     unsub();
   } catch (e) {
     assert(false, `onAuthStateChange Exception: ${e}`);
+  }
+
+  // TEST 12: Admin Vehicle Listing Creation & Retrieval (e.g. Mercedes-Benz C200d)
+  try {
+    await AuthService.adminSignIn('yardlyauto@admin.com', 'Admin123.');
+    const newVehicle = await VehicleService.addVehicle({
+      make: 'Mercedes-Benz',
+      model: `C-Class C200d Test-${Date.now()}`,
+      year: 2021,
+      price: 5850000,
+      currency: 'KES',
+      mileage: 38000,
+      engine_cc: 1950,
+      fuel_type: 'Diesel',
+      transmission: 'Automatic',
+      body_type: 'Sedan',
+      color: 'Iridium Silver',
+      location: 'Nairobi',
+      description: 'Test Mercedes-Benz C200d listing verification',
+      status: 'active',
+      verification_status: 'verified',
+      logbook_verified: true,
+      featured: true,
+      seller_type: 'dealer',
+      dealer_name: 'Yardly Certified',
+      images: [
+        {
+          id: `img-benz-${Date.now()}`,
+          vehicle_id: '',
+          image_url: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=800&q=80',
+          display_order: 1,
+          is_primary: true,
+          created_at: new Date().toISOString()
+        }
+      ]
+    });
+    const fetched = await VehicleService.getById(newVehicle.id);
+    assert(
+      fetched !== null &&
+      fetched.id === newVehicle.id &&
+      fetched.make === 'Mercedes-Benz' &&
+      fetched.price === 5850000,
+      'Admin Vehicle Listing Creation & Retrieval (Mercedes-Benz C200d)'
+    );
+  } catch (e) {
+    assert(false, `Admin Vehicle Creation Exception: ${e}`);
+  }
+
+  // TEST 13: Live Public User Registration & Profile Verification
+  try {
+    const freshBuyerEmail = `buyer_${Date.now()}@yardly.co.ke`;
+    const signupRes = await AuthService.signUp(
+      freshBuyerEmail,
+      'BuyerPassword123!',
+      'Jane Wanjiku',
+      'buyer',
+      '+254712345678'
+    );
+    assert(
+      signupRes.success === true &&
+      signupRes.user !== undefined &&
+      signupRes.user.email === freshBuyerEmail &&
+      signupRes.user.role === 'buyer',
+      'Live Public Buyer Registration & Profile Creation'
+    );
+  } catch (e) {
+    assert(false, `Live Buyer Registration Exception: ${e}`);
+  }
+
+  // TEST 14: User Profile Update Synchronization
+  try {
+    const updateRes = await AuthService.updateProfile({
+      full_name: 'Jane Wanjiku Updated',
+      phone: '+254799887766'
+    });
+    const currentUser = await AuthService.getCurrentUser();
+    assert(
+      updateRes.success === true &&
+      currentUser?.full_name === 'Jane Wanjiku Updated' &&
+      currentUser?.phone === '+254799887766',
+      'User Profile Update & Current User Synchronization'
+    );
+  } catch (e) {
+    assert(false, `Profile Update Exception: ${e}`);
   }
 
   console.log('\n====================================================');
