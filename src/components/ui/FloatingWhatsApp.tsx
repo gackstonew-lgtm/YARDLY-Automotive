@@ -22,7 +22,7 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({
   return (
     <aside
       aria-label="Direct WhatsApp Contact"
-      className={`fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-40 flex items-center ${className}`}
+      className={`fixed bottom-[calc(5.75rem+env(safe-area-inset-bottom,0px))] sm:bottom-[calc(6rem+env(safe-area-inset-bottom,0px))] md:bottom-6 right-4 sm:right-6 z-40 flex items-center ${className}`}
     >
       {/* Tooltip on Desktop Hover */}
       <div
