@@ -4,8 +4,16 @@ import { Building, MapPin, ShieldCheck, Phone, Mail, Car, ExternalLink } from 'l
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { Link } from 'react-router-dom';
+import { useSEO } from '../lib/hooks/useSEO';
+import { siteConfig } from '../config/site';
 
 export const DealershipsPage: React.FC = () => {
+  useSEO({
+    title: 'Certified Car Dealership Network Kenya | Yardly Automotives',
+    description: 'Explore verified car yards and automotive dealership partners across Kenya. Inspect stock in Nairobi, Mombasa, and Nakuru.',
+    canonical: `${siteConfig.url}/dealerships`
+  });
+
   const yards = [
     {
       name: 'Nairobi Motors Hub Ltd',

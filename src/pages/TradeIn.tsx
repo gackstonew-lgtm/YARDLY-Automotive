@@ -5,8 +5,17 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { TradeInService, AuthService, AuthUser } from '../lib/supabase/client';
 import { FuelType, TransmissionType } from '../types/database';
+import { useSEO } from '../lib/hooks/useSEO';
+import { siteConfig } from '../config/site';
+import { Analytics } from '../lib/analytics';
 
 export const TradeIn: React.FC = () => {
+  useSEO({
+    title: 'Vehicle Trade-In & Valuation | Yardly Automotives',
+    description: 'Upgrade your vehicle with transparent trade-in valuation in Kenya. Fair appraisal, fast processing, and top market value for your car.',
+    canonical: `${siteConfig.url}/trade-in`
+  });
+
   const [user, setUser] = useState<AuthUser | null>(null);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');

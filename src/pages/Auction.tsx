@@ -8,8 +8,16 @@ import { AuctionService, AuthService, AuthUser } from '../lib/supabase/client';
 import { Auction, AuctionBid, Vehicle } from '../types/database';
 import { getVehiclePrimaryImage } from '../lib/utils/imageResolver';
 import { useNavigate } from 'react-router-dom';
+import { useSEO } from '../lib/hooks/useSEO';
+import { siteConfig } from '../config/site';
 
 export const AuctionMarketplace: React.FC = () => {
+  useSEO({
+    title: 'Vehicle Auctions & Live Bidding | Yardly Automotives',
+    description: 'Participate in verified live automotive auctions across Kenya. Transparent bidding, verified yard vehicles, and instant notifications.',
+    canonical: `${siteConfig.url}/auction`
+  });
+
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
   const [auctions, setAuctions] = useState<Auction[]>([]);

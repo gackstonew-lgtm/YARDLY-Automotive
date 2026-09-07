@@ -30,6 +30,8 @@ import { Input } from '../components/ui/Input';
 import { VehicleGallery } from '../components/vehicle/VehicleGallery';
 import { resolveVehicleImages } from '../lib/utils/imageResolver';
 import { siteConfig } from '../config/site';
+import { useSEO } from '../lib/hooks/useSEO';
+import { Analytics } from '../lib/analytics';
 
 export const VehicleDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -47,11 +49,69 @@ export const VehicleDetails: React.FC = () => {
   const [inquiryMsg, setInquiryMsg] = useState('I would like to schedule a physical viewing of this vehicle.');
   const [inquirySuccess, setInquirySuccess] = useState(false);
   const [inquiryLoading, setInquiryLoading] = useState(false);
+  const [inquiryError, setInquiryError] = useState('');
 
   // Financing Calculator state
   const [depositPercent, setDepositPercent] = useState(20); // 20%
   const [tenureMonths, setTenureMonths] = useState(48); // 4 years
   const interestRatePAnnum = siteConfig.financing.defaultInterestRate;
+
+  const vehicleTitle = vehicle 
+    ? `${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.trim || ''} for Sale in Kenya`
+    : 'Vehicle Details';
+  
+  const vehicleDescription = vehicle
+    ? `Buy verified ${vehicle.year} ${vehicle.make} ${vehicle.model} in Kenya. Price: KES ${vehicle.price.toLocaleString()}, Mileage: ${vehicle.mileage?.toLocaleString() || 'N/A'} km, Engine: ${vehicle.engine_cc || 'N/A'}cc, Transmission: ${vehicle.transmission}. Inspected by Yardly Automotives.`
+    : siteConfig.description;
+
+  const vehicleImages = vehicle ? resolveVehicleImages(vehicle) : [];
+  const primaryVehicleImage = vehicleImages[0]?.image_url || '/logo.jpeg';
+
+  useSEO({
+    title: vehicleTitle,
+    description: vehicleDescription,
+    canonical: vehicle ? `${siteConfig.url}/vehicles/${vehicle.id}` : undefined,
+    ogTitle: vehicle ? `${vehicle.year} ${vehicle.make} ${vehicle.model} — KES ${vehicle.price.toLocaleString()}` : undefined,
+    ogDescription: vehicleDescription,
+    ogImage: primaryVehicleImage,
+    ogType: 'product',
+    schema: vehicle ? {
+      '@context': 'https://schema.org',
+      '@type': 'Car',
+      name: `${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.trim || ''}`.trim(),
+      image: primaryVehicleImage.startsWith('http') ? primaryVehicleImage : `${siteConfig.url}${primaryVehicleImage}`,
+      description: vehicle.description || vehicleDescription,
+      brand: {
+        '@type': 'Brand',
+        name: vehicle.make
+      },
+      model: vehicle.model,
+      vehicleModelDate: vehicle.year.toString(),
+      itemCondition: vehicle.registration_status === 'new' ? 'https://schema.org/NewCondition' : 'https://schema.org/UsedCondition',
+      mileageFromOdometer: {
+        '@type': 'QuantitativeValue',
+        value: vehicle.mileage,
+        unitCode: 'KMT'
+      },
+      fuelType: vehicle.fuel_type,
+      vehicleTransmission: vehicle.transmission,
+      driveWheelConfiguration: vehicle.drive_type,
+      color: vehicle.color,
+      offers: {
+        '@type': 'Offer',
+        price: vehicle.price,
+        priceCurrency: 'KES',
+        priceValidUntil: '2026-12-31',
+        itemCondition: 'https://schema.org/UsedCondition',
+        availability: vehicle.status === 'active' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+        seller: {
+          '@type': 'AutoDealer',
+          name: vehicle.dealer_name || siteConfig.name,
+          telephone: siteConfig.contact.phone
+        }
+      }
+    } : undefined
+  });
 
   useEffect(() => {
     async function loadVehicle() {
@@ -59,6 +119,9 @@ export const VehicleDetails: React.FC = () => {
       try {
         const item = await VehicleService.getById(id);
         setVehicle(item);
+        if (item) {
+          Analytics.trackVehicleView(item.id, `${item.year} ${item.make} ${item.model}`, item.price);
+        }
       } catch (err) {
         console.error('Failed to load vehicle details', err);
       } finally {
@@ -120,30 +183,49 @@ export const VehicleDetails: React.FC = () => {
 
   const handleInquirySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!inquiryName.trim() || !inquiryPhone.trim() || !inquiryEmail.trim()) {
+      setInquiryError('Please fill in all required fields (Full Name, Phone Number, and Email).');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(inquiryEmail.trim())) {
+      setInquiryError('Please provide a valid email address.');
+      return;
+    }
+
     setInquiryLoading(true);
+    setInquiryError('');
     try {
       await InquiryService.create({
         vehicle_id: vehicle.id,
-        name: inquiryName,
-        phone: inquiryPhone,
-        email: inquiryEmail,
-        message: inquiryMsg,
+        name: inquiryName.trim(),
+        phone: inquiryPhone.trim(),
+        email: inquiryEmail.trim(),
+        message: inquiryMsg.trim(),
         source: 'inspection_request'
       });
       await InspectionService.create({
         vehicle_id: vehicle.id,
         seller_id: vehicle.seller_id,
-        buyer_name: inquiryName,
-        buyer_phone: inquiryPhone,
-        buyer_email: inquiryEmail,
+        buyer_name: inquiryName.trim(),
+        buyer_phone: inquiryPhone.trim(),
+        buyer_email: inquiryEmail.trim(),
         preferred_date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
         preferred_time: '10:00 AM',
         location: vehicle.location || 'Nairobi',
-        notes: inquiryMsg
+        notes: inquiryMsg.trim()
       });
+
+      Analytics.trackEvent('inquiry_submit', {
+        item_id: vehicle.id,
+        item_name: `${vehicle.year} ${vehicle.make} ${vehicle.model}`
+      });
+
       setInquirySuccess(true);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Inspection submission error:', err);
+      const msg = err instanceof Error ? err.message : 'Unable to submit inspection request right now. Please try again or chat via WhatsApp.';
+      setInquiryError(msg);
     } finally {
       setInquiryLoading(false);
     }
@@ -380,9 +462,16 @@ export const VehicleDetails: React.FC = () => {
                   Schedule Yard Inspection
                 </Button>
 
-                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="block">
+                <a 
+                  href={whatsappUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="block"
+                  onClick={() => Analytics.trackWhatsAppClick('vehicle_details_page', `${vehicle.year} ${vehicle.make} ${vehicle.model}`)}
+                  aria-label="Chat about this vehicle on WhatsApp"
+                >
                   <button className="w-full py-2.5 px-4 rounded-xl bg-[#009E52] dark:bg-[#00E878] hover:bg-[#00B85E] dark:hover:bg-[#55FF78] text-white dark:text-[#001A13] text-xs font-bold flex items-center justify-center gap-2 transition-colors shadow-sm">
-                    <Phone className="w-4 h-4" />
+                    <Phone className="w-4 h-4" aria-hidden="true" />
                     <span>Chat on WhatsApp</span>
                   </button>
                 </a>
@@ -433,6 +522,11 @@ export const VehicleDetails: React.FC = () => {
             </div>
           ) : (
             <form onSubmit={handleInquirySubmit} className="space-y-4">
+              {inquiryError && (
+                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-xs text-red-600 dark:text-red-400 font-medium">
+                  {inquiryError}
+                </div>
+              )}
               <Input
                 label="Full Name *"
                 placeholder="e.g. Kelvin Mutua"

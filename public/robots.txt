@@ -1,0 +1,29 @@
+# Robots.txt for Yardly Automotives
+# https://yardlyautomotives.co.ke
+
+User-agent: *
+Allow: /
+Allow: /buy
+Allow: /sell
+Allow: /trade-in
+Allow: /auction
+Allow: /import
+Allow: /accessories
+Allow: /trackers
+Allow: /car-hire
+Allow: /dealerships
+Allow: /about
+Allow: /privacy
+Allow: /terms
+Allow: /vehicles/
+
+# Disallow private user consoles and administrative management portals
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /admin/login
+Disallow: /account
+Disallow: /account/*
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://yardlyautomotives.co.ke/sitemap.xml

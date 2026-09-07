@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { siteConfig } from '../../config/site';
+import { Analytics } from '../../lib/analytics';
 
 interface FloatingWhatsAppProps {
   phoneNumber?: string;
@@ -45,6 +46,7 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => Analytics.trackWhatsAppClick('floating_button')}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onFocus={() => setIsHovered(true)}

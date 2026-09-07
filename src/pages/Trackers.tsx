@@ -3,8 +3,17 @@ import { Navbar } from '../components/navigation/Navbar';
 import { Navigation, ShieldCheck, CheckCircle2, Phone, AlertCircle } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
+import { useSEO } from '../lib/hooks/useSEO';
+import { siteConfig } from '../config/site';
+import { Analytics } from '../lib/analytics';
 
 export const TrackersPage: React.FC = () => {
+  useSEO({
+    title: 'GPS Car Tracker Installation & Fleet Security Kenya',
+    description: 'Certified GPS tracker installation and anti-theft security in Kenya. Real-time tracking, remote engine immobilization, and geo-fencing alerts.',
+    canonical: `${siteConfig.url}/trackers`
+  });
+
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [carDetails, setCarDetails] = useState('');

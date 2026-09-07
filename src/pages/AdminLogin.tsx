@@ -5,8 +5,15 @@ import { Navbar } from '../components/navigation/Navbar';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { AuthService, AuthUser } from '../lib/supabase/client';
+import { useSEO } from '../lib/hooks/useSEO';
 
 export const AdminLogin: React.FC = () => {
+  useSEO({
+    title: 'Admin Console Login | Yardly Automotives',
+    description: 'Secure management portal authentication for Yardly Automotives yard administrators.',
+    schema: undefined
+  });
+
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

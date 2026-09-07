@@ -2,8 +2,15 @@ import React from 'react';
 import { Navbar } from '../components/navigation/Navbar';
 import { ShieldCheck, Award, CheckCircle2, Zap, Phone, Mail, MapPin } from 'lucide-react';
 import { siteConfig } from '../config/site';
+import { useSEO } from '../lib/hooks/useSEO';
 
 export const AboutPage: React.FC = () => {
+  useSEO({
+    title: 'About Us | Driven by Quality. Built Around You.',
+    description: 'Learn about Yardly Automotives. Transparent automotive marketplace connecting drivers with verified vehicle inspections, direct imports, and dealership partners across Kenya.',
+    canonical: `${siteConfig.url}/about`
+  });
+
   return (
     <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pb-8 font-sans">
       <Navbar />

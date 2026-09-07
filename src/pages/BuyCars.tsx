@@ -10,8 +10,16 @@ import { Vehicle, FuelType, TransmissionType, BodyType } from '../types/database
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Reveal } from '../components/motion/Reveal';
+import { useSEO } from '../lib/hooks/useSEO';
+import { siteConfig } from '../config/site';
 
 export const BuyCars: React.FC = () => {
+  useSEO({
+    title: 'Available Vehicles & Cars for Sale in Kenya',
+    description: 'Browse verified quality cars for sale in Kenya. Filter by make, model, price, transmission, and body type with Yardly Automotives.',
+    canonical: `${siteConfig.url}/buy`
+  });
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);

@@ -4,8 +4,16 @@ import { Plane, CheckCircle2, ShieldCheck, Ship, Globe, FileCheck, ArrowRight, U
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { ImportService, AuthService, AuthUser } from '../lib/supabase/client';
+import { useSEO } from '../lib/hooks/useSEO';
+import { siteConfig } from '../config/site';
 
 export const ImportServicePage: React.FC = () => {
+  useSEO({
+    title: 'Direct Vehicle Importation to Kenya | Japan, UK & Thailand',
+    description: 'Custom vehicle import services to Kenya from Japan, UK, South Africa, and Thailand. 2026 8-year age compliant with complete port clearance.',
+    canonical: `${siteConfig.url}/import`
+  });
+
   const [user, setUser] = useState<AuthUser | null>(null);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');

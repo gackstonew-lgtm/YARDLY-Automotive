@@ -6,10 +6,18 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { AuthService } from '../lib/supabase/client';
 import { SellerType, UserRole } from '../types/database';
+import { useSEO } from '../lib/hooks/useSEO';
+import { siteConfig } from '../config/site';
 
 export const Auth: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  useSEO({
+    title: location.pathname === '/register' ? 'Create Account' : 'Sign In',
+    description: 'Sign in or create your Yardly Automotives account to manage vehicle inquiries, saved cars, trade-in valuations, and seller listings.',
+    canonical: `${siteConfig.url}${location.pathname}`
+  });
 
   // Parse redirect & role parameters from search query or location state
   const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search]);

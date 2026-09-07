@@ -6,8 +6,16 @@ import { Input } from '../components/ui/Input';
 import { SellerSubmissionService } from '../lib/supabase/client';
 import { EmailService } from '../lib/email/resend';
 import { siteConfig } from '../config/site';
+import { useSEO } from '../lib/hooks/useSEO';
+import { Analytics } from '../lib/analytics';
 
 export const SellCar: React.FC = () => {
+  useSEO({
+    title: 'Sell Your Car | Direct to Verified Buyers in Kenya',
+    description: 'Sell your car quickly and safely in Kenya. Connect with verified buyers and car yards across the country with Yardly Automotives.',
+    canonical: `${siteConfig.url}/sell`
+  });
+
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -104,6 +112,12 @@ export const SellCar: React.FC = () => {
         to: sellerEmail,
         subject: `Vehicle Listing Submitted — ${siteConfig.name}`,
         html
+      });
+
+      Analytics.trackEvent('listing_submit', {
+        item_name: `${year} ${make} ${model}`,
+        item_category: 'Automotive Listing',
+        price: Number(price)
       });
 
       setSubmitted(true);

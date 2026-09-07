@@ -23,6 +23,9 @@ const TrackersPage = lazy(() => import('./pages/Trackers').then((m) => ({ defaul
 const CarHirePage = lazy(() => import('./pages/CarHire').then((m) => ({ default: m.CarHirePage })));
 const DealershipsPage = lazy(() => import('./pages/Dealerships').then((m) => ({ default: m.DealershipsPage })));
 const AboutPage = lazy(() => import('./pages/About').then((m) => ({ default: m.AboutPage })));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy').then((m) => ({ default: m.PrivacyPolicy })));
+const Terms = lazy(() => import('./pages/Terms').then((m) => ({ default: m.Terms })));
+const NotFound = lazy(() => import('./pages/NotFound').then((m) => ({ default: m.NotFound })));
 
 const PageLoader: React.FC = () => (
   <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] flex items-center justify-center">
@@ -48,6 +51,8 @@ export const App: React.FC = () => {
             <Route path="/trackers" element={<TrackersPage />} />
             <Route path="/car-hire" element={<CarHirePage />} />
             <Route path="/dealerships" element={<DealershipsPage />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<Terms />} />
 
             {/* Public Authentication Gateways */}
             <Route path="/login" element={<Auth />} />
@@ -131,8 +136,8 @@ export const App: React.FC = () => {
               }
             />
 
-            {/* Fallback to Landing Gateway */}
-            <Route path="*" element={<LandingPage />} />
+            {/* Fallback to Branded Custom 404 Page */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
         <MobileBottomNav />

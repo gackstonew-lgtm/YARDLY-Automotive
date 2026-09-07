@@ -3,8 +3,16 @@ import { Navbar } from '../components/navigation/Navbar';
 import { Package, Wrench, ShieldCheck, Search, ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
+import { useSEO } from '../lib/hooks/useSEO';
+import { siteConfig } from '../config/site';
 
 export const AccessoriesPage: React.FC = () => {
+  useSEO({
+    title: 'Genuine Car Spares & Auto Accessories in Kenya',
+    description: 'Shop genuine OEM car spare parts, body kits, android screens, batteries, filters, and accessories with nationwide delivery in Kenya.',
+    canonical: `${siteConfig.url}/accessories`
+  });
+
   const categories = [
     { title: 'Body Parts & Bumper Guards', desc: 'Grilles, side steps, bull bars, roof racks, and OEM body trims.' },
     { title: 'Engine & Performance Spares', desc: 'Air filters, brake pads, spark plugs, timing belts, and oil filters.' },

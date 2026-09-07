@@ -2,8 +2,17 @@ import React from 'react';
 import { Navbar } from '../components/navigation/Navbar';
 import { Key, ShieldCheck, Calendar, MapPin, CheckCircle2, Phone } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { useSEO } from '../lib/hooks/useSEO';
+import { siteConfig } from '../config/site';
+import { Analytics } from '../lib/analytics';
 
 export const CarHirePage: React.FC = () => {
+  useSEO({
+    title: 'Car Hire & Rental Services in Kenya | SUVs, Sedans & Chauffeur',
+    description: 'Rent fully insured, logbook-verified vehicles in Kenya. Self-drive and chauffeur-driven Prado, executive sedans, and commercial vans.',
+    canonical: `${siteConfig.url}/car-hire`
+  });
+
   const hireCategories = [
     { title: 'Executive SUVs & Prado', price: 'From KES 12,000 / day', desc: 'Ideal for upcountry trips, executive travel, and corporate site visits.' },
     { title: 'Saloon & Economy Cars', price: 'From KES 4,500 / day', desc: 'Efficient automatic sedans and hatchbacks for Nairobi city mobility.' },

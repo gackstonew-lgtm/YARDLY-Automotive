@@ -14,8 +14,47 @@ import { AboutSection } from '../components/landing/AboutSection';
 import { FinalCTASection } from '../components/landing/FinalCTASection';
 import { LandingFooter } from '../components/landing/LandingFooter';
 import { FloatingWhatsApp } from '../components/ui/FloatingWhatsApp';
+import { useSEO } from '../lib/hooks/useSEO';
+import { siteConfig } from '../config/site';
 
 export const LandingPage: React.FC = () => {
+  useSEO({
+    title: `${siteConfig.name} | ${siteConfig.tagline}`,
+    description: siteConfig.secondaryTagline || siteConfig.description,
+    canonical: siteConfig.url,
+    ogType: 'website',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type': 'AutoDealer',
+      name: siteConfig.name,
+      legalName: siteConfig.legalName,
+      url: siteConfig.url,
+      logo: `${siteConfig.url}/logo.jpeg`,
+      image: `${siteConfig.url}/logo.jpeg`,
+      description: siteConfig.description,
+      telephone: siteConfig.contact.phone,
+      email: siteConfig.contact.email,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'Kenyatta Avenue',
+        addressLocality: 'Nakuru',
+        addressCountry: 'KE'
+      },
+      openingHoursSpecification: {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        opens: '08:00',
+        closes: '18:00'
+      },
+      sameAs: [
+        siteConfig.socials.facebook,
+        siteConfig.socials.twitter,
+        siteConfig.socials.instagram,
+        siteConfig.socials.linkedin
+      ]
+    }
+  });
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);

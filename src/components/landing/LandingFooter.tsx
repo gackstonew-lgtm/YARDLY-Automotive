@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { PhoneCall, Mail, MapPin, ShieldCheck, MessageSquare } from 'lucide-react';
 import { siteConfig } from '../../config/site';
+import { Analytics } from '../../lib/analytics';
 
 export const LandingFooter: React.FC = () => {
   return (
@@ -37,9 +38,11 @@ export const LandingFooter: React.FC = () => {
             <div className="flex items-center gap-3 pt-1">
               <a
                 href={`tel:${siteConfig.contact.phone}`}
+                onClick={() => Analytics.trackPhoneClick('landing_footer')}
+                aria-label={`Call Yardly Automotives at ${siteConfig.contact.phone}`}
                 className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white dark:bg-[#00251B] border border-[rgba(0,60,40,0.12)] dark:border-[rgba(180,255,210,0.15)] text-xs font-bold text-[#009E52] dark:text-[#00E878] hover:bg-[#D8E6DE] dark:hover:bg-[#003D2D] transition-colors"
               >
-                <PhoneCall className="w-3.5 h-3.5" />
+                <PhoneCall className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>{siteConfig.contact.phone}</span>
               </a>
 
@@ -47,9 +50,11 @@ export const LandingFooter: React.FC = () => {
                 href={`https://wa.me/${siteConfig.contact.whatsapp}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => Analytics.trackWhatsAppClick('landing_footer')}
+                aria-label="Chat with Yardly Automotives on WhatsApp"
                 className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white dark:bg-[#00251B] border border-[rgba(0,60,40,0.12)] dark:border-[rgba(180,255,210,0.15)] text-xs font-bold text-[#009E52] dark:text-[#55FF78] hover:bg-[#D8E6DE] dark:hover:bg-[#003D2D] transition-colors"
               >
-                <MessageSquare className="w-3.5 h-3.5" />
+                <MessageSquare className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>WhatsApp</span>
               </a>
             </div>
@@ -79,15 +84,15 @@ export const LandingFooter: React.FC = () => {
             </ul>
           </div>
 
-          {/* Column 3: Contact & Portals */}
+          {/* Column 3: Portals & Contact */}
           <div className="space-y-3">
             <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#009E52] dark:text-[#00E878]">Portals & Contact</h4>
             <ul className="space-y-2 text-xs text-[#355347] dark:text-[#A7BDB3]">
               <li><Link to="/login" className="hover:text-[#009E52] dark:hover:text-[#00E878] transition-colors">Sign In Portal</Link></li>
               <li><Link to="/register" className="hover:text-[#009E52] dark:hover:text-[#00E878] transition-colors">Create User Account</Link></li>
-              <li><Link to="/admin/login" className="hover:text-[#009E52] dark:hover:text-[#00E878] transition-colors flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#009E52] dark:text-[#00E878]" /> Admin Login</Link></li>
+              <li><Link to="/admin/login" className="hover:text-[#009E52] dark:hover:text-[#00E878] transition-colors flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5 text-[#009E52] dark:text-[#00E878]" aria-hidden="true" /> Admin Login</Link></li>
               <li className="pt-2 text-[11px] text-[#5F7E71] dark:text-[#8EA79C] leading-snug">
-                <MapPin className="w-3.5 h-3.5 inline mr-1 text-[#009E52] dark:text-[#00E878]" />
+                <MapPin className="w-3.5 h-3.5 inline mr-1 text-[#009E52] dark:text-[#00E878]" aria-hidden="true" />
                 {siteConfig.contact.address}
               </li>
             </ul>
@@ -99,9 +104,9 @@ export const LandingFooter: React.FC = () => {
         <div className="pt-8 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.08)] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#5F7E71] dark:text-[#5B7569]">
           <p>&copy; {new Date().getFullYear()} {siteConfig.legalName}. All rights reserved.</p>
           <div className="flex items-center gap-4 text-[11px] text-[#5F7E71] dark:text-[#8EA79C]">
-            <span>Privacy Policy</span>
+            <Link to="/privacy" className="hover:text-[#009E52] dark:hover:text-[#00E878] transition-colors">Privacy Policy</Link>
             <span>•</span>
-            <span>Terms of Service</span>
+            <Link to="/terms" className="hover:text-[#009E52] dark:hover:text-[#00E878] transition-colors">Terms of Service</Link>
             <span>•</span>
             <span>Verified Automotive Partner</span>
           </div>

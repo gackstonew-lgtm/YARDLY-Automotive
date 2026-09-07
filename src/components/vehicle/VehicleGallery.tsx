@@ -135,7 +135,7 @@ export const VehicleGallery: React.FC<VehicleGalleryProps> = ({
             >
               <img
                 src={img.image_url}
-                alt={`Thumbnail ${idx + 1}`}
+                alt={img.alt_text || `${altTitle} thumbnail ${idx + 1}`}
                 className="w-full h-full object-cover"
                 loading="lazy"
               />
