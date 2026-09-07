@@ -13,6 +13,7 @@ import { DealershipSection } from '../components/landing/DealershipSection';
 import { AboutSection } from '../components/landing/AboutSection';
 import { FinalCTASection } from '../components/landing/FinalCTASection';
 import { LandingFooter } from '../components/landing/LandingFooter';
+import { FloatingWhatsApp } from '../components/ui/FloatingWhatsApp';
 
 export const LandingPage: React.FC = () => {
   useEffect(() => {
@@ -62,6 +63,9 @@ export const LandingPage: React.FC = () => {
 
       {/* 13. Footer */}
       <LandingFooter />
+
+      {/* Floating Direct WhatsApp Inquiry Button */}
+      <FloatingWhatsApp />
     </div>
   );
 };
