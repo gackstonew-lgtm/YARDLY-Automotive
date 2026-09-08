@@ -28,7 +28,7 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({
       {/* Tooltip on Desktop Hover */}
       <div
         role="tooltip"
-        className={`hidden md:flex items-center gap-2 mr-3 px-3.5 py-2 rounded-xl bg-white/95 dark:bg-[#00251B]/95 backdrop-blur-md text-[#0F241C] dark:text-[#F2F7F3] text-xs font-bold shadow-lg border border-[rgba(0,60,40,0.12)] dark:border-[rgba(0,232,120,0.3)] transition-all duration-300 pointer-events-none ${
+        className={`hidden md:flex items-center gap-2 mr-3 px-3.5 py-2 rounded-xl bg-white/95 dark:bg-[#121212]/95 backdrop-blur-md text-[#0F241C] dark:text-[#F2F7F3] text-xs font-bold shadow-lg border border-[rgba(0,60,40,0.12)] dark:border-[rgba(45, 125, 255,0.3)] transition-all duration-300 pointer-events-none ${
           isHovered
             ? 'opacity-100 translate-x-0 scale-100'
             : 'opacity-0 translate-x-2 scale-95'
@@ -36,7 +36,7 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({
       >
         <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse" />
         <span>Chat on WhatsApp</span>
-        <span className="text-[10px] text-[#5F7E71] dark:text-[#8EA79C] font-semibold border-l border-[rgba(0,60,40,0.12)] dark:border-[rgba(180,255,210,0.15)] pl-2">
+        <span className="text-[10px] text-[#5F7E71] dark:text-[#8EA79C] font-semibold border-l border-[rgba(0,60,40,0.12)] dark:border-[rgba(255, 255, 255,0.15)] pl-2">
           Direct Inquiries
         </span>
       </div>
@@ -60,8 +60,8 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({
 
         {/* Online Status Badge Dot */}
         <span className="absolute top-0 right-0 flex h-3.5 w-3.5 z-10">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#55FF78] opacity-75" />
-          <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-[#00E878] border-2 border-white dark:border-[#001A13]" />
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF3B4E] opacity-75" />
+          <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-[#2D7DFF] border-2 border-white dark:border-[#050505]" />
         </span>
 
         {/* WhatsApp Official Silhouette Icon */}

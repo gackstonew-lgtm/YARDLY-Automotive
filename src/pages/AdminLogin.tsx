@@ -4,7 +4,8 @@ import { ShieldCheck, Lock, Mail, AlertCircle, CheckCircle2, ArrowLeft, LogOut }
 import { Navbar } from '../components/navigation/Navbar';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { AuthService, AuthUser } from '../lib/supabase/client';
+import { AuthService } from '../lib/auth/auth.service';
+import type { AuthUser } from '../lib/auth/session';
 import { useSEO } from '../lib/hooks/useSEO';
 
 export const AdminLogin: React.FC = () => {
@@ -65,24 +66,24 @@ export const AdminLogin: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col font-sans selection:bg-[#009E52] selection:text-white dark:selection:bg-[#00E878] dark:selection:text-[#001A13]">
+    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#050505] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col font-sans selection:bg-[#0251B8] selection:text-white dark:selection:bg-[#0251B8] dark:selection:bg-[#2D7DFF] dark:selection:text-[#050505]">
       <Navbar />
 
       <div className="max-w-md mx-auto my-auto px-4 pt-10 pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pb-12 w-full">
         
         {/* Admin Login Card Container */}
-        <div className="bg-white dark:bg-[#00251B]/95 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.18)] p-6 sm:p-8 shadow-xl dark:shadow-glow space-y-6 relative overflow-hidden">
+        <div className="bg-white dark:bg-[#121212]/95 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.18)] p-6 sm:p-8 shadow-xl dark:shadow-glow space-y-6 relative overflow-hidden">
           
           {/* Top Decorative Emerald Brand Stripe */}
-          <div className="absolute top-0 left-0 right-0 h-2 bg-[#009E52] dark:bg-[#00E878]" />
+          <div className="absolute top-0 left-0 right-0 h-2 bg-[#0251B8] dark:bg-[#2D7DFF]" />
 
           {/* Logo & Header */}
           <div className="text-center space-y-3 pt-2">
-            <div className="w-16 h-16 rounded-2xl bg-[#F4F8F6] dark:bg-[#001711] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.2)] p-2 shadow-xs mx-auto flex items-center justify-center">
-              <ShieldCheck className="w-9 h-9 text-[#009E52] dark:text-[#00E878]" />
+            <div className="w-16 h-16 rounded-2xl bg-[#F4F8F6] dark:bg-[#0A0A0A] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.2)] p-2 shadow-xs mx-auto flex items-center justify-center">
+              <ShieldCheck className="w-9 h-9 text-[#0251B8] dark:text-[#2D7DFF]" />
             </div>
             
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#009E52]/10 dark:bg-[#00E878]/10 border border-[#009E52]/30 dark:border-[#00E878]/30 text-[10px] font-black uppercase tracking-wider text-[#009E52] dark:text-[#00E878]">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0251B8]/10 dark:bg-[#2D7DFF]/10 border border-[#0251B8]/30 dark:border-[#2D7DFF]/30 text-[10px] font-black uppercase tracking-wider text-[#0251B8] dark:text-[#2D7DFF]">
               <ShieldCheck className="w-3 h-3" />
               <span>Restricted Access Portal</span>
             </div>
@@ -128,8 +129,8 @@ export const AdminLogin: React.FC = () => {
 
           {/* Success Message Alert */}
           {successMsg && (
-            <div className="p-3.5 rounded-2xl bg-[#009E52]/10 dark:bg-[#00E878]/15 border border-[#009E52]/30 dark:border-[#00E878]/30 text-xs font-bold text-[#009E52] dark:text-[#00E878] flex items-center gap-2.5">
-              <CheckCircle2 className="w-4.5 h-4.5 text-[#009E52] dark:text-[#00E878] shrink-0" />
+            <div className="p-3.5 rounded-2xl bg-[#0251B8]/10 dark:bg-[#2D7DFF]/15 border border-[#0251B8]/30 dark:border-[#2D7DFF]/30 text-xs font-bold text-[#0251B8] dark:text-[#2D7DFF] flex items-center gap-2.5">
+              <CheckCircle2 className="w-4.5 h-4.5 text-[#0251B8] dark:text-[#2D7DFF] shrink-0" />
               <span>{successMsg}</span>
             </div>
           )}
@@ -139,7 +140,7 @@ export const AdminLogin: React.FC = () => {
             <Input
               label="Yard Administrator Email *"
               type="email"
-              placeholder="yardlyauto@admin.com"
+              placeholder="admin@yardly.co.ke"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               icon={<Mail className="w-4 h-4 text-[#5F7E71] dark:text-[#8EA79C]" />}
@@ -170,8 +171,8 @@ export const AdminLogin: React.FC = () => {
           </form>
 
           {/* Footer Back Link */}
-          <div className="pt-3 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] flex items-center justify-between text-xs text-[#355347] dark:text-[#8EA79C]">
-            <Link to="/" className="font-bold text-[#009E52] dark:text-[#00E878] hover:underline flex items-center gap-1 hover:text-[#007A3E] dark:hover:text-[#55FF78]">
+          <div className="pt-3 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] flex items-center justify-between text-xs text-[#355347] dark:text-[#8EA79C]">
+            <Link to="/" className="font-bold text-[#0251B8] dark:text-[#2D7DFF] hover:underline flex items-center gap-1 hover:text-[#014196] dark:hover:text-[#FF3B4E]">
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Return to Public Marketplace</span>
             </Link>

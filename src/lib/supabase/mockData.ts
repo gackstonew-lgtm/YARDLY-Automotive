@@ -10,7 +10,7 @@ import { buildVehicleImages } from '../utils/imageInventory';
 
 export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
   {
-    id: 'v1000000-0000-0000-0000-000000000001',
+    id: 'a1000000-0000-0000-0000-000000000001',
     dealer_name: 'Nairobi Motors Hub',
     seller_type: 'dealer',
     make: 'Toyota',
@@ -52,13 +52,13 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 7300000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Automotive Market Analysis 2026',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000001', 'cluster_toyota_land_cruiser_prado_150', '2022 Toyota Land Cruiser Prado TX'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000001', 'cluster_toyota_land_cruiser_200', '2022 Toyota Land Cruiser Prado TX'),
     features: ['7 Leather Seats', 'Multi-Terrain Select', 'Sunroof', 'Reverse Camera', 'Push Start', '4WD High/Low'],
     created_at: '2026-08-15T10:00:00Z',
     updated_at: '2026-08-15T10:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000002',
+    id: 'a1000000-0000-0000-0000-000000000002',
     dealer_name: 'YARDY Imports Hub',
     seller_type: 'dealer',
     make: 'Toyota',
@@ -100,18 +100,13 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 15100000,
     valuation_confidence: 'High',
     valuation_source: 'Nairobi Importers Exchange 2026',
-    images: [
-      { id: 'img-lc300zx-1', vehicle_id: 'v1000000-0000-0000-0000-000000000002', image_url: '/Car Images/Toyota Landcruiser.jpeg', display_order: 1, is_primary: true, created_at: '2026-08-16T11:00:00Z' },
-      { id: 'img-lc300zx-2', vehicle_id: 'v1000000-0000-0000-0000-000000000002', image_url: '/Car Images/Toyota_Land_Cruiser_200_01.jpeg', display_order: 2, is_primary: false, created_at: '2026-08-16T11:00:00Z' },
-      { id: 'img-lc300zx-3', vehicle_id: 'v1000000-0000-0000-0000-000000000002', image_url: '/Car Images/Toyota_Land_Cruiser_200_02.jpeg', display_order: 3, is_primary: false, created_at: '2026-08-16T11:00:00Z' },
-      { id: 'img-lc300zx-4', vehicle_id: 'v1000000-0000-0000-0000-000000000002', image_url: '/Car Images/Toyota_Land_Cruiser_200_03.jpeg', display_order: 4, is_primary: false, created_at: '2026-08-16T11:00:00Z' }
-    ],
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000002', 'cluster_toyota_landcruiser', '2024 Toyota Land Cruiser 300 ZX'),
     features: ['Container Import', 'ZX First Edition', 'JBL Sound System', 'Head-Up Display', 'Crawl Control', '360 Camera'],
     created_at: '2026-08-16T11:00:00Z',
     updated_at: '2026-08-16T11:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000003',
+    id: 'a1000000-0000-0000-0000-000000000003',
     dealer_name: 'Westlands Premier Cars',
     seller_type: 'dealer',
     make: 'Mercedes-Benz',
@@ -153,14 +148,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 4500000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Luxury Auto Index',
-    images: [
-      { id: 'img-s400-1', vehicle_id: 'v1000000-0000-0000-0000-000000000003', image_url: '/Car Images/Mercedes-Benz_S-Class_01.jpeg', display_order: 1, is_primary: true, created_at: '2026-08-17T09:30:00Z' },
-      { id: 'img-s400-2', vehicle_id: 'v1000000-0000-0000-0000-000000000003', image_url: '/Car Images/Mercedes-Benz_S-Class_02.jpeg', display_order: 2, is_primary: false, created_at: '2026-08-17T09:30:00Z' },
-      { id: 'img-s400-3', vehicle_id: 'v1000000-0000-0000-0000-000000000003', image_url: '/Car Images/Mercedes-Benz_S-Class_03.jpeg', display_order: 3, is_primary: false, created_at: '2026-08-17T09:30:00Z' },
-      { id: 'img-s400-4', vehicle_id: 'v1000000-0000-0000-0000-000000000003', image_url: '/Car Images/Mercedes-Benz_S-Class_04.jpeg', display_order: 4, is_primary: false, created_at: '2026-08-17T09:30:00Z' },
-      { id: 'img-s400-5', vehicle_id: 'v1000000-0000-0000-0000-000000000003', image_url: '/Car Images/Mercedes-Benz_S-Class_05.jpeg', display_order: 5, is_primary: false, created_at: '2026-08-17T09:30:00Z' },
-      { id: 'img-s400-6', vehicle_id: 'v1000000-0000-0000-0000-000000000003', image_url: '/Car Images/Mercedes-Benz_S-Class_06.jpeg', display_order: 6, is_primary: false, created_at: '2026-08-17T09:30:00Z' }
-    ],
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000003', 'cluster_mercedes_benz_s_class', '2014 Mercedes-Benz S400'),
     features: [
       '3000cc V6 Petrol Engine',
       'Automatic Transmission',
@@ -176,7 +164,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-08-17T09:30:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000004',
+    id: 'a1000000-0000-0000-0000-000000000004',
     dealer_name: 'Runda Auto Hub',
     seller_type: 'dealer',
     make: 'Porsche',
@@ -218,13 +206,13 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 13500000,
     valuation_confidence: 'High',
     valuation_source: 'Porsche Approved Market Guide Kenya',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000004', 'cluster_porsche_cayenne', '2021 Porsche Cayenne Turbo'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000004', 'cluster_porsche_cayenne', '2021 Porsche Cayenne Turbo'),
     features: ['Sport Chrono Package', 'Bose Surround Sound', 'Adaptive Air Suspension', 'Matrix LED Headlights', 'Panoramic Roof'],
     created_at: '2026-08-18T14:15:00Z',
     updated_at: '2026-08-18T14:15:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000005',
+    id: 'a1000000-0000-0000-0000-000000000005',
     dealer_name: 'Lavington Motors',
     seller_type: 'dealer',
     make: 'Volkswagen',
@@ -266,13 +254,13 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 4250000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Hatchback Index 2026',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000005', 'cluster_volkswagen_golf', '2022 Volkswagen Golf Mk8 R-Line'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000005', 'cluster_volkswagen_golf', '2022 Volkswagen Golf Mk8 R-Line'),
     features: ['Mk8 Digital Cockpit', 'IQ.LIGHT Matrix', 'Harman Kardon Audio', 'DCC Adaptive Chassis', 'R-Line Sport Seats'],
     created_at: '2026-08-19T08:00:00Z',
     updated_at: '2026-08-19T08:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000006',
+    id: 'a1000000-0000-0000-0000-000000000006',
     dealer_name: 'Nairobi Motors Hub',
     seller_type: 'dealer',
     make: 'Mercedes-Benz',
@@ -314,13 +302,13 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 7950000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Executive Saloon Valuation',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000006', 'cluster_mercedes_benz_e_class', '2021 Mercedes-Benz E200 AMG Line'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000006', 'cluster_mercedes_benz_e_class', '2021 Mercedes-Benz E200 AMG Line'),
     features: ['Widescreen Cockpit', 'MBUX AR Navigation', 'Panoramic Glass Roof', '360 Surround View', 'Burmester Audio'],
     created_at: '2026-08-20T12:00:00Z',
     updated_at: '2026-08-20T12:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000007',
+    id: 'a1000000-0000-0000-0000-000000000007',
     dealer_name: 'Karen Luxury Automart',
     seller_type: 'dealer',
     make: 'BMW',
@@ -362,13 +350,13 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 11200000,
     valuation_confidence: 'High',
     valuation_source: 'BMW Certified Market Kenya',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000007', 'cluster_bmw_x6', '2021 BMW X6 xDrive30d M Sport'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000007', 'cluster_bmw_x6', '2021 BMW X6 xDrive30d M Sport'),
     features: ['Iconic Glow Grille', 'Sky Lounge Roof', 'Harman Kardon Sound', 'Head-Up Display', 'M Sport Differential'],
     created_at: '2026-08-21T09:00:00Z',
     updated_at: '2026-08-21T09:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000008',
+    id: 'a1000000-0000-0000-0000-000000000008',
     dealer_name: 'YARDY Specialty Imports',
     seller_type: 'dealer',
     make: 'Toyota',
@@ -410,13 +398,13 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 4650000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Hybrid SUV Valuation Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000008', 'cluster_toyota_rav4_newer', '2020 Toyota RAV4 Hybrid AWD'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000008', 'cluster_toyota_rav4_newer', '2020 Toyota RAV4 Hybrid AWD'),
     features: ['E-Four Hybrid AWD', 'Toyota Safety Sense 2.0', 'Power Tailgate', 'Heated Leather Seats', 'Digital Mirror'],
     created_at: '2026-08-22T16:00:00Z',
     updated_at: '2026-08-22T16:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000009',
+    id: 'a1000000-0000-0000-0000-000000000009',
     dealer_name: 'Karen Luxury Automart',
     seller_type: 'dealer',
     make: 'Mercedes-Benz',
@@ -458,13 +446,13 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 18500000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Super Luxury Market Guide',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000009', 'cluster_mercedes_benz_s_class', '2022 Mercedes-Benz S-Class S500 W223'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000009', 'cluster_mercedes_benz_s_class', '2022 Mercedes-Benz S-Class S500 W223'),
     features: ['W223 Generation', 'Burmester 4D Audio', 'Rear Axle Steering', '3D Cockpit', 'Soft Close Doors'],
     created_at: '2026-08-23T10:00:00Z',
     updated_at: '2026-08-23T10:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000010',
+    id: 'a1000000-0000-0000-0000-000000000010',
     dealer_name: 'Westlands Premier Cars',
     seller_type: 'dealer',
     make: 'Audi',
@@ -506,18 +494,13 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 12800000,
     valuation_confidence: 'High',
     valuation_source: 'Audi Certified Kenya Guide',
-    images: [
-      { id: 'img-audi-q8-2021-1', vehicle_id: 'v1000000-0000-0000-0000-000000000010', image_url: '/Car Images/Audi_Q8_02.jpeg', display_order: 1, is_primary: true, created_at: '2026-08-24T11:00:00Z' },
-      { id: 'img-audi-q8-2021-2', vehicle_id: 'v1000000-0000-0000-0000-000000000010', image_url: '/Car Images/Audi_Q8_04.jpeg', display_order: 2, is_primary: false, created_at: '2026-08-24T11:00:00Z' },
-      { id: 'img-audi-q8-2021-3', vehicle_id: 'v1000000-0000-0000-0000-000000000010', image_url: '/Car Images/Audi_Q8_05.jpeg', display_order: 3, is_primary: false, created_at: '2026-08-24T11:00:00Z' },
-      { id: 'img-audi-q8-2021-4', vehicle_id: 'v1000000-0000-0000-0000-000000000010', image_url: '/Car Images/Audi_Q8_06.jpeg', display_order: 4, is_primary: false, created_at: '2026-08-24T11:00:00Z' }
-    ],
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000010', 'cluster_audi_q8_2021', '2021 Audi Q8 55 TFSI S-Line Quattro'),
     features: ['S-Line Black Edition', 'Bang & Olufsen 3D', 'HD Matrix LED', 'Adaptive Air Suspension', 'Dual Touchscreen MMI'],
     created_at: '2026-08-24T11:00:00Z',
     updated_at: '2026-08-24T11:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000011',
+    id: 'a1000000-0000-0000-0000-000000000011',
     dealer_name: 'Lavington Motors',
     seller_type: 'dealer',
     make: 'Toyota',
@@ -559,13 +542,13 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 3850000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Commercial & MPV Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000011', 'cluster_toyota_hiace', '2020 Toyota Hiace Super GL'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000011', 'cluster_toyota_hiace', '2020 Toyota Hiace Super GL'),
     features: ['Dark Prime II Spec', 'Dual Power Sliding Doors', 'Push Start', 'Automatic Climate Control', 'Safety Sense'],
     created_at: '2026-08-25T14:00:00Z',
     updated_at: '2026-08-25T14:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000012',
+    id: 'a1000000-0000-0000-0000-000000000012',
     dealer_name: 'Runda Auto Hub',
     seller_type: 'dealer',
     make: 'Nissan',
@@ -607,13 +590,13 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 13800000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Full-Size 4x4 Market Guide',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000012', 'cluster_nissan_patrol_y62', '2021 Nissan Patrol Y62 V8'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000012', 'cluster_nissan_patrol_y62', '2021 Nissan Patrol Y62 V8'),
     features: ['HBMC Suspension', '5.6L V8 Engine', 'Bose 13-Speaker Sound', '8 Seats', 'Rear Entertainment'],
     created_at: '2026-08-26T09:00:00Z',
     updated_at: '2026-08-26T09:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000013',
+    id: 'a1000000-0000-0000-0000-000000000013',
     dealer_name: 'Westlands Premier Cars',
     seller_type: 'dealer',
     make: 'Mercedes-AMG',
@@ -655,13 +638,13 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 16500000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan AMG Performance Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000013', 'cluster_mercedes_amg_gle_53_coupe', '2022 Mercedes-AMG GLE 53 Coupe'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000013', 'cluster_mercedes_amg_gle_53_coupe', '2022 Mercedes-AMG GLE 53 Coupe'),
     features: ['AMG Performance Exhaust', 'Air Body Control', 'Burmester Audio', '22-inch Forged Wheels', 'Panoramic Roof'],
     created_at: '2026-08-27T10:00:00Z',
     updated_at: '2026-08-27T10:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000014',
+    id: 'a1000000-0000-0000-0000-000000000014',
     dealer_name: 'Lavington Motors',
     seller_type: 'dealer',
     make: 'Mazda',
@@ -703,13 +686,13 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 1850000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Compact Hatchback Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000014', 'cluster_mazda_demio', '2020 Mazda Demio SkyActiv-D'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000014', 'cluster_mazda_demio', '2020 Mazda Demio SkyActiv-D'),
     features: ['SkyActiv-D Turbo Diesel', 'Leather Interior', 'Head-Up Display', 'i-Activesense Safety', 'Alloy Wheels'],
     created_at: '2026-08-28T09:00:00Z',
     updated_at: '2026-08-28T09:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000015',
+    id: 'a1000000-0000-0000-0000-000000000015',
     dealer_name: 'Westlands Premier Cars',
     seller_type: 'dealer',
     make: 'Toyota',
@@ -751,16 +734,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 10500000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Performance Car Index 2026',
-    images: [
-      { id: 'img-supra-1', vehicle_id: 'v1000000-0000-0000-0000-000000000015', image_url: '/Car Images/Toyota Supra.jpeg', display_order: 1, is_primary: true, created_at: '2026-08-29T10:00:00Z' },
-      { id: 'img-supra-2', vehicle_id: 'v1000000-0000-0000-0000-000000000015', image_url: '/Car Images/Toyota Supra (2).jpeg', display_order: 2, is_primary: false, created_at: '2026-08-29T10:00:00Z' },
-      { id: 'img-supra-3', vehicle_id: 'v1000000-0000-0000-0000-000000000015', image_url: '/Car Images/Toyota Supra (3).jpeg', display_order: 3, is_primary: false, created_at: '2026-08-29T10:00:00Z' },
-      { id: 'img-supra-4', vehicle_id: 'v1000000-0000-0000-0000-000000000015', image_url: '/Car Images/Toyota Supra (4).jpeg', display_order: 4, is_primary: false, created_at: '2026-08-29T10:00:00Z' },
-      { id: 'img-supra-5', vehicle_id: 'v1000000-0000-0000-0000-000000000015', image_url: '/Car Images/Toyota Supra (5).jpeg', display_order: 5, is_primary: false, created_at: '2026-08-29T10:00:00Z' },
-      { id: 'img-supra-6', vehicle_id: 'v1000000-0000-0000-0000-000000000015', image_url: '/Car Images/Toyota Supra (6).jpeg', display_order: 6, is_primary: false, created_at: '2026-08-29T10:00:00Z' },
-      { id: 'img-supra-7', vehicle_id: 'v1000000-0000-0000-0000-000000000015', image_url: '/Car Images/Toyota Supra (7).jpeg', display_order: 7, is_primary: false, created_at: '2026-08-29T10:00:00Z' },
-      { id: 'img-supra-8', vehicle_id: 'v1000000-0000-0000-0000-000000000015', image_url: '/Car Images/Toyota Supra (8).jpeg', display_order: 8, is_primary: false, created_at: '2026-08-29T10:00:00Z' }
-    ],
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000015', 'cluster_toyota_supra', '2020 Toyota Supra RZ'),
     features: [
       '3.0L Turbocharged Engine',
       'Full Aftermarket Body Kit',
@@ -788,7 +762,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-08-29T10:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000016',
+    id: 'a1000000-0000-0000-0000-000000000016',
     dealer_name: 'Nairobi Motors Hub',
     seller_type: 'dealer',
     make: 'Toyota',
@@ -830,17 +804,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 2850000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan MPV Market Index 2026',
-    images: [
-      { id: 'img-noah-1', vehicle_id: 'v1000000-0000-0000-0000-000000000016', image_url: '/Car Images/Toyota Noah.jpeg', display_order: 1, is_primary: true, created_at: '2026-08-30T09:00:00Z' },
-      { id: 'img-noah-2', vehicle_id: 'v1000000-0000-0000-0000-000000000016', image_url: '/Car Images/Toyota Noah (2).jpeg', display_order: 2, is_primary: false, created_at: '2026-08-30T09:00:00Z' },
-      { id: 'img-noah-3', vehicle_id: 'v1000000-0000-0000-0000-000000000016', image_url: '/Car Images/Toyota Noah (3).jpeg', display_order: 3, is_primary: false, created_at: '2026-08-30T09:00:00Z' },
-      { id: 'img-noah-4', vehicle_id: 'v1000000-0000-0000-0000-000000000016', image_url: '/Car Images/Toyota Noah (4).jpeg', display_order: 4, is_primary: false, created_at: '2026-08-30T09:00:00Z' },
-      { id: 'img-noah-5', vehicle_id: 'v1000000-0000-0000-0000-000000000016', image_url: '/Car Images/Toyota Noah (5).jpeg', display_order: 5, is_primary: false, created_at: '2026-08-30T09:00:00Z' },
-      { id: 'img-noah-6', vehicle_id: 'v1000000-0000-0000-0000-000000000016', image_url: '/Car Images/Toyota Noah (6).jpeg', display_order: 6, is_primary: false, created_at: '2026-08-30T09:00:00Z' },
-      { id: 'img-noah-7', vehicle_id: 'v1000000-0000-0000-0000-000000000016', image_url: '/Car Images/Toyota Noah (7).jpeg', display_order: 7, is_primary: false, created_at: '2026-08-30T09:00:00Z' },
-      { id: 'img-noah-8', vehicle_id: 'v1000000-0000-0000-0000-000000000016', image_url: '/Car Images/Toyota Noah (8).jpeg', display_order: 8, is_primary: false, created_at: '2026-08-30T09:00:00Z' },
-      { id: 'img-noah-9', vehicle_id: 'v1000000-0000-0000-0000-000000000016', image_url: '/Car Images/Toyota Noah (9).jpeg', display_order: 9, is_primary: false, created_at: '2026-08-30T09:00:00Z' }
-    ],
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000016', 'cluster_toyota_noah', '2019 Toyota Noah TRD'),
     features: [
       '7 Seater (3-Row)',
       'Double Sunroof',
@@ -860,7 +824,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-08-30T09:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000017',
+    id: 'a1000000-0000-0000-0000-000000000017',
     dealer_name: 'YARDY Imports Hub',
     seller_type: 'dealer',
     make: 'Toyota',
@@ -902,20 +866,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 18000000,
     valuation_confidence: 'High',
     valuation_source: 'Nairobi Importers Exchange 2026',
-    images: [
-      { id: 'img-lc300-1', vehicle_id: 'v1000000-0000-0000-0000-000000000017', image_url: '/Car Images/Toyota Landcruiser.jpeg', display_order: 1, is_primary: true, created_at: '2026-08-31T10:00:00Z' },
-      { id: 'img-lc300-2', vehicle_id: 'v1000000-0000-0000-0000-000000000017', image_url: '/Car Images/Toyota Landcruiser (2).jpeg', display_order: 2, is_primary: false, created_at: '2026-08-31T10:00:00Z' },
-      { id: 'img-lc300-3', vehicle_id: 'v1000000-0000-0000-0000-000000000017', image_url: '/Car Images/Toyota Landcruiser (3).jpeg', display_order: 3, is_primary: false, created_at: '2026-08-31T10:00:00Z' },
-      { id: 'img-lc300-4', vehicle_id: 'v1000000-0000-0000-0000-000000000017', image_url: '/Car Images/Toyota Landcruiser (4).jpeg', display_order: 4, is_primary: false, created_at: '2026-08-31T10:00:00Z' },
-      { id: 'img-lc300-5', vehicle_id: 'v1000000-0000-0000-0000-000000000017', image_url: '/Car Images/Toyota Landcruiser (5).jpeg', display_order: 5, is_primary: false, created_at: '2026-08-31T10:00:00Z' },
-      { id: 'img-lc300-6', vehicle_id: 'v1000000-0000-0000-0000-000000000017', image_url: '/Car Images/Toyota Landcruiser (6).jpeg', display_order: 6, is_primary: false, created_at: '2026-08-31T10:00:00Z' },
-      { id: 'img-lc300-7', vehicle_id: 'v1000000-0000-0000-0000-000000000017', image_url: '/Car Images/Toyota Landcruiser (7).jpeg', display_order: 7, is_primary: false, created_at: '2026-08-31T10:00:00Z' },
-      { id: 'img-lc300-8', vehicle_id: 'v1000000-0000-0000-0000-000000000017', image_url: '/Car Images/Toyota Landcruiser (8).jpeg', display_order: 8, is_primary: false, created_at: '2026-08-31T10:00:00Z' },
-      { id: 'img-lc300-9', vehicle_id: 'v1000000-0000-0000-0000-000000000017', image_url: '/Car Images/Toyota Landcruiser (9).jpeg', display_order: 9, is_primary: false, created_at: '2026-08-31T10:00:00Z' },
-      { id: 'img-lc300-10', vehicle_id: 'v1000000-0000-0000-0000-000000000017', image_url: '/Car Images/Toyota Landcruiser (10).jpeg', display_order: 10, is_primary: false, created_at: '2026-08-31T10:00:00Z' },
-      { id: 'img-lc300-11', vehicle_id: 'v1000000-0000-0000-0000-000000000017', image_url: '/Car Images/Toyota Landcruiser (11).jpeg', display_order: 11, is_primary: false, created_at: '2026-08-31T10:00:00Z' },
-      { id: 'img-lc300-12', vehicle_id: 'v1000000-0000-0000-0000-000000000017', image_url: '/Car Images/Toyota Landcruiser (12).jpeg', display_order: 12, is_primary: false, created_at: '2026-08-31T10:00:00Z' }
-    ],
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000017', 'cluster_toyota_landcruiser', '2021 Toyota Land Cruiser 300'),
     features: [
       'LC300 GR Sport Spec',
       'Red Leather Interior',
@@ -931,7 +882,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-08-31T10:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000018',
+    id: 'a1000000-0000-0000-0000-000000000018',
     dealer_name: 'YARDY Imports Hub',
     seller_type: 'dealer',
     make: 'Audi',
@@ -973,12 +924,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 12900000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Luxury Auto Index 2026',
-    images: [
-      { id: 'img-audi-q8-1', vehicle_id: 'v1000000-0000-0000-0000-000000000018', image_url: '/Car Images/Audi_Q8_02.jpeg', display_order: 1, is_primary: true, created_at: '2026-09-01T12:00:00Z' },
-      { id: 'img-audi-q8-2', vehicle_id: 'v1000000-0000-0000-0000-000000000018', image_url: '/Car Images/Audi_Q8_04.jpeg', display_order: 2, is_primary: false, created_at: '2026-09-01T12:00:00Z' },
-      { id: 'img-audi-q8-3', vehicle_id: 'v1000000-0000-0000-0000-000000000018', image_url: '/Car Images/Audi_Q8_05.jpeg', display_order: 3, is_primary: false, created_at: '2026-09-01T12:00:00Z' },
-      { id: 'img-audi-q8-4', vehicle_id: 'v1000000-0000-0000-0000-000000000018', image_url: '/Car Images/Audi_Q8_06.jpeg', display_order: 4, is_primary: false, created_at: '2026-09-01T12:00:00Z' }
-    ],
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000018', 'cluster_audi_q8', '2020 Audi Q8 S-Line'),
     features: [
       '3000cc Petrol Engine',
       'QUATTRO AWD',
@@ -1009,7 +955,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-01T12:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000019',
+    id: 'a1000000-0000-0000-0000-000000000019',
     dealer_name: 'Westlands Premier Cars',
     seller_type: 'dealer',
     make: 'Mercedes-Benz',
@@ -1051,13 +997,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 4200000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Luxury Auto Index 2026',
-    images: [
-      { id: 'img-c200-1', vehicle_id: 'v1000000-0000-0000-0000-000000000019', image_url: '/Car Images/Mercedes-Benz_C-Class_02.jpeg', display_order: 1, is_primary: true, created_at: '2026-09-01T14:00:00Z' },
-      { id: 'img-c200-2', vehicle_id: 'v1000000-0000-0000-0000-000000000019', image_url: '/Car Images/Mercedes-Benz_C-Class_04.jpeg', display_order: 2, is_primary: false, created_at: '2026-09-01T14:00:00Z' },
-      { id: 'img-c200-3', vehicle_id: 'v1000000-0000-0000-0000-000000000019', image_url: '/Car Images/Mercedes-Benz_C-Class_05.jpeg', display_order: 3, is_primary: false, created_at: '2026-09-01T14:00:00Z' },
-      { id: 'img-c200-4', vehicle_id: 'v1000000-0000-0000-0000-000000000019', image_url: '/Car Images/Mercedes-Benz_C-Class_06.jpeg', display_order: 4, is_primary: false, created_at: '2026-09-01T14:00:00Z' },
-      { id: 'img-c200-5', vehicle_id: 'v1000000-0000-0000-0000-000000000019', image_url: '/Car Images/Mercedes-Benz_C-Class_07.jpeg', display_order: 5, is_primary: false, created_at: '2026-09-01T14:00:00Z' }
-    ],
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000019', 'cluster_mercedes_benz_c200', '2019 Mercedes-Benz C200 AMG Line'),
     features: [
       '1.5L Turbocharged Engine',
       '9 Speed G-TRONIC',
@@ -1085,7 +1025,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-01T14:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000020',
+    id: 'a1000000-0000-0000-0000-000000000020',
     dealer_name: 'Westlands Premier Cars',
     seller_type: 'dealer',
     make: 'Mercedes-Benz',
@@ -1127,16 +1067,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 7850000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Executive Luxury Index 2026',
-    images: [
-      { id: 'img-e200-1', vehicle_id: 'v1000000-0000-0000-0000-000000000020', image_url: '/Car Images/Mercedes-Benz_E-Class_02.jpeg', display_order: 1, is_primary: true, created_at: '2026-09-01T16:00:00Z' },
-      { id: 'img-e200-2', vehicle_id: 'v1000000-0000-0000-0000-000000000020', image_url: '/Car Images/Mercedes-Benz_E-Class_04.jpeg', display_order: 2, is_primary: false, created_at: '2026-09-01T16:00:00Z' },
-      { id: 'img-e200-3', vehicle_id: 'v1000000-0000-0000-0000-000000000020', image_url: '/Car Images/Mercedes-Benz_E-Class_05.jpeg', display_order: 3, is_primary: false, created_at: '2026-09-01T16:00:00Z' },
-      { id: 'img-e200-4', vehicle_id: 'v1000000-0000-0000-0000-000000000020', image_url: '/Car Images/Mercedes-Benz_E-Class_06.jpeg', display_order: 4, is_primary: false, created_at: '2026-09-01T16:00:00Z' },
-      { id: 'img-e200-5', vehicle_id: 'v1000000-0000-0000-0000-000000000020', image_url: '/Car Images/Mercedes-Benz_E-Class_07.jpeg', display_order: 5, is_primary: false, created_at: '2026-09-01T16:00:00Z' },
-      { id: 'img-e200-6', vehicle_id: 'v1000000-0000-0000-0000-000000000020', image_url: '/Car Images/Mercedes-Benz_E-Class_08.jpeg', display_order: 6, is_primary: false, created_at: '2026-09-01T16:00:00Z' },
-      { id: 'img-e200-7', vehicle_id: 'v1000000-0000-0000-0000-000000000020', image_url: '/Car Images/Mercedes-Benz_E-Class_09.jpeg', display_order: 7, is_primary: false, created_at: '2026-09-01T16:00:00Z' },
-      { id: 'img-e200-8', vehicle_id: 'v1000000-0000-0000-0000-000000000020', image_url: '/Car Images/Mercedes-Benz_E-Class_10.jpeg', display_order: 8, is_primary: false, created_at: '2026-09-01T16:00:00Z' }
-    ],
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000020', 'cluster_mercedes_benz_e_class', '2021 Mercedes-Benz E200 AMG Line'),
     features: [
       '2.0L Turbocharged Petrol Engine',
       '9G-TRONIC Automatic Transmission',
@@ -1154,7 +1085,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-01T16:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000021',
+    id: 'a1000000-0000-0000-0000-000000000021',
     dealer_name: 'YARDY Certified Automart',
     seller_type: 'dealer',
     make: 'Subaru',
@@ -1196,7 +1127,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 2600000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Automotive Market Analysis 2026',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000021', 'cluster_subaru_forester_x', '2017 Subaru Forester XT'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000021', 'cluster_subaru_forester_x', '2017 Subaru Forester XT'),
     features: [
       '2.0L Turbocharged Petrol Engine',
       'Continuously Variable Transmission {CVT}',
@@ -1226,7 +1157,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T08:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000022',
+    id: 'a1000000-0000-0000-0000-000000000022',
     dealer_name: 'Westlands Premier Cars',
     seller_type: 'dealer',
     make: 'Volvo',
@@ -1268,7 +1199,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 3799999,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Luxury Auto Index 2026',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000022', 'cluster_2017_volvo_xc60_t5_inscription', '2017 Volvo XC60 T5 Inscription'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000022', 'cluster_2017_volvo_xc60_t5_inscription', '2017 Volvo XC60 T5 Inscription'),
     features: [
       '2000CC Petrol Engine',
       'AWD',
@@ -1292,7 +1223,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T08:10:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000023',
+    id: 'a1000000-0000-0000-0000-000000000023',
     dealer_name: 'Nairobi Motors Hub',
     seller_type: 'dealer',
     make: 'Audi',
@@ -1334,7 +1265,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 4850000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Sports Coupe Index 2026',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000023', 'cluster_audi_a5_s_line_b9', 'Audi A5 S-Line B9'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000023', 'cluster_audi_a5_s_line_b9', 'Audi A5 S-Line B9'),
     features: [
       '2000CC TFSI Engine',
       '8 Speed ZF8HP Transmission',
@@ -1361,7 +1292,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T08:20:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000024',
+    id: 'a1000000-0000-0000-0000-000000000024',
     dealer_name: 'Karen Luxury Automart',
     seller_type: 'dealer',
     make: 'BMW',
@@ -1403,7 +1334,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 11499999,
     valuation_confidence: 'High',
     valuation_source: 'BMW Certified Market Kenya',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000024', 'cluster_2020_bmw_x6_35d', '2020 BMW X6 35D MSport'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000024', 'cluster_2020_bmw_x6_35d', '2020 BMW X6 35D MSport'),
     features: [
       'G06 New Model',
       'xDrive 4x4 AWD',
@@ -1443,7 +1374,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T08:30:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000025',
+    id: 'a1000000-0000-0000-0000-000000000025',
     dealer_name: 'Lavington Motors',
     seller_type: 'dealer',
     make: 'Volkswagen',
@@ -1485,7 +1416,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 3599000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Performance Hatchback Guide',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000025', 'cluster_2016_vw_golf_r_mk7_5', '2016 VW Golf R MK7.5'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000025', 'cluster_2016_vw_golf_r_mk7_5', '2016 VW Golf R MK7.5'),
     features: [
       '2000cc Turbo Petrol Engine',
       'Automatic Gearbox',
@@ -1502,7 +1433,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T08:40:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000026',
+    id: 'a1000000-0000-0000-0000-000000000026',
     dealer_name: 'Nairobi Motors Hub',
     seller_type: 'dealer',
     make: 'Jincheng',
@@ -1544,7 +1475,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 135000,
     valuation_confidence: 'High',
     valuation_source: 'Nairobi Motorcycle Market Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000026', 'cluster_jincheng_150', '2021 Jincheng 150'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000026', 'cluster_jincheng_150', '2021 Jincheng 150'),
     features: [
       '150cc Air-Cooled Petrol Engine',
       'Low Mileage',
@@ -1558,7 +1489,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T08:50:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000027',
+    id: 'a1000000-0000-0000-0000-000000000027',
     dealer_name: 'Yardly Automotives Premium Motors',
     seller_type: 'dealer',
     make: 'BMW',
@@ -1600,7 +1531,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 1600000,
     valuation_confidence: 'High',
     valuation_source: 'Nairobi Executive Sedan Valuation Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000027', 'cluster_bmw_f10_520i_m_sport', '2012 BMW F10 520i M Sport'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000027', 'cluster_bmw_f10_520i_m_sport', '2012 BMW F10 520i M Sport'),
     features: [
       '2.0L TwinPower Turbo N20B20 Engine',
       '8-Speed ZF Steptronic Automatic',
@@ -1619,7 +1550,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T09:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000028',
+    id: 'a1000000-0000-0000-0000-000000000028',
     dealer_name: 'Apex Superbikes Nairobi',
     seller_type: 'dealer',
     make: 'Honda',
@@ -1661,7 +1592,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 6700000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Superbike Market Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000028', 'cluster_honda_cbr_650r', '2024 Honda CBR 650R'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000028', 'cluster_honda_cbr_650r', '2024 Honda CBR 650R'),
     features: [
       '650cc Inline 4-Cylinder Engine',
       '6-Speed Manual Transmission',
@@ -1674,7 +1605,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T09:05:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000029',
+    id: 'a1000000-0000-0000-0000-000000000029',
     dealer_name: 'Yardly Automotives Auto Hub',
     seller_type: 'dealer',
     make: 'Toyota',
@@ -1716,7 +1647,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 8500000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Pickup & Utility Market Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000029', 'cluster_2024_toyota_hilux_gr_sport', '2024 Toyota Hilux GR Sport'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000029', 'cluster_2024_toyota_hilux_gr_sport', '2024 Toyota Hilux GR Sport'),
     features: [
       'GR Sport Package',
       'Black Mesh Grille with GR Badging',
@@ -1743,7 +1674,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T09:10:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000030',
+    id: 'a1000000-0000-0000-0000-000000000030',
     dealer_name: 'Classic BMW Kenya',
     seller_type: 'dealer',
     make: 'BMW',
@@ -1785,7 +1716,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 599000,
     valuation_confidence: 'High',
     valuation_source: 'Nairobi Classic Sedan Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000030', 'cluster_bmw_e46_318i', '2001 BMW E46 318i'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000030', 'cluster_bmw_e46_318i', '2001 BMW E46 318i'),
     features: [
       '1800cc M43 Petrol Engine',
       'Automatic Transmission',
@@ -1799,7 +1730,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T09:15:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000031',
+    id: 'a1000000-0000-0000-0000-000000000031',
     dealer_name: 'Yardly Automotives Motors',
     seller_type: 'dealer',
     make: 'Honda',
@@ -1841,7 +1772,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 1152639,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Executive Sedan Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000031', 'cluster_2014_honda_accord_ex_l', '2014 Honda Accord EX-L'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000031', 'cluster_2014_honda_accord_ex_l', '2014 Honda Accord EX-L'),
     features: [
       '3.5L V6 Automatic Engine',
       'Heated Leather Seats',
@@ -1856,7 +1787,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T09:20:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000032',
+    id: 'a1000000-0000-0000-0000-000000000032',
     dealer_name: 'Royal Auto Kenya',
     seller_type: 'dealer',
     make: 'Toyota',
@@ -1898,7 +1829,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 5600000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Luxury Sedan Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000032', 'cluster_2018_toyota_crown_rs_s220_15th_gen', '2018 Toyota Crown RS S220'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000032', 'cluster_2018_toyota_crown_rs_s220_15th_gen', '2018 Toyota Crown RS S220'),
     features: [
       '2000cc Turbocharged Inline-4 (245Hp / 350Nm)',
       '8-Speed Super ECT Automatic',
@@ -1918,7 +1849,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T09:25:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000033',
+    id: 'a1000000-0000-0000-0000-000000000033',
     dealer_name: 'Commercial Trucks Hub',
     seller_type: 'dealer',
     make: 'Mitsubishi',
@@ -1960,7 +1891,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 2350000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Commercial Truck Market Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000033', 'cluster_2015_mitsubishi_fuso_canter', '2015 Mitsubishi Fuso Canter'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000033', 'cluster_2015_mitsubishi_fuso_canter', '2015 Mitsubishi Fuso Canter'),
     features: [
       '3 Tonne Tipper Mechanism',
       '5-Speed Manual Forward Transmission',
@@ -1972,7 +1903,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T09:30:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000034',
+    id: 'a1000000-0000-0000-0000-000000000034',
     dealer_name: 'Nairobi City Cars',
     seller_type: 'dealer',
     make: 'Honda',
@@ -2014,7 +1945,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 1550000,
     valuation_confidence: 'High',
     valuation_source: 'Nairobi Hatchback Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000034', 'cluster_honda_fit_rs', '2014 Honda Fit RS'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000034', 'cluster_honda_fit_rs', '2014 Honda Fit RS'),
     features: [
       '1500cc i-VTEC Petrol Engine',
       'Paddle Shifters',
@@ -2027,7 +1958,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T09:35:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000035',
+    id: 'a1000000-0000-0000-0000-000000000035',
     dealer_name: 'Prestige Auto Nairobi',
     seller_type: 'dealer',
     make: 'Mercedes-Benz',
@@ -2069,7 +2000,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 3999000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Executive Luxury Sedan Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000035', 'cluster_2018_mercedes_e200', '2018 Mercedes E200'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000035', 'cluster_2018_mercedes_e200', '2018 Mercedes E200'),
     features: [
       '2000cc Turbo Petrol Engine',
       'Automatic Gearbox',
@@ -2086,7 +2017,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T09:40:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000036',
+    id: 'a1000000-0000-0000-0000-000000000036',
     dealer_name: 'Prestige Motors Nairobi',
     seller_type: 'dealer',
     make: 'Mercedes-Benz',
@@ -2128,7 +2059,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 12400000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Luxury SUV Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000036', 'cluster_2020_mercedes_benz_gle_400d_coupe', '2020 Mercedes-Benz GLE 400d Coupe'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000036', 'cluster_2020_mercedes_benz_gle_400d_coupe', '2020 Mercedes-Benz GLE 400d Coupe'),
     features: [
       '3000cc Turbo 6-in-Line Diesel Engine (330HP / 700NM)',
       '4MATIC All-Wheel Drive',
@@ -2145,7 +2076,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T10:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000037',
+    id: 'a1000000-0000-0000-0000-000000000037',
     dealer_name: 'Ex-Japan Motors Nairobi',
     seller_type: 'dealer',
     make: 'Mazda',
@@ -2187,7 +2118,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 1899999,
     valuation_confidence: 'High',
     valuation_source: 'Nairobi Diesel Sedan Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000037', 'cluster_2018_mazda_atenza_2_2d', '2018 Mazda Atenza 2.2D'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000037', 'cluster_2018_mazda_atenza_2_2d', '2018 Mazda Atenza 2.2D'),
     features: [
       '2200cc SkyActiv-D Turbo Diesel Engine',
       'Automatic Transmission',
@@ -2201,7 +2132,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T10:05:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000038',
+    id: 'a1000000-0000-0000-0000-000000000038',
     dealer_name: 'Performance Motors Kenya',
     seller_type: 'dealer',
     make: 'BMW',
@@ -2243,7 +2174,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 2300000,
     valuation_confidence: 'High',
     valuation_source: 'Nairobi Tuner Sedan Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000038', 'cluster_bmw_320d_m_sport_2013', '2013 BMW 320d M Sport'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000038', 'cluster_bmw_320d_m_sport_2013', '2013 BMW 320d M Sport'),
     features: [
       '1980cc Turbo Diesel Engine',
       'M Sport Performance Package',
@@ -2257,7 +2188,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T10:10:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000039',
+    id: 'a1000000-0000-0000-0000-000000000039',
     dealer_name: 'Overland Specialists Kenya',
     seller_type: 'dealer',
     make: 'Land Rover',
@@ -2299,7 +2230,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 4900000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Restomod Defender Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000039', 'cluster_landrover_defender', '2009 Land Rover Defender'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000039', 'cluster_landrover_defender', '2009 Land Rover Defender'),
     features: [
       '2500cc TD5 Turbo Diesel Engine',
       'Manual Transmission with 4WD Transfer Knob',
@@ -2313,7 +2244,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T10:15:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000040',
+    id: 'a1000000-0000-0000-0000-000000000040',
     dealer_name: 'Luxury Imports Nairobi',
     seller_type: 'dealer',
     make: 'Land Rover',
@@ -2355,7 +2286,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 15800000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Luxury Compact SUV Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000040', 'cluster_range_rover_evoque', '2020 Range Rover Evoque R-Dynamic'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000040', 'cluster_range_rover_evoque', '2020 Range Rover Evoque R-Dynamic'),
     features: [
       '2.0L Turbocharged Petrol Engine',
       '9-Speed Automatic Transmission',
@@ -2368,7 +2299,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T10:20:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000041',
+    id: 'a1000000-0000-0000-0000-000000000041',
     dealer_name: 'Supercar Exotics Kenya',
     seller_type: 'dealer',
     make: 'Lamborghini',
@@ -2410,7 +2341,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 45000000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Supercar Import Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000041', 'cluster_lamborghini_urus_2020', '2020 Lamborghini Urus'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000041', 'cluster_lamborghini_urus_2020', '2020 Lamborghini Urus'),
     features: [
       '4.0L Twin-Turbocharged V8 Engine (641 HP / 850 Nm)',
       '0-100 km/h in 3.6 Seconds',
@@ -2423,7 +2354,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T10:25:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000042',
+    id: 'a1000000-0000-0000-0000-000000000042',
     dealer_name: 'V8 Executive Hub',
     seller_type: 'dealer',
     make: 'Lexus',
@@ -2465,7 +2396,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 12000000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Luxury V8 SUV Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000042', 'cluster_2019_lexus_lx570', '2019 Lexus LX570'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000042', 'cluster_2019_lexus_lx570', '2019 Lexus LX570'),
     features: [
       '5.7L 3UR-FE V8 Engine',
       '8-Speed Automatic Transmission',
@@ -2481,7 +2412,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T10:30:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000043',
+    id: 'a1000000-0000-0000-0000-000000000043',
     dealer_name: 'Bavarian Auto Kenya',
     seller_type: 'dealer',
     make: 'BMW',
@@ -2523,7 +2454,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 7100000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Sports Convertible Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000043', 'cluster_bmw_z4_convertible_sdrive_20i', '2020 BMW Z4 Convertible'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000043', 'cluster_bmw_z4_convertible_sdrive_20i', '2020 BMW Z4 Convertible'),
     features: [
       '2.0L TwinPower Turbo B48 Engine (197 HP / 320 Nm)',
       '8-Speed Steptronic Automatic with Paddle Shifters',
@@ -2536,7 +2467,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T10:35:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000044',
+    id: 'a1000000-0000-0000-0000-000000000044',
     dealer_name: 'Bespoke Ultra Luxury Nairobi',
     seller_type: 'dealer',
     make: 'Rolls-Royce',
@@ -2578,7 +2509,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 25000000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Ultra-Luxury Saloon Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000044', 'cluster_2015_rolls_royce_ghost_series_i', '2015 Rolls Royce Ghost Series I'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000044', 'cluster_2015_rolls_royce_ghost_series_i', '2015 Rolls Royce Ghost Series I'),
     features: [
       '6600cc Twin-Turbo V12 Engine (536 HP)',
       '8-Speed ZF Automatic Transmission',
@@ -2592,7 +2523,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T10:40:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000045',
+    id: 'a1000000-0000-0000-0000-000000000045',
     dealer_name: 'Yardly Automotives Luxury Hub',
     seller_type: 'dealer',
     make: 'Mercedes-Benz',
@@ -2634,7 +2565,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 4500000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Executive SUV Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000045', 'cluster_mercedes_benz_glc250_4matic', 'Mercedes Benz GLC250 4Matic'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000045', 'cluster_mercedes_benz_glc250_4matic', 'Mercedes Benz GLC250 4Matic'),
     features: [
       '2000cc Petrol Turbocharged Engine',
       '9G-Tronic Automatic Transmission',
@@ -2649,7 +2580,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T11:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000046',
+    id: 'a1000000-0000-0000-0000-000000000046',
     dealer_name: 'Ex-Japan Luxury Imports',
     seller_type: 'dealer',
     make: 'Lexus',
@@ -2691,7 +2622,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 2850000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Sports Sedan Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000046', 'cluster_lexus_is300_2016', '2016 Lexus IS300'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000046', 'cluster_lexus_is300_2016', '2016 Lexus IS300'),
     features: [
       '2500cc V6 Petrol Engine',
       'Automatic Transmission with Paddle Shifters',
@@ -2704,7 +2635,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T11:05:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000047',
+    id: 'a1000000-0000-0000-0000-000000000047',
     dealer_name: 'Prestige Auto Nairobi',
     seller_type: 'dealer',
     make: 'Lexus',
@@ -2746,7 +2677,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 5000000,
     valuation_confidence: 'High',
     valuation_source: 'Nairobi Luxury SUV Market Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000047', 'cluster_lexus_rx_300', '2018 Lexus RX 300'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000047', 'cluster_lexus_rx_300', '2018 Lexus RX 300'),
     features: [
       '2000cc Petrol Turbocharged Engine',
       'All-Wheel Drive (AWD)',
@@ -2760,7 +2691,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T11:10:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000048',
+    id: 'a1000000-0000-0000-0000-000000000048',
     dealer_name: 'Performance Motors Kenya',
     seller_type: 'dealer',
     make: 'Audi',
@@ -2802,7 +2733,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 4899999,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Sports SUV Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000048', 'cluster_2018_audi_sq5_3_0t_v6', '2018 Audi SQ5 3.0T V6'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000048', 'cluster_2018_audi_sq5_3_0t_v6', '2018 Audi SQ5 3.0T V6'),
     features: [
       '3000cc Turbocharged V6 Engine (354Hp / 500Nm)',
       '8-Speed ZF Automatic Transmission',
@@ -2816,7 +2747,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T11:15:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000049',
+    id: 'a1000000-0000-0000-0000-000000000049',
     dealer_name: 'Nairobi Executive Cars',
     seller_type: 'dealer',
     make: 'Toyota',
@@ -2858,7 +2789,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 1580000,
     valuation_confidence: 'High',
     valuation_source: 'Nairobi Sedan Market Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000049', 'cluster_toyota_mark_x_premium', '2014 Toyota Mark X Premium'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000049', 'cluster_toyota_mark_x_premium', '2014 Toyota Mark X Premium'),
     features: [
       '2500cc V6 Petrol Engine',
       'Automatic Transmission',
@@ -2870,7 +2801,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T11:20:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000050',
+    id: 'a1000000-0000-0000-0000-000000000050',
     dealer_name: 'VIP Auto Lounge Nairobi',
     seller_type: 'dealer',
     make: 'Mercedes-Benz',
@@ -2912,7 +2843,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 3750000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Flagship Luxury Saloon Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000050', 'cluster_2014_mercedes_benz_s400h_lwb', '2014 Mercedes-Benz S400h LWB'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000050', 'cluster_2014_mercedes_benz_s400h_lwb', '2014 Mercedes-Benz S400h LWB'),
     features: [
       '3500cc V6 Mild-Hybrid Petrol Engine',
       '7G-Tronic Automatic Transmission',
@@ -2927,7 +2858,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T11:25:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000051',
+    id: 'a1000000-0000-0000-0000-000000000051',
     dealer_name: 'Yardly Automotives Exclusive Imports',
     seller_type: 'dealer',
     make: 'Land Rover',
@@ -2969,7 +2900,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 15800000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Limited Edition Heritage SUV Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000051', 'cluster_2023_land_rover_defender_110_d350', '2023 Land Rover Defender 110 D350'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000051', 'cluster_2023_land_rover_defender_110_d350', '2023 Land Rover Defender 110 D350'),
     features: [
       '3000cc Inline-6 Turbo Diesel Mild Hybrid (350 HP)',
       '75th Limited Edition Grasmere Green Heritage Package',
@@ -2983,7 +2914,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T11:30:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000052',
+    id: 'a1000000-0000-0000-0000-000000000052',
     dealer_name: 'Nairobi City Cars',
     seller_type: 'dealer',
     make: 'Mazda',
@@ -3025,7 +2956,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 3600000,
     valuation_confidence: 'High',
     valuation_source: 'Nairobi Compact SUV Market Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000052', 'cluster_mazda_cx5_xdl_2020', '2020 Mazda CX-5 XDL'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000052', 'cluster_mazda_cx5_xdl_2020', '2020 Mazda CX-5 XDL'),
     features: [
       '2200cc SkyActiv-D Turbo Diesel Engine',
       'Bose Premium Surround Sound System',
@@ -3039,7 +2970,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T11:35:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000053',
+    id: 'a1000000-0000-0000-0000-000000000053',
     dealer_name: 'Import Performance Parts Nairobi',
     seller_type: 'dealer',
     make: 'Audi',
@@ -3081,7 +3012,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 3600000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Tuner Performance Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000053', 'cluster_audi_s5', '2015 Audi S5'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000053', 'cluster_audi_s5', '2015 Audi S5'),
     features: [
       '3.0L V6 Supercharged Petrol Engine',
       'Quattro All-Wheel Drive',
@@ -3095,7 +3026,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T11:40:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000054',
+    id: 'a1000000-0000-0000-0000-000000000054',
     dealer_name: 'Mazda Hub Kenya',
     seller_type: 'dealer',
     make: 'Mazda',
@@ -3137,7 +3068,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 2200000,
     valuation_confidence: 'High',
     valuation_source: 'Nairobi Hatchback Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000054', 'cluster_mazda_3_premium_grade', '2019 Mazda 3 Premium Grade'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000054', 'cluster_mazda_3_premium_grade', '2019 Mazda 3 Premium Grade'),
     features: [
       '2.0L Skyactiv-G Engine',
       '12-Speaker Bose Audio System',
@@ -3151,7 +3082,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T11:45:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000055',
+    id: 'a1000000-0000-0000-0000-000000000055',
     dealer_name: 'Commercial Vehicles Nairobi',
     seller_type: 'dealer',
     make: 'Toyota',
@@ -3193,7 +3124,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 1180000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Commercial Utility Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000055', 'cluster_toyota_probox_silver', '2017 Toyota Probox'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000055', 'cluster_toyota_probox_silver', '2017 Toyota Probox'),
     features: [
       '1500cc 1NZ-FE Petrol Engine',
       'Automatic Transmission',
@@ -3206,7 +3137,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T11:50:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000056',
+    id: 'a1000000-0000-0000-0000-000000000056',
     dealer_name: 'Nairobi Motors Hub',
     seller_type: 'dealer',
     make: 'Mazda',
@@ -3248,7 +3179,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 2900000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Midsize Sedan Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000056', 'cluster_mazda_6', '2020 Mazda 6'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000056', 'cluster_mazda_6', '2020 Mazda 6'),
     features: [
       '2500cc SkyActiv-G Petrol Engine',
       'Brown Nappa Leather Interior Seats',
@@ -3261,7 +3192,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T11:55:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000057',
+    id: 'a1000000-0000-0000-0000-000000000057',
     dealer_name: 'Performance Pickups Kenya',
     seller_type: 'dealer',
     make: 'Ford',
@@ -3303,7 +3234,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 10000000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Super Truck Market Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000057', 'cluster_2023_ford_ranger_raptor_3_0_double_cab_petrol', '2023 Ford Ranger Raptor 3.0'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000057', 'cluster_2023_ford_ranger_raptor_3_0_double_cab_petrol', '2023 Ford Ranger Raptor 3.0'),
     features: [
       '3.0L Twin-Turbo EcoBoost V6 Petrol Engine (392 HP)',
       '10-Speed Automatic Transmission',
@@ -3316,7 +3247,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     updated_at: '2026-09-02T12:00:00Z'
   },
   {
-    id: 'v1000000-0000-0000-0000-000000000058',
+    id: 'a1000000-0000-0000-0000-000000000058',
     dealer_name: 'American Muscle Kenya',
     seller_type: 'dealer',
     make: 'Ford',
@@ -3358,7 +3289,7 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     estimated_market_value: 5500000,
     valuation_confidence: 'High',
     valuation_source: 'Kenyan Muscle Car Index',
-    images: buildVehicleImages('v1000000-0000-0000-0000-000000000058', 'cluster_ford_mustang_2020', '2020 Ford Mustang'),
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000058', 'cluster_ford_mustang_2020', '2020 Ford Mustang'),
     features: [
       '5.0L V8 Coyote Engine (460 HP / 420 lb-ft)',
       '10-Speed Automatic Transmission',
@@ -3369,6 +3300,438 @@ export const INITIAL_MOCK_VEHICLES: Vehicle[] = [
     ],
     created_at: '2026-09-02T12:05:00Z',
     updated_at: '2026-09-02T12:05:00Z'
+  },
+  {
+    id: 'a1000000-0000-0000-0000-000000000059',
+    dealer_name: 'Lavington Motors',
+    seller_type: 'dealer',
+    make: 'Subaru',
+    model: 'Outback',
+    variant: '2.5i Limited EyeSight AWD',
+    generation: 'BS9 Generation',
+    trim: 'Limited Package',
+    year: 2019,
+    price: 3450000,
+    currency: 'KES',
+    mileage: 41000,
+    engine_cc: 2500,
+    fuel_type: 'Petrol',
+    transmission: 'Automatic',
+    body_type: 'Station Wagon',
+    drive_type: 'AWD',
+    color: 'Tungsten',
+    exterior_color: 'Tungsten Metallic',
+    interior_color: 'Black Leather',
+    seats: 5,
+    doors: 5,
+    location: 'Nairobi',
+    description: 'Exceptional 2019 Subaru Outback 2.5i Limited with Symmetrical All-Wheel Drive, EyeSight Driver Assist System, Harman Kardon premium audio, power tailgate, and heated leather seats.',
+    status: 'active',
+    verification_status: 'verified',
+    logbook_verified: true,
+    featured: false,
+    is_demo: false,
+    data_source: 'local_image_library',
+    source_reference: 'YARDY Verified Asset',
+    category: 'mainstream',
+    market_status: 'importable_subject_to_requirements',
+    import_eligibility: 'eligible',
+    steering_position: 'RHD',
+    registration_status: 'import',
+    vehicle_match_status: 'verified',
+    market_value_low: 3300000,
+    market_value_high: 3600000,
+    estimated_market_value: 3450000,
+    valuation_confidence: 'High',
+    valuation_source: 'Kenyan Wagon Index 2026',
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000059', 'cluster_subaru_outback', '2019 Subaru Outback 2.5i Limited'),
+    features: ['EyeSight Safety', 'Symmetrical AWD', 'Harman Kardon Audio', 'Power Tailgate', 'Heated Seats'],
+    created_at: '2026-09-01T10:00:00Z',
+    updated_at: '2026-09-01T10:00:00Z'
+  },
+  {
+    id: 'a1000000-0000-0000-0000-000000000060',
+    dealer_name: 'Westlands Premier Cars',
+    seller_type: 'dealer',
+    make: 'Volkswagen',
+    model: 'Polo',
+    variant: '1.0L TSI R-Line DSG (AW)',
+    generation: 'AW Generation',
+    trim: 'R-Line Package',
+    year: 2018,
+    price: 1750000,
+    currency: 'KES',
+    mileage: 49000,
+    engine_cc: 1000,
+    fuel_type: 'Petrol',
+    transmission: 'Automatic',
+    body_type: 'Hatchback',
+    drive_type: 'FWD',
+    color: 'Red',
+    exterior_color: 'Flash Red',
+    interior_color: 'Titan Black Fabric',
+    seats: 5,
+    doors: 5,
+    location: 'Nairobi',
+    description: 'Economical and stylish 2018 Volkswagen Polo TSI R-Line. Digital Cockpit, LED headlights, Apple CarPlay, parking sensors, and sporty R-Line interior trim.',
+    status: 'active',
+    verification_status: 'verified',
+    logbook_verified: true,
+    featured: false,
+    is_demo: false,
+    data_source: 'local_image_library',
+    source_reference: 'YARDY Verified Asset',
+    category: 'mainstream',
+    market_status: 'importable_subject_to_requirements',
+    import_eligibility: 'eligible',
+    steering_position: 'RHD',
+    registration_status: 'import',
+    vehicle_match_status: 'verified',
+    market_value_low: 1650000,
+    market_value_high: 1850000,
+    estimated_market_value: 1750000,
+    valuation_confidence: 'High',
+    valuation_source: 'Kenyan Compact Index 2026',
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000060', 'cluster_volkswagen_polo', '2018 Volkswagen Polo TSI R-Line'),
+    features: ['R-Line Styling', 'Digital Cockpit', 'Apple CarPlay', 'Parking Sensors', 'LED Headlights'],
+    created_at: '2026-09-02T11:00:00Z',
+    updated_at: '2026-09-02T11:00:00Z'
+  },
+  {
+    id: 'a1000000-0000-0000-0000-000000000061',
+    dealer_name: 'Karen Luxury Automart',
+    seller_type: 'dealer',
+    make: 'Land Rover',
+    model: 'Range Rover Velar',
+    variant: 'P250 R-Dynamic S AWD',
+    generation: 'L560 Generation',
+    trim: 'R-Dynamic S',
+    year: 2021,
+    price: 12800000,
+    currency: 'KES',
+    mileage: 23000,
+    engine_cc: 2000,
+    fuel_type: 'Petrol',
+    transmission: 'Automatic',
+    body_type: 'SUV',
+    drive_type: 'AWD',
+    color: 'White',
+    exterior_color: 'Fuji White',
+    interior_color: 'Ebony Grained Leather',
+    seats: 5,
+    doors: 5,
+    location: 'Nairobi',
+    description: 'Modern luxury 2021 Range Rover Velar P250 R-Dynamic S in Fuji White. Touch Pro Duo dual screens, Meridian 3D sound system, matrix LED headlights, panoramic sliding roof, and 20-inch alloy wheels.',
+    status: 'active',
+    verification_status: 'verified',
+    logbook_verified: true,
+    featured: true,
+    is_demo: false,
+    data_source: 'local_image_library',
+    source_reference: 'YARDY Verified Asset',
+    category: 'premium',
+    market_status: 'premium_import',
+    import_eligibility: 'eligible',
+    steering_position: 'RHD',
+    registration_status: 'import',
+    vehicle_match_status: 'verified',
+    market_value_low: 12400000,
+    market_value_high: 13200000,
+    estimated_market_value: 12800000,
+    valuation_confidence: 'High',
+    valuation_source: 'Kenyan Luxury SUV Index',
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000061', 'cluster_range_rover_velar', '2021 Range Rover Velar P250'),
+    features: ['Touch Pro Duo', 'Meridian 3D Audio', 'Panoramic Sliding Roof', 'Matrix LED', '20-inch Alloys'],
+    created_at: '2026-09-03T12:00:00Z',
+    updated_at: '2026-09-03T12:00:00Z'
+  },
+  {
+    id: 'a1000000-0000-0000-0000-000000000062',
+    dealer_name: 'Nairobi Motors Hub',
+    seller_type: 'dealer',
+    make: 'Honda',
+    model: 'CR-V',
+    variant: '1.5L VTEC Turbo EX-L AWD (RW)',
+    generation: 'RW Generation',
+    trim: 'EX-L Package',
+    year: 2019,
+    price: 4100000,
+    currency: 'KES',
+    mileage: 38000,
+    engine_cc: 1500,
+    fuel_type: 'Petrol',
+    transmission: 'Automatic',
+    body_type: 'SUV',
+    drive_type: 'AWD',
+    color: 'Grey',
+    exterior_color: 'Modern Steel Metallic',
+    interior_color: 'Black Leather',
+    seats: 5,
+    doors: 5,
+    location: 'Nairobi',
+    description: 'Versatile 2019 Honda CR-V 1.5L VTEC Turbo AWD. Honda Sensing safety suite, leather interior, hands-free power tailgate, panoramic moonroof, and Apple CarPlay.',
+    status: 'active',
+    verification_status: 'verified',
+    logbook_verified: true,
+    featured: false,
+    is_demo: false,
+    data_source: 'local_image_library',
+    source_reference: 'YARDY Verified Asset',
+    category: 'mainstream',
+    market_status: 'importable_subject_to_requirements',
+    import_eligibility: 'eligible',
+    steering_position: 'RHD',
+    registration_status: 'import',
+    vehicle_match_status: 'verified',
+    market_value_low: 3950000,
+    market_value_high: 4250000,
+    estimated_market_value: 4100000,
+    valuation_confidence: 'High',
+    valuation_source: 'Kenyan Mid-Size SUV Index',
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000062', 'cluster_honda_cr_v', '2019 Honda CR-V 1.5L Turbo EX-L'),
+    features: ['Honda Sensing', 'VTEC Turbo', 'Panoramic Moonroof', 'Hands-Free Tailgate', 'Apple CarPlay'],
+    created_at: '2026-09-04T09:00:00Z',
+    updated_at: '2026-09-04T09:00:00Z'
+  },
+  {
+    id: 'a1000000-0000-0000-0000-000000000063',
+    dealer_name: 'Runda Auto Hub',
+    seller_type: 'dealer',
+    make: 'Toyota',
+    model: 'Vellfire',
+    variant: '2.5L Hybrid Executive Lounge (AYH30)',
+    generation: 'H30 Generation',
+    trim: 'Executive Lounge',
+    year: 2020,
+    price: 7900000,
+    currency: 'KES',
+    mileage: 31000,
+    engine_cc: 2500,
+    fuel_type: 'Hybrid',
+    transmission: 'Automatic',
+    body_type: 'Van / Minibus',
+    drive_type: 'AWD',
+    color: 'Black',
+    exterior_color: 'Burning Black Crystal',
+    interior_color: 'Flaxen Semi-Aniline Leather',
+    seats: 7,
+    doors: 5,
+    location: 'Nairobi',
+    description: 'Ultra-luxurious 2020 Toyota Vellfire Executive Lounge Hybrid. First-class Ottoman seating, rear ceiling entertainment screen, dual power sunroofs, JBL 17-speaker sound system, and 360 panoramic view.',
+    status: 'active',
+    verification_status: 'verified',
+    logbook_verified: true,
+    featured: true,
+    is_demo: false,
+    data_source: 'local_image_library',
+    source_reference: 'YARDY Verified Asset',
+    category: 'premium',
+    market_status: 'premium_import',
+    import_eligibility: 'eligible',
+    steering_position: 'RHD',
+    registration_status: 'import',
+    vehicle_match_status: 'verified',
+    market_value_low: 7600000,
+    market_value_high: 8200000,
+    estimated_market_value: 7900000,
+    valuation_confidence: 'High',
+    valuation_source: 'Kenyan VIP Transport Index',
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000063', 'cluster_toyota_vellfire', '2020 Toyota Vellfire Executive Lounge'),
+    features: ['Ottoman Executive Seats', 'JBL 17-Speaker Audio', 'Dual Power Sunroofs', 'Ceiling Entertainment', '360 Camera'],
+    created_at: '2026-09-05T10:00:00Z',
+    updated_at: '2026-09-05T10:00:00Z'
+  },
+  {
+    id: 'a1000000-0000-0000-0000-000000000064',
+    dealer_name: 'Westlands Premier Cars',
+    seller_type: 'dealer',
+    make: 'Volvo',
+    model: 'XC60',
+    variant: '2.0L D4 AWD Inscription',
+    generation: '1st Gen Facelift',
+    trim: 'Inscription Luxury',
+    year: 2016,
+    price: 3200000,
+    currency: 'KES',
+    mileage: 62000,
+    engine_cc: 2000,
+    fuel_type: 'Diesel',
+    transmission: 'Automatic',
+    body_type: 'SUV',
+    drive_type: 'AWD',
+    color: 'Black',
+    exterior_color: 'Onyx Black Metallic',
+    interior_color: 'Amber Nappa Leather',
+    seats: 5,
+    doors: 5,
+    location: 'Nairobi',
+    description: 'Safe and comfortable 2016 Volvo XC60 D4 Inscription AWD. City Safety collision avoidance, panoramic sunroof, premium leather upholstery, power memory seats, and active bending xenon headlights.',
+    status: 'active',
+    verification_status: 'verified',
+    logbook_verified: true,
+    featured: false,
+    is_demo: false,
+    data_source: 'local_image_library',
+    source_reference: 'YARDY Verified Asset',
+    category: 'mainstream',
+    market_status: 'importable_subject_to_requirements',
+    import_eligibility: 'eligible',
+    steering_position: 'RHD',
+    registration_status: 'import',
+    vehicle_match_status: 'verified',
+    market_value_low: 3050000,
+    market_value_high: 3350000,
+    estimated_market_value: 3200000,
+    valuation_confidence: 'High',
+    valuation_source: 'Kenyan Premium SUV Index',
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000064', 'cluster_volvo_xc60', '2016 Volvo XC60 D4 Inscription'),
+    features: ['City Safety System', 'Panoramic Sunroof', 'Amber Nappa Leather', 'AWD Drivetrain', 'Active Bending Xenon'],
+    created_at: '2026-09-06T14:00:00Z',
+    updated_at: '2026-09-06T14:00:00Z'
+  },
+  {
+    id: 'a1000000-0000-0000-0000-000000000065',
+    dealer_name: 'Lavington Motors',
+    seller_type: 'dealer',
+    make: 'Toyota',
+    model: 'RAV4',
+    variant: '2.0L 4WD Valvematic G (XA40)',
+    generation: 'XA40 Generation',
+    trim: 'G Package',
+    year: 2013,
+    price: 2350000,
+    currency: 'KES',
+    mileage: 71000,
+    engine_cc: 2000,
+    fuel_type: 'Petrol',
+    transmission: 'Automatic',
+    body_type: 'SUV',
+    drive_type: '4WD',
+    color: 'White',
+    exterior_color: 'Super White',
+    interior_color: 'Black Fabric',
+    seats: 5,
+    doors: 5,
+    location: 'Nairobi',
+    description: 'Reliable 2013 Toyota RAV4 4WD Valvematic in pristine condition. Dual climate control, multi-function steering wheel, alloy wheels, fog lights, and spacious cargo capacity.',
+    status: 'active',
+    verification_status: 'verified',
+    logbook_verified: true,
+    featured: false,
+    is_demo: false,
+    data_source: 'local_image_library',
+    source_reference: 'YARDY Verified Asset',
+    category: 'mainstream',
+    market_status: 'locally_available',
+    import_eligibility: 'eligible',
+    steering_position: 'RHD',
+    registration_status: 'locally_used',
+    vehicle_match_status: 'verified',
+    market_value_low: 2200000,
+    market_value_high: 2500000,
+    estimated_market_value: 2350000,
+    valuation_confidence: 'High',
+    valuation_source: 'Kenyan Used Car Guide',
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000065', 'cluster_toyota_rav4_older', '2013 Toyota RAV4 4WD G'),
+    features: ['Valvematic 2.0L Engine', '4WD System', 'Dual Zone Climate', 'Alloy Wheels', 'Push Start'],
+    created_at: '2026-09-07T08:00:00Z',
+    updated_at: '2026-09-07T08:00:00Z'
+  },
+  {
+    id: 'a1000000-0000-0000-0000-000000000066',
+    dealer_name: 'Karen Luxury Automart',
+    seller_type: 'dealer',
+    make: 'Ford',
+    model: 'Ranger',
+    variant: 'Wildtrak 2.0L Bi-Turbo 4x4 Double Cab',
+    generation: 'T6 Facelift',
+    trim: 'Wildtrak Edition',
+    year: 2020,
+    price: 5800000,
+    currency: 'KES',
+    mileage: 39000,
+    engine_cc: 2000,
+    fuel_type: 'Diesel',
+    transmission: 'Automatic',
+    body_type: 'Pickup / Truck',
+    drive_type: '4WD',
+    color: 'Orange',
+    exterior_color: 'Saber Orange Metallic',
+    interior_color: 'Wildtrak Leather with Orange Stitching',
+    seats: 5,
+    doors: 4,
+    location: 'Nairobi',
+    description: 'Commanding 2020 Ford Ranger Wildtrak 2.0L Bi-Turbo 4x4. 10-speed automatic transmission, SYNC 3 infotainment with navigation, adaptive cruise control, leather-accented seats with orange stitching, and roller shutter bed cover.',
+    status: 'active',
+    verification_status: 'verified',
+    logbook_verified: true,
+    featured: true,
+    is_demo: false,
+    data_source: 'local_image_library',
+    source_reference: 'YARDY Verified Asset',
+    category: 'premium',
+    market_status: 'importable_subject_to_requirements',
+    import_eligibility: 'eligible',
+    steering_position: 'RHD',
+    registration_status: 'import',
+    vehicle_match_status: 'verified',
+    market_value_low: 5600000,
+    market_value_high: 6000000,
+    estimated_market_value: 5800000,
+    valuation_confidence: 'High',
+    valuation_source: 'Kenyan Pickup & Utility Index',
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000066', 'cluster_ford_ranger', '2020 Ford Ranger Wildtrak 4x4'),
+    features: ['Bi-Turbo Diesel', '10-Speed Automatic', 'Wildtrak Interior', 'Adaptive Cruise Control', 'Roller Shutter'],
+    created_at: '2026-09-08T09:00:00Z',
+    updated_at: '2026-09-08T09:00:00Z'
+  },
+  {
+    id: 'a1000000-0000-0000-0000-000000000067',
+    dealer_name: 'Westlands Premier Cars',
+    seller_type: 'dealer',
+    make: 'Mercedes-Benz',
+    model: 'C-Class',
+    variant: 'C300 AMG Line Premium',
+    generation: 'W205 Generation',
+    trim: 'AMG Line Premium Plus',
+    year: 2018,
+    price: 4350000,
+    currency: 'KES',
+    mileage: 41000,
+    engine_cc: 2000,
+    fuel_type: 'Petrol',
+    transmission: 'Automatic',
+    body_type: 'Sedan',
+    drive_type: 'RWD',
+    color: 'Iridium Silver',
+    exterior_color: 'Iridium Silver Metallic',
+    interior_color: 'Black Artico Leather',
+    seats: 5,
+    doors: 4,
+    location: 'Nairobi',
+    description: 'Distinctive 2018 Mercedes-Benz C-Class C300 AMG Line. 2.0L Turbocharged 241hp engine, 9G-TRONIC automatic transmission, Burmester surround sound, panoramic sliding roof, AMG aerodynamics package, and LED intelligent lights.',
+    status: 'active',
+    verification_status: 'verified',
+    logbook_verified: true,
+    featured: true,
+    is_demo: false,
+    data_source: 'local_image_library',
+    source_reference: 'YARDY Verified Asset',
+    category: 'premium',
+    market_status: 'importable_subject_to_requirements',
+    import_eligibility: 'eligible',
+    steering_position: 'RHD',
+    registration_status: 'import',
+    vehicle_match_status: 'verified',
+    market_value_low: 4150000,
+    market_value_high: 4550000,
+    estimated_market_value: 4350000,
+    valuation_confidence: 'High',
+    valuation_source: 'Kenyan Luxury Auto Index 2026',
+    images: buildVehicleImages('a1000000-0000-0000-0000-000000000067', 'cluster_mercedes_benz_c_class', '2018 Mercedes-Benz C300 AMG Line'),
+    features: ['AMG Aerodynamics Package', 'Burmester Sound System', 'Panoramic Glass Roof', '9G-TRONIC', 'LED Intelligent Lights'],
+    created_at: '2026-09-08T10:00:00Z',
+    updated_at: '2026-09-08T10:00:00Z'
   }
 ];
 
@@ -3401,7 +3764,7 @@ export const INITIAL_MOCK_SUBMISSIONS: SellerListingSubmission[] = [
 export const INITIAL_MOCK_RESERVATIONS: Reservation[] = [
   {
     id: 'res-9001',
-    vehicle_id: 'v1000000-0000-0000-0000-000000000001',
+    vehicle_id: 'a1000000-0000-0000-0000-000000000001',
     buyer_name: 'Jane Wambui',
     buyer_phone: '0722998877',
     buyer_email: 'jwambui@yahoo.com',
@@ -3422,7 +3785,7 @@ export const INITIAL_MOCK_RESERVATIONS: Reservation[] = [
 export const INITIAL_MOCK_PAYMENTS: PaymentRecord[] = [
   {
     id: 'pay-7001',
-    vehicle_id: 'v1000000-0000-0000-0000-000000000001',
+    vehicle_id: 'a1000000-0000-0000-0000-000000000001',
     amount: 50000,
     currency: 'KES',
     provider: 'mpesa',
@@ -3439,7 +3802,7 @@ export const INITIAL_MOCK_PAYMENTS: PaymentRecord[] = [
 export const INITIAL_MOCK_INQUIRIES: VehicleInquiry[] = [
   {
     id: 'inq-5001',
-    vehicle_id: 'v1000000-0000-0000-0000-000000000002',
+    vehicle_id: 'a1000000-0000-0000-0000-000000000002',
     name: 'Kevin Otieno',
     phone: '0733112233',
     email: 'kotieno@outlook.com',
@@ -3499,7 +3862,7 @@ export const INITIAL_MOCK_SELLERS: Profile[] = [
 export const INITIAL_MOCK_AUCTIONS: any[] = [
   {
     id: 'auc-001',
-    vehicle_id: 'v1000000-0000-0000-0000-000000000001',
+    vehicle_id: 'a1000000-0000-0000-0000-000000000001',
     starting_bid: 6500000,
     current_bid: 7100000,
     minimum_increment: 50000,
@@ -3516,7 +3879,7 @@ export const INITIAL_MOCK_AUCTIONS: any[] = [
   },
   {
     id: 'auc-002',
-    vehicle_id: 'v1000000-0000-0000-0000-000000000002',
+    vehicle_id: 'a1000000-0000-0000-0000-000000000002',
     starting_bid: 14000000,
     current_bid: 14500000,
     minimum_increment: 100000,
@@ -3542,7 +3905,7 @@ export const INITIAL_MOCK_TRADE_INS: any[] = [
     model: 'Harrier',
     year: 2017,
     mileage: 65000,
-    registration_status: 'locally_registered',
+    registration_status: 'locally_used',
     transmission: 'Automatic',
     fuel_type: 'Hybrid',
     condition: 'Foreign Used',
@@ -3581,7 +3944,7 @@ export const INITIAL_MOCK_FAVORITES: any[] = [
   {
     id: 'fav-001',
     user_id: 'buyer-001',
-    vehicle_id: 'v1000000-0000-0000-0000-000000000001',
+    vehicle_id: 'a1000000-0000-0000-0000-000000000001',
     created_at: '2026-08-30T10:00:00Z'
   }
 ];

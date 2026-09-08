@@ -4,7 +4,7 @@ import { Lock, Mail, User, Phone, Building, AlertCircle, CheckCircle2, ShieldChe
 import { Navbar } from '../components/navigation/Navbar';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { AuthService } from '../lib/supabase/client';
+import { AuthService } from '../lib/auth/auth.service';
 import { SellerType, UserRole } from '../types/database';
 import { useSEO } from '../lib/hooks/useSEO';
 import { siteConfig } from '../config/site';
@@ -146,28 +146,28 @@ export const Auth: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col font-sans selection:bg-[#009E52] selection:text-white dark:selection:bg-[#00E878] dark:selection:text-[#001A13]">
+    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#050505] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col font-sans selection:bg-[#0251B8] selection:text-white dark:selection:bg-[#0251B8] dark:selection:bg-[#2D7DFF] dark:selection:text-[#050505]">
       <Navbar />
 
       <div className="max-w-lg mx-auto my-auto px-4 pt-10 pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pb-12 w-full">
         
         {/* Intended Destination Notice Banner */}
         {destinationFeatureName && (
-          <div className="mb-4 p-3.5 rounded-2xl bg-[#E6F4ED] dark:bg-[#002B1F] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.2)] text-xs text-[#0F241C] dark:text-[#F2F7F3] flex items-center justify-between shadow-xs">
+          <div className="mb-4 p-3.5 rounded-2xl bg-[#EBF2FC] dark:bg-[#121212] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(255, 255, 255,0.2)] text-xs text-[#0F241C] dark:text-[#F2F7F3] flex items-center justify-between shadow-xs">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#009E52] dark:text-[#00E878] shrink-0" />
+              <Sparkles className="w-4 h-4 text-[#0251B8] dark:text-[#2D7DFF] shrink-0" />
               <span>Authentication required for <strong>{destinationFeatureName}</strong></span>
             </div>
-            <span className="text-[10px] font-extrabold uppercase text-[#009E52] bg-white dark:text-[#00E878] dark:bg-[#001711] px-2 py-0.5 rounded-md border border-[rgba(0,60,40,0.1)] dark:border-transparent">
+            <span className="text-[10px] font-extrabold uppercase text-[#0251B8] bg-white dark:text-[#2D7DFF] dark:bg-[#0A0A0A] px-2 py-0.5 rounded-md border border-[rgba(0,60,40,0.1)] dark:border-transparent">
               Protected
             </span>
           </div>
         )}
 
-        <div className="bg-white dark:bg-[#00251B]/95 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.18)] p-6 sm:p-8 shadow-xl dark:shadow-glow space-y-6">
+        <div className="bg-white dark:bg-[#121212]/95 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.18)] p-6 sm:p-8 shadow-xl dark:shadow-glow space-y-6">
           
           <div className="text-center space-y-3">
-            <div className="w-16 h-16 rounded-2xl bg-[#F4F8F6] dark:bg-[#001711] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.2)] p-1 shadow-sm mx-auto flex items-center justify-center">
+            <div className="w-16 h-16 rounded-2xl bg-[#F4F8F6] dark:bg-[#0A0A0A] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.2)] p-1 shadow-sm mx-auto flex items-center justify-center">
               <img
                 src="/logo.jpeg"
                 alt="Yardly Automotives Logo"
@@ -190,13 +190,13 @@ export const Auth: React.FC = () => {
               <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#355347] dark:text-[#8EA79C] px-1">
                 Select Your Account Role
               </label>
-              <div className="grid grid-cols-2 gap-2 bg-[#F4F8F6] dark:bg-[#001F17] p-1.5 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)]">
+              <div className="grid grid-cols-2 gap-2 bg-[#F4F8F6] dark:bg-[#0A0A0A] p-1.5 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)]">
                 <button
                   type="button"
                   onClick={() => setRegisterRole('buyer')}
                   className={`py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
                     registerRole === 'buyer'
-                      ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-sm'
+                      ? 'bg-[#0251B8] text-white dark:bg-[#2D7DFF] dark:text-[#050505] shadow-sm'
                       : 'text-[#355347] hover:text-[#0F241C] dark:text-[#8EA79C] dark:hover:text-[#F2F7F3]'
                   }`}
                 >
@@ -207,7 +207,7 @@ export const Auth: React.FC = () => {
                   onClick={() => setRegisterRole('seller')}
                   className={`py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
                     registerRole === 'seller'
-                      ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-sm'
+                      ? 'bg-[#0251B8] text-white dark:bg-[#2D7DFF] dark:text-[#050505] shadow-sm'
                       : 'text-[#355347] hover:text-[#0F241C] dark:text-[#8EA79C] dark:hover:text-[#F2F7F3]'
                   }`}
                 >
@@ -225,8 +225,8 @@ export const Auth: React.FC = () => {
           )}
 
           {successMsg && (
-            <div className="p-3.5 rounded-xl bg-[#009E52]/10 dark:bg-[#00E878]/15 border border-[#009E52]/30 dark:border-[#00E878]/30 text-xs font-semibold text-[#009E52] dark:text-[#00E878] flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 shrink-0 text-[#009E52] dark:text-[#00E878]" />
+            <div className="p-3.5 rounded-xl bg-[#0251B8]/10 dark:bg-[#2D7DFF]/15 border border-[#0251B8]/30 dark:border-[#2D7DFF]/30 text-xs font-semibold text-[#0251B8] dark:text-[#2D7DFF] flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-[#0251B8] dark:text-[#2D7DFF]" />
               <span>{successMsg}</span>
             </div>
           )}
@@ -268,12 +268,12 @@ export const Auth: React.FC = () => {
                       <select
                         value={sellerType}
                         onChange={(e) => setSellerType(e.target.value as SellerType)}
-                        className="w-full px-4 py-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                        className="w-full px-4 py-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#0A0A0A] focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                       >
-                        <option value="private" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Individual Private Seller</option>
-                        <option value="dealer" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Car Yard / Commercial Dealer</option>
-                        <option value="importer" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Direct Importer</option>
-                        <option value="business" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Corporate / Business Fleet</option>
+                        <option value="private" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Individual Private Seller</option>
+                        <option value="dealer" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Car Yard / Commercial Dealer</option>
+                        <option value="importer" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Direct Importer</option>
+                        <option value="business" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Corporate / Business Fleet</option>
                       </select>
                     </div>
                   </>
@@ -318,7 +318,7 @@ export const Auth: React.FC = () => {
             </Button>
           </form>
 
-          <div className="text-center text-xs text-[#355347] dark:text-[#8EA79C] pt-3 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] space-y-2">
+          <div className="text-center text-xs text-[#355347] dark:text-[#8EA79C] pt-3 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] space-y-2">
             <div>
               {isRegister ? 'Already registered?' : "Don't have an account yet?"}{' '}
               <button
@@ -328,14 +328,14 @@ export const Auth: React.FC = () => {
                   setErrorMsg('');
                   setSuccessMsg('');
                 }}
-                className="font-bold text-[#009E52] dark:text-[#00E878] hover:underline cursor-pointer"
+                className="font-bold text-[#0251B8] dark:text-[#2D7DFF] hover:underline cursor-pointer"
               >
                 {isRegister ? 'Sign In Here' : 'Create Account Now'}
               </button>
             </div>
 
-            <div className="pt-2 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.1)] flex items-center justify-center">
-              <Link to="/admin/login" className="inline-flex items-center gap-1.5 font-bold text-[#009E52] dark:text-[#00E878] hover:underline hover:text-[#007A3E] dark:hover:text-[#55FF78]">
+            <div className="pt-2 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.1)] flex items-center justify-center">
+              <Link to="/admin/login" className="inline-flex items-center gap-1.5 font-bold text-[#0251B8] dark:text-[#2D7DFF] hover:underline hover:text-[#014196] dark:hover:text-[#FF3B4E]">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>Administrator Portal Login</span>
               </Link>

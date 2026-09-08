@@ -43,16 +43,16 @@ export const HeroSearch: React.FC = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 -mt-12 lg:-mt-16 relative z-20">
-      <div className="bg-white/95 dark:bg-[#00251B]/95 backdrop-blur-xl rounded-3xl shadow-xl dark:shadow-2xl shadow-black/5 dark:shadow-black/70 border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.15)] overflow-hidden p-6 sm:p-8">
+      <div className="bg-white/95 dark:bg-[#121212]/95 backdrop-blur-xl rounded-3xl shadow-xl dark:shadow-2xl shadow-black/5 dark:shadow-black/70 border border-[rgba(0,60,40,0.1)] dark:border-[rgba(255, 255, 255,0.15)] overflow-hidden p-6 sm:p-8">
         
         {/* Tab Selection */}
-        <div className="flex items-center gap-2 mb-6 border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.1)] pb-4">
+        <div className="flex items-center gap-2 mb-6 border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.1)] pb-4">
           <button
             onClick={() => setActiveTab('buy')}
             className={`px-6 py-2.5 rounded-full font-extrabold text-sm transition-all flex items-center gap-2 ${
               activeTab === 'buy'
-                ? 'bg-[#009E52] dark:bg-[#00E878] text-white dark:text-[#001A13] shadow-md shadow-[#009E52]/20 dark:shadow-[#00E878]/25 font-black'
-                : 'bg-[#EBF2EE] dark:bg-[#001F17] text-[#5F7E71] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.08)]'
+                ? 'bg-[#0251B8] dark:bg-[#2D7DFF] text-white dark:text-[#050505] shadow-md shadow-[#0251B8]/20 dark:shadow-[#2D7DFF]/25 font-black'
+                : 'bg-[#EBF2EE] dark:bg-[#0A0A0A] text-[#5F7E71] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.08)]'
             }`}
           >
             <Search className="w-4 h-4" />
@@ -62,8 +62,8 @@ export const HeroSearch: React.FC = () => {
             onClick={() => setActiveTab('sell')}
             className={`px-6 py-2.5 rounded-full font-extrabold text-sm transition-all flex items-center gap-2 ${
               activeTab === 'sell'
-                ? 'bg-[#009E52] dark:bg-[#00E878] text-white dark:text-[#001A13] shadow-md shadow-[#009E52]/20 dark:shadow-[#00E878]/25 font-black'
-                : 'bg-[#EBF2EE] dark:bg-[#001F17] text-[#5F7E71] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.08)]'
+                ? 'bg-[#0251B8] dark:bg-[#2D7DFF] text-white dark:text-[#050505] shadow-md shadow-[#0251B8]/20 dark:shadow-[#2D7DFF]/25 font-black'
+                : 'bg-[#EBF2EE] dark:bg-[#0A0A0A] text-[#5F7E71] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.08)]'
             }`}
           >
             <Car className="w-4 h-4" />
@@ -84,19 +84,19 @@ export const HeroSearch: React.FC = () => {
                 <select
                   value={make}
                   onChange={(e) => setMake(e.target.value)}
-                  className="w-full rounded-xl border border-[rgba(0,60,40,0.12)] dark:border-[rgba(180,255,210,0.18)] bg-[#F4F8F6] dark:bg-[#001F17] px-4 py-3 text-sm text-[#0F241C] dark:text-[#F2F7F3] font-semibold focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                  className="w-full rounded-xl border border-[rgba(0,60,40,0.12)] dark:border-[rgba(255, 255, 255,0.18)] bg-[#F4F8F6] dark:bg-[#0A0A0A] px-4 py-3 text-sm text-[#0F241C] dark:text-[#F2F7F3] font-semibold focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                 >
-                  <option value="" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">All Makes (Toyota, Mazda, etc.)</option>
-                  <option value="Toyota" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Toyota</option>
-                  <option value="Mazda" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Mazda</option>
-                  <option value="Subaru" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Subaru</option>
-                  <option value="Nissan" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Nissan</option>
-                  <option value="Mercedes-Benz" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Mercedes-Benz</option>
-                  <option value="BMW" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">BMW</option>
-                  <option value="Isuzu" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Isuzu</option>
-                  <option value="Volkswagen" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Volkswagen</option>
-                  <option value="Land Rover" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Land Rover</option>
-                  <option value="Ford" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Ford</option>
+                  <option value="" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">All Makes (Toyota, Mazda, etc.)</option>
+                  <option value="Toyota" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Toyota</option>
+                  <option value="Mazda" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Mazda</option>
+                  <option value="Subaru" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Subaru</option>
+                  <option value="Nissan" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Nissan</option>
+                  <option value="Mercedes-Benz" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Mercedes-Benz</option>
+                  <option value="BMW" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">BMW</option>
+                  <option value="Isuzu" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Isuzu</option>
+                  <option value="Volkswagen" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Volkswagen</option>
+                  <option value="Land Rover" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Land Rover</option>
+                  <option value="Ford" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Ford</option>
                 </select>
               </div>
 
@@ -110,7 +110,7 @@ export const HeroSearch: React.FC = () => {
                   placeholder="e.g. Harrier, Prado, CX-5"
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
-                  className="w-full rounded-xl border border-[rgba(0,60,40,0.12)] dark:border-[rgba(180,255,210,0.18)] bg-[#F4F8F6] dark:bg-[#001F17] px-4 py-3 text-sm text-[#0F241C] dark:text-[#F2F7F3] placeholder-[#5F7E71]/60 dark:placeholder-[#8EA79C]/60 font-semibold focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                  className="w-full rounded-xl border border-[rgba(0,60,40,0.12)] dark:border-[rgba(255, 255, 255,0.18)] bg-[#F4F8F6] dark:bg-[#0A0A0A] px-4 py-3 text-sm text-[#0F241C] dark:text-[#F2F7F3] placeholder-[#5F7E71]/60 dark:placeholder-[#8EA79C]/60 font-semibold focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                 />
               </div>
 
@@ -122,14 +122,14 @@ export const HeroSearch: React.FC = () => {
                 <select
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  className="w-full rounded-xl border border-[rgba(0,60,40,0.12)] dark:border-[rgba(180,255,210,0.18)] bg-[#F4F8F6] dark:bg-[#001F17] px-4 py-3 text-sm text-[#0F241C] dark:text-[#F2F7F3] font-semibold focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                  className="w-full rounded-xl border border-[rgba(0,60,40,0.12)] dark:border-[rgba(255, 255, 255,0.18)] bg-[#F4F8F6] dark:bg-[#0A0A0A] px-4 py-3 text-sm text-[#0F241C] dark:text-[#F2F7F3] font-semibold focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                 >
-                  <option value="" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">All Kenya Locations</option>
-                  <option value="Nairobi" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Nairobi</option>
-                  <option value="Mombasa" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Mombasa</option>
-                  <option value="Nakuru" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Nakuru</option>
-                  <option value="Eldoret" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Eldoret</option>
-                  <option value="Kisumu" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Kisumu</option>
+                  <option value="" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">All Kenya Locations</option>
+                  <option value="Nairobi" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Nairobi</option>
+                  <option value="Mombasa" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Mombasa</option>
+                  <option value="Nakuru" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Nakuru</option>
+                  <option value="Eldoret" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Eldoret</option>
+                  <option value="Kisumu" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Kisumu</option>
                 </select>
               </div>
 
@@ -141,13 +141,13 @@ export const HeroSearch: React.FC = () => {
                 <select
                   value={minPrice}
                   onChange={(e) => setMinPrice(e.target.value)}
-                  className="w-full rounded-xl border border-[rgba(0,60,40,0.12)] dark:border-[rgba(180,255,210,0.18)] bg-[#F4F8F6] dark:bg-[#001F17] px-4 py-3 text-sm text-[#0F241C] dark:text-[#F2F7F3] font-semibold focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                  className="w-full rounded-xl border border-[rgba(0,60,40,0.12)] dark:border-[rgba(255, 255, 255,0.18)] bg-[#F4F8F6] dark:bg-[#0A0A0A] px-4 py-3 text-sm text-[#0F241C] dark:text-[#F2F7F3] font-semibold focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                 >
-                  <option value="" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">No Minimum</option>
-                  <option value="1000000" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">1,000,000</option>
-                  <option value="2000000" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">2,000,000</option>
-                  <option value="3000000" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">3,000,000</option>
-                  <option value="5000000" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">5,000,000</option>
+                  <option value="" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">No Minimum</option>
+                  <option value="1000000" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">1,000,000</option>
+                  <option value="2000000" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">2,000,000</option>
+                  <option value="3000000" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">3,000,000</option>
+                  <option value="5000000" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">5,000,000</option>
                 </select>
               </div>
 
@@ -159,14 +159,14 @@ export const HeroSearch: React.FC = () => {
                 <select
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(e.target.value)}
-                  className="w-full rounded-xl border border-[rgba(0,60,40,0.12)] dark:border-[rgba(180,255,210,0.18)] bg-[#F4F8F6] dark:bg-[#001F17] px-4 py-3 text-sm text-[#0F241C] dark:text-[#F2F7F3] font-semibold focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                  className="w-full rounded-xl border border-[rgba(0,60,40,0.12)] dark:border-[rgba(255, 255, 255,0.18)] bg-[#F4F8F6] dark:bg-[#0A0A0A] px-4 py-3 text-sm text-[#0F241C] dark:text-[#F2F7F3] font-semibold focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                 >
-                  <option value="" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">No Maximum</option>
-                  <option value="2000000" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">2,000,000</option>
-                  <option value="3000000" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">3,000,000</option>
-                  <option value="5000000" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">5,000,000</option>
-                  <option value="8000000" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">8,000,000</option>
-                  <option value="12000000" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">12,000,000</option>
+                  <option value="" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">No Maximum</option>
+                  <option value="2000000" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">2,000,000</option>
+                  <option value="3000000" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">3,000,000</option>
+                  <option value="5000000" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">5,000,000</option>
+                  <option value="8000000" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">8,000,000</option>
+                  <option value="12000000" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">12,000,000</option>
                 </select>
               </div>
 
@@ -178,13 +178,13 @@ export const HeroSearch: React.FC = () => {
                 <select
                   value={year}
                   onChange={(e) => setYear(e.target.value)}
-                  className="w-full rounded-xl border border-[rgba(0,60,40,0.12)] dark:border-[rgba(180,255,210,0.18)] bg-[#F4F8F6] dark:bg-[#001F17] px-4 py-3 text-sm text-[#0F241C] dark:text-[#F2F7F3] font-semibold focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                  className="w-full rounded-xl border border-[rgba(0,60,40,0.12)] dark:border-[rgba(255, 255, 255,0.18)] bg-[#F4F8F6] dark:bg-[#0A0A0A] px-4 py-3 text-sm text-[#0F241C] dark:text-[#F2F7F3] font-semibold focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                 >
-                  <option value="" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Any Year</option>
-                  <option value="2016" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">2016+</option>
-                  <option value="2018" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">2018+</option>
-                  <option value="2020" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">2020+</option>
-                  <option value="2022" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">2022+</option>
+                  <option value="" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Any Year</option>
+                  <option value="2016" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">2016+</option>
+                  <option value="2018" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">2018+</option>
+                  <option value="2020" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">2020+</option>
+                  <option value="2022" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">2022+</option>
                 </select>
               </div>
 
@@ -197,42 +197,42 @@ export const HeroSearch: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => applyQuickFilter('bodyType', 'SUV')}
-                  className="px-3 py-1.5 rounded-full bg-[#F4F8F6] dark:bg-[#001F17] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.15)] text-[#355347] dark:text-[#A7BDB3] hover:bg-[#EBF2EE] dark:hover:bg-[#003D2D] hover:text-[#009E52] dark:hover:text-[#00E878] transition-colors"
+                  className="px-3 py-1.5 rounded-full bg-[#F4F8F6] dark:bg-[#0A0A0A] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(255, 255, 255,0.15)] text-[#355347] dark:text-[#A7BDB3] hover:bg-[#EBF2EE] dark:hover:bg-[#1A1A1A] hover:text-[#0251B8] dark:hover:text-[#2D7DFF] transition-colors"
                 >
                   SUV
                 </button>
                 <button
                   type="button"
                   onClick={() => applyQuickFilter('bodyType', 'Sedan')}
-                  className="px-3 py-1.5 rounded-full bg-[#F4F8F6] dark:bg-[#001F17] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.15)] text-[#355347] dark:text-[#A7BDB3] hover:bg-[#EBF2EE] dark:hover:bg-[#003D2D] hover:text-[#009E52] dark:hover:text-[#00E878] transition-colors"
+                  className="px-3 py-1.5 rounded-full bg-[#F4F8F6] dark:bg-[#0A0A0A] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(255, 255, 255,0.15)] text-[#355347] dark:text-[#A7BDB3] hover:bg-[#EBF2EE] dark:hover:bg-[#1A1A1A] hover:text-[#0251B8] dark:hover:text-[#2D7DFF] transition-colors"
                 >
                   Sedan
                 </button>
                 <button
                   type="button"
                   onClick={() => applyQuickFilter('bodyType', 'Pickup / Truck')}
-                  className="px-3 py-1.5 rounded-full bg-[#F4F8F6] dark:bg-[#001F17] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.15)] text-[#355347] dark:text-[#A7BDB3] hover:bg-[#EBF2EE] dark:hover:bg-[#003D2D] hover:text-[#009E52] dark:hover:text-[#00E878] transition-colors"
+                  className="px-3 py-1.5 rounded-full bg-[#F4F8F6] dark:bg-[#0A0A0A] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(255, 255, 255,0.15)] text-[#355347] dark:text-[#A7BDB3] hover:bg-[#EBF2EE] dark:hover:bg-[#1A1A1A] hover:text-[#0251B8] dark:hover:text-[#2D7DFF] transition-colors"
                 >
                   Pickup
                 </button>
                 <button
                   type="button"
                   onClick={() => applyQuickFilter('transmission', 'Automatic')}
-                  className="px-3 py-1.5 rounded-full bg-[#F4F8F6] dark:bg-[#001F17] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.15)] text-[#355347] dark:text-[#A7BDB3] hover:bg-[#EBF2EE] dark:hover:bg-[#003D2D] hover:text-[#009E52] dark:hover:text-[#00E878] transition-colors"
+                  className="px-3 py-1.5 rounded-full bg-[#F4F8F6] dark:bg-[#0A0A0A] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(255, 255, 255,0.15)] text-[#355347] dark:text-[#A7BDB3] hover:bg-[#EBF2EE] dark:hover:bg-[#1A1A1A] hover:text-[#0251B8] dark:hover:text-[#2D7DFF] transition-colors"
                 >
                   Automatic
                 </button>
                 <button
                   type="button"
                   onClick={() => applyQuickFilter('maxPrice', '2000000')}
-                  className="px-3 py-1.5 rounded-full bg-[#F4F8F6] dark:bg-[#001F17] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.15)] text-[#355347] dark:text-[#A7BDB3] hover:bg-[#EBF2EE] dark:hover:bg-[#003D2D] hover:text-[#009E52] dark:hover:text-[#00E878] transition-colors"
+                  className="px-3 py-1.5 rounded-full bg-[#F4F8F6] dark:bg-[#0A0A0A] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(255, 255, 255,0.15)] text-[#355347] dark:text-[#A7BDB3] hover:bg-[#EBF2EE] dark:hover:bg-[#1A1A1A] hover:text-[#0251B8] dark:hover:text-[#2D7DFF] transition-colors"
                 >
                   Under KES 2M
                 </button>
                 <button
                   type="button"
                   onClick={() => applyQuickFilter('maxPrice', '3000000')}
-                  className="px-3 py-1.5 rounded-full bg-[#F4F8F6] dark:bg-[#001F17] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.15)] text-[#355347] dark:text-[#A7BDB3] hover:bg-[#EBF2EE] dark:hover:bg-[#003D2D] hover:text-[#009E52] dark:hover:text-[#00E878] transition-colors"
+                  className="px-3 py-1.5 rounded-full bg-[#F4F8F6] dark:bg-[#0A0A0A] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(255, 255, 255,0.15)] text-[#355347] dark:text-[#A7BDB3] hover:bg-[#EBF2EE] dark:hover:bg-[#1A1A1A] hover:text-[#0251B8] dark:hover:text-[#2D7DFF] transition-colors"
                 >
                   Under KES 3M
                 </button>

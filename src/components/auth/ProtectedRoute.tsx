@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { AuthService, AuthUser } from '../../lib/supabase/client';
+import { AuthService } from '../../lib/auth/auth.service';
+import type { AuthUser } from '../../lib/auth/session';
 import { UserRole } from '../../types/database';
 
 interface ProtectedRouteProps {
@@ -44,12 +45,12 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowe
   // Non-intrusive loading placeholder matching Adaptive Light/Dark Forest theme
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] flex flex-col items-center justify-center text-[#0F241C] dark:text-[#F2F7F3] p-4">
+      <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#050505] flex flex-col items-center justify-center text-[#0F241C] dark:text-[#F2F7F3] p-4">
         <div className="relative flex flex-col items-center space-y-4">
-          <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#002B1F] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.2)] p-2 flex items-center justify-center animate-pulse shadow-md dark:shadow-glow">
+          <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#121212] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(255, 255, 255,0.2)] p-2 flex items-center justify-center animate-pulse shadow-md dark:shadow-glow">
             <img src="/logo.jpeg" alt="Yardly" className="w-full h-full object-contain rounded-lg" />
           </div>
-          <div className="w-6 h-6 border-2 border-[#009E52] dark:border-[#00E878] border-t-transparent rounded-full animate-spin" />
+          <div className="w-6 h-6 border-2 border-[#0251B8] dark:border-[#2D7DFF] border-t-transparent rounded-full animate-spin" />
           <p className="text-xs font-bold text-[#355347] dark:text-[#8EA79C] tracking-wide uppercase">Verifying Authorization...</p>
         </div>
       </div>

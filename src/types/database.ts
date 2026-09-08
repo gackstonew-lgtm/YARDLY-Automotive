@@ -1,6 +1,6 @@
-export type UserRole = 'buyer' | 'seller' | 'dealer' | 'admin' | 'yard_admin';
+export type UserRole = 'buyer' | 'seller' | 'dealer' | 'staff' | 'yard_admin' | 'admin' | 'super_admin';
 
-export type VehicleStatus = 'pending_review' | 'active' | 'reserved' | 'sold' | 'rejected' | 'draft' | 'archived';
+export type VehicleStatus = 'pending_review' | 'active' | 'available' | 'reserved' | 'sold' | 'rejected' | 'draft' | 'hidden' | 'archived';
 
 export type VerificationStatus = 'pending' | 'verified' | 'rejected';
 
@@ -20,7 +20,7 @@ export type TradeInStatus = 'new' | 'under_review' | 'valuation' | 'offer_sent' 
 
 export type ImportStatus = 'new' | 'reviewing' | 'sourcing' | 'quotation' | 'shipping' | 'customs' | 'delivered' | 'completed' | 'cancelled';
 
-export type ImageSourceType = 'authorized_external' | 'supabase_storage' | 'admin_uploaded' | 'demo' | 'local_image_library';
+export type ImageSourceType = 'authorized_external' | 'supabase_storage' | 'admin_uploaded' | 'local_image_library';
 
 export type ImageLicenseStatus = 'authorized' | 'pending' | 'unknown';
 
@@ -58,6 +58,7 @@ export interface Profile {
   business_name?: string;
   avatar_url?: string;
   status?: AccountStatus;
+  is_active?: boolean;
   created_at: string;
   updated_at?: string;
 }
@@ -123,13 +124,18 @@ export interface Vehicle {
   trim?: string;
   year: number;
   price: number; // KES
+  sale_price?: number;
+  monthly_payment?: number;
   currency: string; // KES
   mileage: number; // KM
   engine_cc: number;
+  engine?: string;
+  engine_size?: string;
   fuel_type: FuelType;
   transmission: TransmissionType;
   body_type: BodyType;
   drive_type?: '2WD' | '4WD' | 'AWD' | 'RWD' | 'FWD';
+  drivetrain?: string;
   color: string;
   exterior_color?: string;
   interior_color?: string;
@@ -137,11 +143,16 @@ export interface Vehicle {
   doors?: number;
   location: string; // e.g. Nairobi, Mombasa, Nakuru
   description: string;
+  title?: string;
   registration_number?: string; // Hidden from public, visible to admin
+  vin?: string;
+  slug?: string;
+  stock_number?: string;
   status: VehicleStatus;
   verification_status: VerificationStatus;
   logbook_verified: boolean;
   featured: boolean;
+  is_featured?: boolean;
   view_count?: number;
   is_demo?: boolean;
   data_source?: string;
@@ -165,8 +176,8 @@ export interface Vehicle {
 
   images: VehicleImage[];
   features?: string[];
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface VehicleInquiry {

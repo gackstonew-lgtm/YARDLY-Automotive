@@ -32,14 +32,14 @@ export const TrackersPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pb-8 font-sans">
+    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#050505] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pb-8 font-sans">
       <Navbar />
 
       {/* Hero Banner */}
-      <div className="bg-gradient-to-b from-[#E6F4ED] via-[#EDF7F2] to-[#F4F8F6] dark:from-[#00251B] dark:via-[#001F17] dark:to-[#001A13] border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] text-[#0F241C] dark:text-[#F2F7F3] py-14 px-4 sm:px-6 lg:px-8">
+      <div className="bg-gradient-to-b from-[#EBF2FC] via-[#EDF7F2] to-[#F4F8F6] dark:from-[#121212] dark:via-[#0A0A0A] dark:to-[#050505] border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] text-[#0F241C] dark:text-[#F2F7F3] py-14 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-[#002B1F]/90 border border-[#009E52]/30 dark:border-[#00E878]/30 text-xs font-extrabold uppercase tracking-wider text-[#009E52] dark:text-[#00E878] shadow-xs">
-            <Navigation className="w-4 h-4 text-[#009E52] dark:text-[#00E878]" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-[#121212]/90 border border-[#0251B8]/30 dark:border-[#2D7DFF]/30 text-xs font-extrabold uppercase tracking-wider text-[#0251B8] dark:text-[#2D7DFF] shadow-xs">
+            <Navigation className="w-4 h-4 text-[#0251B8] dark:text-[#2D7DFF]" />
             <span>24/7 SATELLITE FLEET & PRIVATE VEHICLE SECURITY</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[#0F241C] dark:text-[#F2F7F3]">
@@ -56,9 +56,9 @@ export const TrackersPage: React.FC = () => {
         {/* Features Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {trackerFeatures.map((feat, idx) => (
-            <div key={idx} className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl p-6 border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] shadow-sm dark:shadow-xl hover:border-[#009E52]/40 dark:hover:border-[#00E878]/40 hover:shadow-md dark:hover:shadow-[0_12px_40px_-8px_rgba(0,232,120,0.15)] transition-all space-y-3">
-              <div className="w-10 h-10 rounded-2xl bg-[#E6F4ED] dark:bg-[#003D2D]/60 border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] text-[#009E52] dark:text-[#00E878] flex items-center justify-center font-black">
-                <CheckCircle2 className="w-5 h-5 text-[#009E52] dark:text-[#00E878]" />
+            <div key={idx} className="bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl p-6 border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] shadow-sm dark:shadow-xl hover:border-[#0251B8]/40 dark:hover:border-[#2D7DFF]/40 hover:shadow-md dark:hover:shadow-[0_12px_40px_-8px_rgba(45, 125, 255,0.15)] transition-all space-y-3">
+              <div className="w-10 h-10 rounded-2xl bg-[#EBF2FC] dark:bg-[#1A1A1A]/60 border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] text-[#0251B8] dark:text-[#2D7DFF] flex items-center justify-center font-black">
+                <CheckCircle2 className="w-5 h-5 text-[#0251B8] dark:text-[#2D7DFF]" />
               </div>
               <h3 className="text-base font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">{feat.title}</h3>
               <p className="text-xs text-[#355347] dark:text-[#8EA79C] leading-relaxed">{feat.desc}</p>
@@ -69,9 +69,9 @@ export const TrackersPage: React.FC = () => {
         {/* Booking / Inquiry & Telematics Showcase */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch max-w-6xl mx-auto">
           {/* Left: Telematics Showcase Card */}
-          <div className="lg:col-span-5 bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.18)] p-5 sm:p-6 shadow-lg dark:shadow-2xl flex flex-col justify-between">
+          <div className="lg:col-span-5 bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.1)] dark:border-[rgba(255, 255, 255,0.18)] p-5 sm:p-6 shadow-lg dark:shadow-2xl flex flex-col justify-between">
             <div className="space-y-4">
-              <div className="relative aspect-square sm:aspect-4/3 lg:aspect-square rounded-2xl overflow-hidden bg-[#EBF2EE] dark:bg-[#001711]">
+              <div className="relative aspect-square sm:aspect-4/3 lg:aspect-square rounded-2xl overflow-hidden bg-[#EBF2EE] dark:bg-[#0A0A0A]">
                 <img
                   src="/Car Images/VEHICLE TELEMATICS & SECURITY.jpeg"
                   alt="Vehicle Telematics & Security"
@@ -80,7 +80,7 @@ export const TrackersPage: React.FC = () => {
                   decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
-                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-white/90 dark:bg-[#001A13]/85 backdrop-blur-md border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.25)] text-xs font-black text-[#009E52] dark:text-[#00E878]">
+                <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-white/90 dark:bg-[#050505]/85 backdrop-blur-md border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.25)] text-xs font-black text-[#0251B8] dark:text-[#2D7DFF]">
                   Live Satellite Telemetry
                 </div>
               </div>
@@ -94,13 +94,13 @@ export const TrackersPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="pt-4 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.1)] flex items-center justify-between">
+            <div className="pt-4 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.1)] flex items-center justify-between">
               <span className="text-xs font-bold text-[#355347] dark:text-[#A7BDB3]">Need instant support?</span>
               <a
                 href="https://wa.me/254712052104?text=Hi%2C%20I%20am%20inquiring%20about%20Vehicle%20Telematics%20and%20GPS%20Tracker%20Installation"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs font-black text-[#009E52] dark:text-[#00E878] hover:underline"
+                className="text-xs font-black text-[#0251B8] dark:text-[#2D7DFF] hover:underline"
               >
                 Chat on WhatsApp →
               </a>
@@ -108,15 +108,15 @@ export const TrackersPage: React.FC = () => {
           </div>
 
           {/* Right: Booking / Inquiry Form */}
-          <div className="lg:col-span-7 bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.18)] p-6 sm:p-10 shadow-lg dark:shadow-2xl space-y-6 flex flex-col justify-center">
-            <div className="border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] pb-4">
+          <div className="lg:col-span-7 bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.1)] dark:border-[rgba(255, 255, 255,0.18)] p-6 sm:p-10 shadow-lg dark:shadow-2xl space-y-6 flex flex-col justify-center">
+            <div className="border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] pb-4">
               <h2 className="text-xl font-black text-[#0F241C] dark:text-[#F2F7F3]">Book a Tracker Installation</h2>
               <p className="text-xs text-[#355347] dark:text-[#8EA79C] mt-1">Our mobile technicians can visit your yard, home, or office for installation.</p>
             </div>
 
             {submitted ? (
               <div className="p-8 text-center space-y-4">
-                <div className="w-14 h-14 bg-[#E6F4ED] dark:bg-[#003D2D] text-[#009E52] dark:text-[#00E878] border border-[#009E52]/30 dark:border-[#00E878]/30 rounded-full flex items-center justify-center mx-auto shadow-sm">
+                <div className="w-14 h-14 bg-[#EBF2FC] dark:bg-[#1A1A1A] text-[#0251B8] dark:text-[#2D7DFF] border border-[#0251B8]/30 dark:border-[#2D7DFF]/30 rounded-full flex items-center justify-center mx-auto shadow-sm">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
                 <h3 className="text-lg font-bold text-[#0F241C] dark:text-[#F2F7F3]">Installation Booking Received!</h3>

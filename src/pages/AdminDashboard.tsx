@@ -28,24 +28,19 @@ import {
   Upload
 } from 'lucide-react';
 import { Navbar } from '../components/navigation/Navbar';
-import { 
-  VehicleService, 
-  SellerSubmissionService, 
-  ReservationService, 
-  PaymentService, 
-  InquiryService, 
-  AuthService, 
-  AuctionService, 
-  TradeInService, 
-  ImportService, 
-  BuyerService, 
-  SellerService, 
-  RealtimeService,
-  AuditLogService,
-  AdminRoleService,
-  AuditLogEntry,
-  AuthUser 
-} from '../lib/supabase/client';
+import { VehicleService } from '../lib/vehicles/vehicle.service';
+import { SellerSubmissionService } from '../lib/submissions/submission.service';
+import { ReservationService, PaymentService } from '../lib/payments/payment.service';
+import { InquiryService } from '../lib/inquiries/inquiry.service';
+import { AuthService } from '../lib/auth/auth.service';
+import type { AuthUser } from '../lib/auth/session';
+import { AuctionService } from '../lib/auctions/auction.service';
+import { TradeInService } from '../lib/tradein/tradein.service';
+import { ImportService } from '../lib/import/import.service';
+import { BuyerService, SellerService, AdminRoleService } from '../lib/users/user.service';
+import { RealtimeService } from '../lib/realtime/realtime.service';
+import { AuditLogService } from '../lib/audit/audit.service';
+import type { AuditLogEntry } from '../lib/audit/audit.service';
 import { 
   Vehicle, 
   SellerListingSubmission, 
@@ -402,22 +397,22 @@ export const AdminDashboard: React.FC = () => {
   const totalPhotosCataloged = vehicles.reduce((sum, v) => sum + (v.images?.length || 0), 0);
 
   return (
-    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col font-sans selection:bg-[#009E52] selection:text-white dark:selection:bg-[#00E878] dark:selection:text-[#001A13]">
+    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#050505] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col font-sans selection:bg-[#0251B8] selection:text-white dark:selection:bg-[#0251B8] dark:selection:bg-[#2D7DFF] dark:selection:text-[#050505]">
       <Navbar />
 
       {/* Admin Control Bar Header */}
-      <div className="bg-gradient-to-r from-[#E6F4ED] via-[#EDF7F2] to-[#F4F8F6] dark:from-[#00140F] dark:via-[#00251B] dark:to-[#001F17] border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] text-[#0F241C] dark:text-[#F2F7F3] py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#00E878]/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="bg-gradient-to-r from-[#EBF2FC] via-[#EDF7F2] to-[#F4F8F6] dark:from-[#000000] dark:via-[#121212] dark:to-[#0A0A0A] border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] text-[#0F241C] dark:text-[#F2F7F3] py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#2D7DFF]/5 rounded-full blur-3xl pointer-events-none" />
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
           <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-[#009E52] dark:text-[#00E878] uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-xs font-bold text-[#0251B8] dark:text-[#2D7DFF] uppercase tracking-wider">
               <ShieldCheck className="w-4 h-4" />
               <span>Yardly Automotives EXECUTIVE MANAGEMENT CONSOLE</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight mt-1 text-[#0F241C] dark:text-[#F2F7F3]">Marketplace Operations & Control</h1>
             {currentUser && (
               <div className="text-xs text-[#355347] dark:text-[#8EA79C] mt-1 flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-[#009E52] dark:text-[#00E878]" />
+                <User className="w-3.5 h-3.5 text-[#0251B8] dark:text-[#2D7DFF]" />
                 <span>Logged in as <strong>{currentUser.full_name}</strong> ({currentUser.email})</span>
               </div>
             )}
@@ -429,9 +424,9 @@ export const AdminDashboard: React.FC = () => {
             </Badge>
             <button
               onClick={handleSignOut}
-              className="px-3.5 py-2 rounded-xl bg-white dark:bg-[#001F17] hover:bg-[#E6F4ED] dark:hover:bg-[#003D2D] text-[#0F241C] dark:text-[#F2F7F3] text-xs font-bold border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.2)] flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+              className="px-3.5 py-2 rounded-xl bg-white dark:bg-[#0A0A0A] hover:bg-[#EBF2FC] dark:hover:bg-[#1A1A1A] text-[#0F241C] dark:text-[#F2F7F3] text-xs font-bold border border-[rgba(0,60,40,0.1)] dark:border-[rgba(255, 255, 255,0.2)] flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
             >
-              <LogOut className="w-3.5 h-3.5 text-[#009E52] dark:text-[#00E878]" />
+              <LogOut className="w-3.5 h-3.5 text-[#0251B8] dark:text-[#2D7DFF]" />
               <span>Sign Out</span>
             </button>
           </div>
@@ -442,7 +437,7 @@ export const AdminDashboard: React.FC = () => {
         
         {/* Sidebar Navigation Menu */}
         <aside className="w-full lg:w-64 shrink-0 space-y-2">
-          <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-3 shadow-sm dark:shadow-glass space-y-1">
+          <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] p-3 shadow-sm dark:shadow-glass space-y-1">
             
             <div className="text-[10px] font-extrabold uppercase tracking-widest text-[#5F7E71] dark:text-[#8EA79C] px-3 py-1">
               Core Overview
@@ -450,130 +445,130 @@ export const AdminDashboard: React.FC = () => {
             <button
               onClick={() => setActiveSection('overview')}
               className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-extrabold flex items-center gap-2.5 transition-all cursor-pointer ${
-                activeSection === 'overview' ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#001F17]'
+                activeSection === 'overview' ? 'bg-[#0251B8] text-white dark:bg-[#2D7DFF] dark:text-[#050505] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#0A0A0A]'
               }`}
             >
               <BarChart3 className="w-4 h-4" />
               <span>Dashboard Overview</span>
             </button>
 
-            <div className="text-[10px] font-extrabold uppercase tracking-widest text-[#5F7E71] dark:text-[#8EA79C] px-3 py-1 pt-2 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)]">
+            <div className="text-[10px] font-extrabold uppercase tracking-widest text-[#5F7E71] dark:text-[#8EA79C] px-3 py-1 pt-2 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)]">
               Inventory & Assets
             </div>
             <button
               onClick={() => setActiveSection('vehicles')}
               className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-between transition-all cursor-pointer ${
-                activeSection === 'vehicles' ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#001F17]'
+                activeSection === 'vehicles' ? 'bg-[#0251B8] text-white dark:bg-[#2D7DFF] dark:text-[#050505] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#0A0A0A]'
               }`}
             >
               <div className="flex items-center gap-2.5">
                 <Car className="w-4 h-4" />
                 <span>Vehicles Inventory</span>
               </div>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3EE] dark:bg-[#001F17] text-[#009E52] dark:text-[#00E878] font-bold border border-[#009E52]/30 dark:border-[#00E878]/30">{vehicles.length}</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3EE] dark:bg-[#0A0A0A] text-[#0251B8] dark:text-[#2D7DFF] font-bold border border-[#0251B8]/30 dark:border-[#2D7DFF]/30">{vehicles.length}</span>
             </button>
 
             <button
               onClick={() => setActiveSection('images')}
               className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-between transition-all cursor-pointer ${
-                activeSection === 'images' ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#001F17]'
+                activeSection === 'images' ? 'bg-[#0251B8] text-white dark:bg-[#2D7DFF] dark:text-[#050505] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#0A0A0A]'
               }`}
             >
               <div className="flex items-center gap-2.5">
                 <ImageIcon className="w-4 h-4" />
                 <span>Image Asset Report</span>
               </div>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#009E52]/10 dark:bg-[#00E878]/15 text-[#009E52] dark:text-[#00E878] font-bold border border-[#009E52]/30 dark:border-[#00E878]/30">{totalPhotosCataloged}</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#0251B8]/10 dark:bg-[#2D7DFF]/15 text-[#0251B8] dark:text-[#2D7DFF] font-bold border border-[#0251B8]/30 dark:border-[#2D7DFF]/30">{totalPhotosCataloged}</span>
             </button>
 
-            <div className="text-[10px] font-extrabold uppercase tracking-widest text-[#5F7E71] dark:text-[#8EA79C] px-3 py-1 pt-2 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)]">
+            <div className="text-[10px] font-extrabold uppercase tracking-widest text-[#5F7E71] dark:text-[#8EA79C] px-3 py-1 pt-2 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)]">
               Marketplace Workflows
             </div>
             <button
               onClick={() => setActiveSection('auctions')}
               className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-between transition-all cursor-pointer ${
-                activeSection === 'auctions' ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#001F17]'
+                activeSection === 'auctions' ? 'bg-[#0251B8] text-white dark:bg-[#2D7DFF] dark:text-[#050505] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#0A0A0A]'
               }`}
             >
               <div className="flex items-center gap-2.5">
                 <Gavel className="w-4 h-4" />
                 <span>Auctions Control</span>
               </div>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3EE] dark:bg-[#001F17] text-[#009E52] dark:text-[#00E878] font-bold border border-[#009E52]/30 dark:border-[#00E878]/30">{auctions.length}</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3EE] dark:bg-[#0A0A0A] text-[#0251B8] dark:text-[#2D7DFF] font-bold border border-[#0251B8]/30 dark:border-[#2D7DFF]/30">{auctions.length}</span>
             </button>
 
             <button
               onClick={() => setActiveSection('tradeins')}
               className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-between transition-all cursor-pointer ${
-                activeSection === 'tradeins' ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#001F17]'
+                activeSection === 'tradeins' ? 'bg-[#0251B8] text-white dark:bg-[#2D7DFF] dark:text-[#050505] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#0A0A0A]'
               }`}
             >
               <div className="flex items-center gap-2.5">
                 <RefreshCw className="w-4 h-4" />
                 <span>Trade-In Requests</span>
               </div>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3EE] dark:bg-[#001F17] text-[#009E52] dark:text-[#00E878] font-bold border border-[#009E52]/30 dark:border-[#00E878]/30">{tradeIns.length}</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3EE] dark:bg-[#0A0A0A] text-[#0251B8] dark:text-[#2D7DFF] font-bold border border-[#0251B8]/30 dark:border-[#2D7DFF]/30">{tradeIns.length}</span>
             </button>
 
             <button
               onClick={() => setActiveSection('imports')}
               className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-between transition-all cursor-pointer ${
-                activeSection === 'imports' ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#001F17]'
+                activeSection === 'imports' ? 'bg-[#0251B8] text-white dark:bg-[#2D7DFF] dark:text-[#050505] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#0A0A0A]'
               }`}
             >
               <div className="flex items-center gap-2.5">
                 <Globe className="w-4 h-4" />
                 <span>Direct Import Service</span>
               </div>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3EE] dark:bg-[#001F17] text-[#009E52] dark:text-[#00E878] font-bold border border-[#009E52]/30 dark:border-[#00E878]/30">{imports.length}</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3EE] dark:bg-[#0A0A0A] text-[#0251B8] dark:text-[#2D7DFF] font-bold border border-[#0251B8]/30 dark:border-[#2D7DFF]/30">{imports.length}</span>
             </button>
 
             <button
               onClick={() => setActiveSection('inquiries')}
               className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-between transition-all cursor-pointer ${
-                activeSection === 'inquiries' ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#001F17]'
+                activeSection === 'inquiries' ? 'bg-[#0251B8] text-white dark:bg-[#2D7DFF] dark:text-[#050505] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#0A0A0A]'
               }`}
             >
               <div className="flex items-center gap-2.5">
                 <FileText className="w-4 h-4" />
                 <span>Buyer Inquiries</span>
               </div>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3EE] dark:bg-[#001F17] text-[#009E52] dark:text-[#00E878] font-bold border border-[#009E52]/30 dark:border-[#00E878]/30">{inquiries.length}</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3EE] dark:bg-[#0A0A0A] text-[#0251B8] dark:text-[#2D7DFF] font-bold border border-[#0251B8]/30 dark:border-[#2D7DFF]/30">{inquiries.length}</span>
             </button>
 
-            <div className="text-[10px] font-extrabold uppercase tracking-widest text-[#5F7E71] dark:text-[#8EA79C] px-3 py-1 pt-2 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)]">
+            <div className="text-[10px] font-extrabold uppercase tracking-widest text-[#5F7E71] dark:text-[#8EA79C] px-3 py-1 pt-2 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)]">
               Users & Security
             </div>
             <button
               onClick={() => setActiveSection('buyers')}
               className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-between transition-all cursor-pointer ${
-                activeSection === 'buyers' ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#001F17]'
+                activeSection === 'buyers' ? 'bg-[#0251B8] text-white dark:bg-[#2D7DFF] dark:text-[#050505] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#0A0A0A]'
               }`}
             >
               <div className="flex items-center gap-2.5">
                 <Users className="w-4 h-4" />
                 <span>Buyers Directory</span>
               </div>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3EE] dark:bg-[#001F17] text-[#009E52] dark:text-[#00E878] font-bold border border-[#009E52]/30 dark:border-[#00E878]/30">{buyers.length}</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3EE] dark:bg-[#0A0A0A] text-[#0251B8] dark:text-[#2D7DFF] font-bold border border-[#0251B8]/30 dark:border-[#2D7DFF]/30">{buyers.length}</span>
             </button>
 
             <button
               onClick={() => setActiveSection('sellers')}
               className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-between transition-all cursor-pointer ${
-                activeSection === 'sellers' ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#001F17]'
+                activeSection === 'sellers' ? 'bg-[#0251B8] text-white dark:bg-[#2D7DFF] dark:text-[#050505] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#0A0A0A]'
               }`}
             >
               <div className="flex items-center gap-2.5">
                 <Building className="w-4 h-4" />
                 <span>Sellers & Dealers</span>
               </div>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3EE] dark:bg-[#001F17] text-[#009E52] dark:text-[#00E878] font-bold border border-[#009E52]/30 dark:border-[#00E878]/30">{sellers.length}</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF3EE] dark:bg-[#0A0A0A] text-[#0251B8] dark:text-[#2D7DFF] font-bold border border-[#0251B8]/30 dark:border-[#2D7DFF]/30">{sellers.length}</span>
             </button>
 
             <button
               onClick={() => setActiveSection('auditlogs')}
               className={`w-full px-3.5 py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-between transition-all cursor-pointer ${
-                activeSection === 'auditlogs' ? 'bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#001F17]'
+                activeSection === 'auditlogs' ? 'bg-[#0251B8] text-white dark:bg-[#2D7DFF] dark:text-[#050505] shadow-md' : 'text-[#355347] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#F4F8F6] dark:hover:bg-[#0A0A0A]'
               }`}
             >
               <div className="flex items-center gap-2.5">
@@ -595,33 +590,33 @@ export const AdminDashboard: React.FC = () => {
               
               {/* Analytics Metric Cards */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md p-5 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] shadow-sm dark:shadow-glass">
+                <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md p-5 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] shadow-sm dark:shadow-glass">
                   <div className="text-[11px] font-bold text-[#355347] dark:text-[#8EA79C] uppercase">Active Vehicles</div>
                   <div className="text-2xl font-black text-[#0F241C] dark:text-[#F2F7F3] mt-1">{vehicles.length}</div>
                 </div>
-                <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md p-5 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] shadow-sm dark:shadow-glass">
+                <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md p-5 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] shadow-sm dark:shadow-glass">
                   <div className="text-[11px] font-bold text-[#355347] dark:text-[#8EA79C] uppercase">Cataloged Photos</div>
-                  <div className="text-2xl font-black text-[#009E52] dark:text-[#00E878] mt-1">{totalPhotosCataloged}</div>
+                  <div className="text-2xl font-black text-[#0251B8] dark:text-[#2D7DFF] mt-1">{totalPhotosCataloged}</div>
                 </div>
-                <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md p-5 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] shadow-sm dark:shadow-glass">
+                <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md p-5 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] shadow-sm dark:shadow-glass">
                   <div className="text-[11px] font-bold text-[#355347] dark:text-[#8EA79C] uppercase">Live Auctions</div>
-                  <div className="text-2xl font-black text-[#009E52] dark:text-[#00E878] mt-1">{auctions.filter(a => a.status === 'live' || a.status === 'ending_soon').length}</div>
+                  <div className="text-2xl font-black text-[#0251B8] dark:text-[#2D7DFF] mt-1">{auctions.filter(a => a.status === 'live' || a.status === 'ending_soon').length}</div>
                 </div>
-                <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md p-5 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] shadow-sm dark:shadow-glass">
+                <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md p-5 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] shadow-sm dark:shadow-glass">
                   <div className="text-[11px] font-bold text-[#355347] dark:text-[#8EA79C] uppercase">Trade-In Queue</div>
                   <div className="text-2xl font-black font-mono text-amber-600 dark:text-amber-400 mt-1">{tradeIns.length}</div>
                 </div>
               </div>
 
               {/* Pending Seller Listing Submissions */}
-              <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-6 shadow-sm dark:shadow-glass space-y-4">
+              <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] p-6 shadow-sm dark:shadow-glass space-y-4">
                 <h3 className="text-lg font-black text-[#0F241C] dark:text-[#F2F7F3]">Pending Seller Listing Submissions ({submissions.filter(s => s.status === 'pending_review').length})</h3>
                 {submissions.filter(s => s.status === 'pending_review').length === 0 ? (
                   <p className="text-xs text-[#355347] dark:text-[#8EA79C]">No seller submissions awaiting verification.</p>
                 ) : (
                   <div className="space-y-3">
                     {submissions.filter(s => s.status === 'pending_review').map(sub => (
-                      <div key={sub.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] bg-[#F4F8F6] dark:bg-[#001F17] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div key={sub.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] bg-[#F4F8F6] dark:bg-[#0A0A0A] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div>
                           <div className="font-bold text-[#0F241C] dark:text-[#F2F7F3]">{sub.year} {sub.make} {sub.model}</div>
                           <div className="text-xs text-[#355347] dark:text-[#8EA79C] mt-0.5">
@@ -647,7 +642,7 @@ export const AdminDashboard: React.FC = () => {
 
           {/* SECTION 2: Vehicles CRUD */}
           {activeSection === 'vehicles' && (
-            <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
+            <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
               
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
@@ -669,26 +664,26 @@ export const AdminDashboard: React.FC = () => {
                     placeholder="Search by make, model, year, or location..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-9 pr-4 py-2 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] bg-[#F4F8F6] dark:bg-[#001F17] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                    className="w-full pl-9 pr-4 py-2 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.2)] bg-[#F4F8F6] dark:bg-[#0A0A0A] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                   />
                 </div>
                 <select
                   value={vehicleFilterStatus}
                   onChange={(e) => setVehicleFilterStatus(e.target.value)}
-                  className="px-4 py-2 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                  className="px-4 py-2 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#0A0A0A] focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                 >
-                  <option value="all" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">All Statuses</option>
-                  <option value="active" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Active</option>
-                  <option value="reserved" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Reserved</option>
-                  <option value="sold" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Sold</option>
-                  <option value="draft" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Draft</option>
+                  <option value="all" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">All Statuses</option>
+                  <option value="active" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Active</option>
+                  <option value="reserved" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Reserved</option>
+                  <option value="sold" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Sold</option>
+                  <option value="draft" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Draft</option>
                 </select>
               </div>
 
               {/* Vehicles Table */}
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#EAF3EE] dark:bg-[#001F17] text-[#355347] dark:text-[#8EA79C] uppercase font-bold border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)]">
+                  <thead className="bg-[#EAF3EE] dark:bg-[#0A0A0A] text-[#355347] dark:text-[#8EA79C] uppercase font-bold border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)]">
                     <tr>
                       <th className="p-3">Vehicle Details</th>
                       <th className="p-3">Photos</th>
@@ -698,22 +693,22 @@ export const AdminDashboard: React.FC = () => {
                       <th className="p-3 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[rgba(0,60,40,0.06)] dark:divide-[rgba(180,255,210,0.08)]">
+                  <tbody className="divide-y divide-[rgba(0,60,40,0.06)] dark:divide-[rgba(255, 255, 255,0.08)]">
                     {filteredVehicles.map(v => (
-                      <tr key={v.id} className="hover:bg-[#F4F8F6] dark:hover:bg-[#001F17]/60">
+                      <tr key={v.id} className="hover:bg-[#F4F8F6] dark:hover:bg-[#0A0A0A]/60">
                         <td className="p-3">
                           <div className="font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">{v.year} {v.make} {v.model}</div>
                           <div className="text-[10px] text-[#355347] dark:text-[#8EA79C]">{v.transmission} • {v.fuel_type} • {v.mileage.toLocaleString()} KM</div>
                         </td>
-                        <td className="p-3 font-bold text-[#009E52] dark:text-[#00E878]">
+                        <td className="p-3 font-bold text-[#0251B8] dark:text-[#2D7DFF]">
                           {v.images?.length || 0} Photos
                         </td>
                         <td className="p-3 text-[#355347] dark:text-[#8EA79C]">{v.dealer_name || 'Private Seller'}</td>
-                        <td className="p-3 font-black text-[#009E52] dark:text-[#00E878]">KES {v.price.toLocaleString()}</td>
+                        <td className="p-3 font-black text-[#0251B8] dark:text-[#2D7DFF]">KES {v.price.toLocaleString()}</td>
                         <td className="p-3"><Badge variant={v.status === 'active' ? 'success' : 'secondary'}>{v.status}</Badge></td>
                         <td className="p-3 text-right space-x-2">
-                          <button onClick={() => handleOpenEditVehicle(v)} className="p-1.5 rounded-lg bg-[#F4F8F6] dark:bg-[#001F17] hover:bg-[#E6F4ED] dark:hover:bg-[#003D2D] text-[#0F241C] dark:text-[#F2F7F3] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.15)] cursor-pointer">
-                            <Edit className="w-3.5 h-3.5 text-[#009E52] dark:text-[#00E878]" />
+                          <button onClick={() => handleOpenEditVehicle(v)} className="p-1.5 rounded-lg bg-[#F4F8F6] dark:bg-[#0A0A0A] hover:bg-[#EBF2FC] dark:hover:bg-[#1A1A1A] text-[#0F241C] dark:text-[#F2F7F3] border border-[rgba(0,60,40,0.1)] dark:border-[rgba(255, 255, 255,0.15)] cursor-pointer">
+                            <Edit className="w-3.5 h-3.5 text-[#0251B8] dark:text-[#2D7DFF]" />
                           </button>
                           <button onClick={() => handleDeleteVehicle(v.id)} className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-500/30 cursor-pointer">
                             <Trash2 className="w-3.5 h-3.5" />
@@ -730,7 +725,7 @@ export const AdminDashboard: React.FC = () => {
 
           {/* SECTION 3: Admin Image Asset & Matching Review Report */}
           {activeSection === 'images' && (
-            <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
+            <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="text-xl font-black text-[#0F241C] dark:text-[#F2F7F3]">Admin Image Asset & Specification Report</h3>
@@ -743,7 +738,7 @@ export const AdminDashboard: React.FC = () => {
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-[#EAF3EE] dark:bg-[#001F17] text-[#355347] dark:text-[#8EA79C] uppercase font-bold border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)]">
+                  <thead className="bg-[#EAF3EE] dark:bg-[#0A0A0A] text-[#355347] dark:text-[#8EA79C] uppercase font-bold border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)]">
                     <tr>
                       <th className="p-3">Listing Title</th>
                       <th className="p-3">Hero Thumbnail</th>
@@ -753,21 +748,21 @@ export const AdminDashboard: React.FC = () => {
                       <th className="p-3 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[rgba(0,60,40,0.06)] dark:divide-[rgba(180,255,210,0.08)]">
+                  <tbody className="divide-y divide-[rgba(0,60,40,0.06)] dark:divide-[rgba(255, 255, 255,0.08)]">
                     {vehicles.map(v => {
                       const allImages = resolveVehicleImages(v);
                       const primaryImg = getVehiclePrimaryImage(v)?.image_url || '/logo.jpeg';
                       return (
-                        <tr key={v.id} className="hover:bg-[#F4F8F6] dark:hover:bg-[#001F17]/60">
+                        <tr key={v.id} className="hover:bg-[#F4F8F6] dark:hover:bg-[#0A0A0A]/60">
                           <td className="p-3">
                             <div className="font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">{v.year} {v.make} {v.model}</div>
                             <div className="text-[10px] text-[#355347] dark:text-[#8EA79C]">{v.dealer_name || 'Yard Unit'}</div>
                           </td>
                           <td className="p-3">
-                            <img src={primaryImg} alt={v.model} className="w-14 h-10 object-cover rounded-lg border border-[rgba(0,60,40,0.1)] dark:border-[rgba(180,255,210,0.15)] bg-[#EAF3EE] dark:bg-[#001711]" />
+                            <img src={primaryImg} alt={v.model} className="w-14 h-10 object-cover rounded-lg border border-[rgba(0,60,40,0.1)] dark:border-[rgba(255, 255, 255,0.15)] bg-[#EAF3EE] dark:bg-[#0A0A0A]" />
                           </td>
                           <td className="p-3">
-                            <span className="font-bold text-[#009E52] dark:text-[#00E878] bg-[#EAF3EE] dark:bg-[#001F17] border border-[#009E52]/30 dark:border-[#00E878]/30 px-2.5 py-1 rounded-full text-[11px]">
+                            <span className="font-bold text-[#0251B8] dark:text-[#2D7DFF] bg-[#EAF3EE] dark:bg-[#0A0A0A] border border-[#0251B8]/30 dark:border-[#2D7DFF]/30 px-2.5 py-1 rounded-full text-[11px]">
                               {allImages.length} Photos
                             </span>
                           </td>
@@ -795,7 +790,7 @@ export const AdminDashboard: React.FC = () => {
 
           {/* SECTION 4: Auctions Control */}
           {activeSection === 'auctions' && (
-            <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
+            <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="text-xl font-black text-[#0F241C] dark:text-[#F2F7F3]">Auctions Control ({auctions.length})</h3>
@@ -808,12 +803,12 @@ export const AdminDashboard: React.FC = () => {
 
               <div className="space-y-4">
                 {auctions.map(auc => (
-                  <div key={auc.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] bg-[#F4F8F6] dark:bg-[#001F17] flex justify-between items-center text-xs">
+                  <div key={auc.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] bg-[#F4F8F6] dark:bg-[#0A0A0A] flex justify-between items-center text-xs">
                     <div>
                       <div className="font-bold text-[#0F241C] dark:text-[#F2F7F3]">
                         {auc.vehicle ? `${auc.vehicle.year} ${auc.vehicle.make} ${auc.vehicle.model}` : `Auction #${auc.id}`}
                       </div>
-                      <div className="text-[#009E52] dark:text-[#00E878] font-mono font-bold mt-0.5">
+                      <div className="text-[#0251B8] dark:text-[#2D7DFF] font-mono font-bold mt-0.5">
                         Current Bid: KES {auc.current_bid.toLocaleString()} ({auc.bid_count} bids)
                       </div>
                     </div>
@@ -826,28 +821,28 @@ export const AdminDashboard: React.FC = () => {
 
           {/* SECTION 5: Trade-Ins */}
           {activeSection === 'tradeins' && (
-            <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
+            <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
               <h3 className="text-xl font-black text-[#0F241C] dark:text-[#F2F7F3]">Trade-In Requests ({tradeIns.length})</h3>
               <div className="space-y-3">
                 {tradeIns.map(t => (
-                  <div key={t.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] bg-[#F4F8F6] dark:bg-[#001F17] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs">
+                  <div key={t.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] bg-[#F4F8F6] dark:bg-[#0A0A0A] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs">
                     <div>
-                      <span className="font-mono font-bold text-[#009E52] dark:text-[#00E878]">{t.reference_id}</span>
+                      <span className="font-mono font-bold text-[#0251B8] dark:text-[#2D7DFF]">{t.reference_id}</span>
                       <div className="font-bold text-[#0F241C] dark:text-[#F2F7F3] text-sm mt-0.5">{t.year} {t.make} {t.model}</div>
                       <div className="text-[#355347] dark:text-[#8EA79C]">Owner: {t.full_name} ({t.phone}) • Expected: KES {t.expected_value.toLocaleString()}</div>
                     </div>
                     <select
                       value={t.status}
                       onChange={(e) => handleUpdateTradeInStatus(t.id, e.target.value as TradeInStatus)}
-                      className="px-3 py-1.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                      className="px-3 py-1.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#0A0A0A] focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                     >
-                      <option value="new" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">New</option>
-                      <option value="under_review" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Under Review</option>
-                      <option value="valuation" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Valuation</option>
-                      <option value="offer_sent" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Offer Sent</option>
-                      <option value="accepted" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Accepted</option>
-                      <option value="rejected" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Rejected</option>
-                      <option value="completed" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Completed</option>
+                      <option value="new" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">New</option>
+                      <option value="under_review" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Under Review</option>
+                      <option value="valuation" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Valuation</option>
+                      <option value="offer_sent" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Offer Sent</option>
+                      <option value="accepted" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Accepted</option>
+                      <option value="rejected" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Rejected</option>
+                      <option value="completed" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Completed</option>
                     </select>
                   </div>
                 ))}
@@ -857,29 +852,29 @@ export const AdminDashboard: React.FC = () => {
 
           {/* SECTION 6: Imports */}
           {activeSection === 'imports' && (
-            <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
+            <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
               <h3 className="text-xl font-black text-[#0F241C] dark:text-[#F2F7F3]">Direct Import Sourcing Orders ({imports.length})</h3>
               <div className="space-y-3">
                 {imports.map(i => (
-                  <div key={i.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] bg-[#F4F8F6] dark:bg-[#001F17] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs">
+                  <div key={i.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] bg-[#F4F8F6] dark:bg-[#0A0A0A] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs">
                     <div>
-                      <span className="font-mono font-bold text-[#009E52] dark:text-[#00E878]">{i.reference_number}</span>
+                      <span className="font-mono font-bold text-[#0251B8] dark:text-[#2D7DFF]">{i.reference_number}</span>
                       <div className="font-bold text-[#0F241C] dark:text-[#F2F7F3] text-sm mt-0.5">{i.make} {i.model} (Source: {i.preferred_source_country})</div>
                       <div className="text-[#355347] dark:text-[#8EA79C]">Client: {i.full_name} ({i.phone}) • Budget: KES {i.budget.toLocaleString()}</div>
                     </div>
                     <select
                       value={i.status}
                       onChange={(e) => handleUpdateImportStatus(i.id, e.target.value as ImportStatus)}
-                      className="px-3 py-1.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                      className="px-3 py-1.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#0A0A0A] focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                     >
-                      <option value="new" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">New</option>
-                      <option value="reviewing" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Reviewing</option>
-                      <option value="sourcing" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Sourcing</option>
-                      <option value="quotation" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Quotation</option>
-                      <option value="shipping" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Shipping</option>
-                      <option value="customs" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Customs</option>
-                      <option value="delivered" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Delivered</option>
-                      <option value="completed" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Completed</option>
+                      <option value="new" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">New</option>
+                      <option value="reviewing" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Reviewing</option>
+                      <option value="sourcing" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Sourcing</option>
+                      <option value="quotation" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Quotation</option>
+                      <option value="shipping" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Shipping</option>
+                      <option value="customs" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Customs</option>
+                      <option value="delivered" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Delivered</option>
+                      <option value="completed" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Completed</option>
                     </select>
                   </div>
                 ))}
@@ -889,11 +884,11 @@ export const AdminDashboard: React.FC = () => {
 
           {/* SECTION 7: Inquiries */}
           {activeSection === 'inquiries' && (
-            <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
+            <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
               <h3 className="text-xl font-black text-[#0F241C] dark:text-[#F2F7F3]">Buyer Inquiries ({inquiries.length})</h3>
               <div className="space-y-3">
                 {inquiries.map(inq => (
-                  <div key={inq.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] bg-[#F4F8F6] dark:bg-[#001F17] flex justify-between items-center text-xs">
+                  <div key={inq.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] bg-[#F4F8F6] dark:bg-[#0A0A0A] flex justify-between items-center text-xs">
                     <div>
                       <div className="font-bold text-[#0F241C] dark:text-[#F2F7F3]">{inq.name} ({inq.phone})</div>
                       <div className="text-[#355347] dark:text-[#8EA79C] mt-0.5">{inq.message}</div>
@@ -901,12 +896,12 @@ export const AdminDashboard: React.FC = () => {
                     <select
                       value={inq.status}
                       onChange={(e) => handleUpdateInquiryStatus(inq.id, e.target.value as VehicleInquiry['status'])}
-                      className="px-3 py-1.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                      className="px-3 py-1.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#0A0A0A] focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                     >
-                      <option value="new" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">New</option>
-                      <option value="contacted" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Contacted</option>
-                      <option value="in_progress" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">In Progress</option>
-                      <option value="closed" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Closed</option>
+                      <option value="new" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">New</option>
+                      <option value="contacted" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Contacted</option>
+                      <option value="in_progress" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">In Progress</option>
+                      <option value="closed" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Closed</option>
                     </select>
                   </div>
                 ))}
@@ -916,7 +911,7 @@ export const AdminDashboard: React.FC = () => {
 
           {/* SECTION 8: Buyers Directory & Role Controls */}
           {activeSection === 'buyers' && (
-            <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
+            <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
                   <h3 className="text-xl font-black text-[#0F241C] dark:text-[#F2F7F3]">Registered Buyers Directory ({buyers.length})</h3>
@@ -926,7 +921,7 @@ export const AdminDashboard: React.FC = () => {
 
               <div className="space-y-3">
                 {buyers.map(b => (
-                  <div key={b.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] bg-[#F4F8F6] dark:bg-[#001F17] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                  <div key={b.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] bg-[#F4F8F6] dark:bg-[#0A0A0A] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-[#0F241C] dark:text-[#F2F7F3] text-sm">{b.full_name}</span>
@@ -941,13 +936,13 @@ export const AdminDashboard: React.FC = () => {
                       <select
                         value={b.role || 'buyer'}
                         onChange={(e) => handleUpdateRole(b.id, e.target.value as UserRole)}
-                        className="px-2.5 py-1.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                        className="px-2.5 py-1.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#0A0A0A] focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                       >
-                        <option value="buyer" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Role: Buyer</option>
-                        <option value="seller" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Role: Seller</option>
-                        <option value="dealer" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Role: Dealer</option>
-                        <option value="yard_admin" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Role: Yard Admin</option>
-                        <option value="admin" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Role: Admin</option>
+                        <option value="buyer" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Role: Buyer</option>
+                        <option value="seller" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Role: Seller</option>
+                        <option value="dealer" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Role: Dealer</option>
+                        <option value="yard_admin" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Role: Yard Admin</option>
+                        <option value="admin" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Role: Admin</option>
                       </select>
 
                       <Button size="sm" variant={b.status === 'active' ? 'danger' : 'success'} onClick={() => handleToggleBuyerStatus(b.id, b.status)}>
@@ -962,7 +957,7 @@ export const AdminDashboard: React.FC = () => {
 
           {/* SECTION 9: Sellers Directory & Privilege Control */}
           {activeSection === 'sellers' && (
-            <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
+            <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
                   <h3 className="text-xl font-black text-[#0F241C] dark:text-[#F2F7F3]">Verified Sellers & Dealers ({sellers.length})</h3>
@@ -972,7 +967,7 @@ export const AdminDashboard: React.FC = () => {
 
               <div className="space-y-3">
                 {sellers.map(s => (
-                  <div key={s.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] bg-[#F4F8F6] dark:bg-[#001F17] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                  <div key={s.id} className="p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] bg-[#F4F8F6] dark:bg-[#0A0A0A] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-[#0F241C] dark:text-[#F2F7F3] text-sm">{s.business_name || s.full_name}</span>
@@ -987,13 +982,13 @@ export const AdminDashboard: React.FC = () => {
                       <select
                         value={s.role || 'seller'}
                         onChange={(e) => handleUpdateRole(s.id, e.target.value as UserRole)}
-                        className="px-2.5 py-1.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                        className="px-2.5 py-1.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.2)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#0A0A0A] focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                       >
-                        <option value="seller" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Role: Seller</option>
-                        <option value="dealer" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Role: Dealer</option>
-                        <option value="buyer" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Role: Buyer</option>
-                        <option value="yard_admin" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Role: Yard Admin</option>
-                        <option value="admin" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Role: Admin</option>
+                        <option value="seller" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Role: Seller</option>
+                        <option value="dealer" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Role: Dealer</option>
+                        <option value="buyer" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Role: Buyer</option>
+                        <option value="yard_admin" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Role: Yard Admin</option>
+                        <option value="admin" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Role: Admin</option>
                       </select>
                       <Badge variant="verified">Verified</Badge>
                     </div>
@@ -1005,7 +1000,7 @@ export const AdminDashboard: React.FC = () => {
 
           {/* SECTION 10: Audit & Activity Logs */}
           {activeSection === 'auditlogs' && (
-            <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
+            <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] p-6 shadow-sm dark:shadow-glass space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
                   <h3 className="text-xl font-black text-[#0F241C] dark:text-[#F2F7F3]">Admin Audit & Activity Logs ({auditLogs.length})</h3>
@@ -1017,13 +1012,13 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               {auditLogs.length === 0 ? (
-                <div className="p-8 text-center bg-[#F4F8F6] dark:bg-[#001F17] rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)]">
+                <div className="p-8 text-center bg-[#F4F8F6] dark:bg-[#0A0A0A] rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)]">
                   <p className="text-xs font-semibold text-[#355347] dark:text-[#8EA79C]">No audit events recorded yet.</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#EAF3EE] dark:bg-[#001F17] text-[#355347] dark:text-[#8EA79C] uppercase font-bold border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)]">
+                    <thead className="bg-[#EAF3EE] dark:bg-[#0A0A0A] text-[#355347] dark:text-[#8EA79C] uppercase font-bold border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)]">
                       <tr>
                         <th className="p-3">Timestamp</th>
                         <th className="p-3">Action</th>
@@ -1032,14 +1027,14 @@ export const AdminDashboard: React.FC = () => {
                         <th className="p-3">Record ID</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[rgba(0,60,40,0.06)] dark:divide-[rgba(180,255,210,0.08)]">
+                    <tbody className="divide-y divide-[rgba(0,60,40,0.06)] dark:divide-[rgba(255, 255, 255,0.08)]">
                       {auditLogs.map(log => (
-                        <tr key={log.id} className="hover:bg-[#F4F8F6] dark:hover:bg-[#001F17]/60">
+                        <tr key={log.id} className="hover:bg-[#F4F8F6] dark:hover:bg-[#0A0A0A]/60">
                           <td className="p-3 text-[11px] font-mono text-[#5F7E71] dark:text-[#8EA79C] whitespace-nowrap">
                             {new Date(log.created_at).toLocaleString()}
                           </td>
                           <td className="p-3">
-                            <span className="font-extrabold uppercase text-[10px] px-2 py-0.5 rounded bg-[#009E52]/10 dark:bg-[#00E878]/15 text-[#009E52] dark:text-[#00E878] border border-[#009E52]/30 dark:border-[#00E878]/30">
+                            <span className="font-extrabold uppercase text-[10px] px-2 py-0.5 rounded bg-[#0251B8]/10 dark:bg-[#2D7DFF]/15 text-[#0251B8] dark:text-[#2D7DFF] border border-[#0251B8]/30 dark:border-[#2D7DFF]/30">
                               {log.action}
                             </span>
                           </td>
@@ -1067,7 +1062,7 @@ export const AdminDashboard: React.FC = () => {
       {/* Add / Edit Vehicle Modal */}
       {showVehicleModal && (
         <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-[#00251B] rounded-3xl border border-[rgba(0,60,40,0.12)] dark:border-[rgba(180,255,210,0.2)] max-w-xl w-full p-5 sm:p-8 shadow-2xl dark:shadow-glow space-y-5 relative my-auto max-h-[92vh] overflow-y-auto text-[#0F241C] dark:text-[#F2F7F3]">
+          <div className="bg-white dark:bg-[#121212] rounded-3xl border border-[rgba(0,60,40,0.12)] dark:border-[rgba(255, 255, 255,0.2)] max-w-xl w-full p-5 sm:p-8 shadow-2xl dark:shadow-glow space-y-5 relative my-auto max-h-[92vh] overflow-y-auto text-[#0F241C] dark:text-[#F2F7F3]">
             <button
               onClick={() => setShowVehicleModal(false)}
               className="absolute top-4 right-4 text-sm font-bold text-[#5F7E71] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] cursor-pointer"
@@ -1092,30 +1087,30 @@ export const AdminDashboard: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-bold text-[#355347] dark:text-[#8EA79C] mb-1">Transmission</label>
-                  <select value={vTransmission} onChange={(e) => setVTransmission(e.target.value as TransmissionType)} className="w-full p-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] bg-[#F4F8F6] dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3] text-xs font-bold focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]">
-                    <option value="Automatic" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Automatic</option>
-                    <option value="Manual" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Manual</option>
-                    <option value="CVT" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">CVT</option>
+                  <select value={vTransmission} onChange={(e) => setVTransmission(e.target.value as TransmissionType)} className="w-full p-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.2)] bg-[#F4F8F6] dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3] text-xs font-bold focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]">
+                    <option value="Automatic" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Automatic</option>
+                    <option value="Manual" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Manual</option>
+                    <option value="CVT" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">CVT</option>
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-[#355347] dark:text-[#8EA79C] mb-1">Fuel Type</label>
-                  <select value={vFuelType} onChange={(e) => setVFuelType(e.target.value as FuelType)} className="w-full p-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] bg-[#F4F8F6] dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3] text-xs font-bold focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]">
-                    <option value="Petrol" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Petrol</option>
-                    <option value="Diesel" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Diesel</option>
-                    <option value="Hybrid" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Hybrid</option>
-                    <option value="Electric" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Electric</option>
+                  <select value={vFuelType} onChange={(e) => setVFuelType(e.target.value as FuelType)} className="w-full p-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.2)] bg-[#F4F8F6] dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3] text-xs font-bold focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]">
+                    <option value="Petrol" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Petrol</option>
+                    <option value="Diesel" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Diesel</option>
+                    <option value="Hybrid" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Hybrid</option>
+                    <option value="Electric" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Electric</option>
                   </select>
                 </div>
               </div>
 
               {/* Photo Upload (.jpg) */}
-              <div className="space-y-2 border-t border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] py-3">
+              <div className="space-y-2 border-t border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] py-3">
                 <label className="block text-xs font-bold text-[#355347] dark:text-[#8EA79C] uppercase tracking-wider">
                   Vehicle Photographs (Import JPG / PNG files from device) *
                 </label>
                 <div className="flex items-center gap-3">
-                  <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#009E52] text-white hover:bg-[#007A3E] dark:bg-[#00E878] dark:text-[#001A13] dark:hover:bg-[#55FF78] text-xs font-extrabold shadow-sm transition-all">
+                  <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#0251B8] text-white hover:bg-[#014196] dark:bg-[#2D7DFF] dark:text-[#050505] dark:hover:bg-[#FF3B4E] text-xs font-extrabold shadow-sm transition-all">
                     <Upload className="w-4 h-4" />
                     <span>Select JPG / PNG Files</span>
                     <input
@@ -1133,12 +1128,12 @@ export const AdminDashboard: React.FC = () => {
 
                 {/* Photo Previews */}
                 {vImages.length > 0 && (
-                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-2 max-h-44 overflow-y-auto p-2 bg-[#F4F8F6] dark:bg-[#001711] rounded-xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)]">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-2 max-h-44 overflow-y-auto p-2 bg-[#F4F8F6] dark:bg-[#0A0A0A] rounded-xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)]">
                     {vImages.map((url, idx) => (
-                      <div key={idx} className="relative aspect-video rounded-lg overflow-hidden bg-[#EAF3EE] dark:bg-[#001F17] group border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] shadow-xs">
+                      <div key={idx} className="relative aspect-video rounded-lg overflow-hidden bg-[#EAF3EE] dark:bg-[#0A0A0A] group border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] shadow-xs">
                         <img src={url} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
                         {idx === 0 && (
-                          <span className="absolute bottom-1 left-1 text-[8px] font-black uppercase bg-[#009E52] text-white dark:bg-[#00E878] dark:text-[#001A13] px-1.5 py-0.5 rounded">Primary</span>
+                          <span className="absolute bottom-1 left-1 text-[8px] font-black uppercase bg-[#0251B8] text-white dark:bg-[#2D7DFF] dark:text-[#050505] px-1.5 py-0.5 rounded">Primary</span>
                         )}
                         <button
                           type="button"
@@ -1161,7 +1156,7 @@ export const AdminDashboard: React.FC = () => {
               
               <div>
                 <label className="block text-xs font-bold text-[#355347] dark:text-[#8EA79C] mb-1">Description</label>
-                <textarea rows={2} value={vDescription} onChange={(e) => setVDescription(e.target.value)} className="w-full p-3 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] bg-[#F4F8F6] dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3] text-xs focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]" />
+                <textarea rows={2} value={vDescription} onChange={(e) => setVDescription(e.target.value)} className="w-full p-3 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.2)] bg-[#F4F8F6] dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3] text-xs focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]" />
               </div>
 
               <Button type="submit" disabled={savingVehicle} fullWidth className="font-extrabold btn-glow">
@@ -1175,17 +1170,17 @@ export const AdminDashboard: React.FC = () => {
       {/* Create Auction Modal */}
       {showAuctionModal && (
         <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-[#00251B] rounded-3xl border border-[rgba(0,60,40,0.12)] dark:border-[rgba(180,255,210,0.2)] max-w-md w-full p-6 shadow-2xl dark:shadow-glow space-y-4 relative text-[#0F241C] dark:text-[#F2F7F3]">
+          <div className="bg-white dark:bg-[#121212] rounded-3xl border border-[rgba(0,60,40,0.12)] dark:border-[rgba(255, 255, 255,0.2)] max-w-md w-full p-6 shadow-2xl dark:shadow-glow space-y-4 relative text-[#0F241C] dark:text-[#F2F7F3]">
             <button onClick={() => setShowAuctionModal(false)} className="absolute top-4 right-4 text-xs font-bold text-[#5F7E71] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] cursor-pointer">✕</button>
             <h3 className="text-lg font-black text-[#0F241C] dark:text-[#F2F7F3]">Create New Auction</h3>
             
             <form onSubmit={handleCreateAuctionSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-[#355347] dark:text-[#8EA79C] mb-1">Select Vehicle *</label>
-                <select value={aucVehicleId} onChange={(e) => setAucVehicleId(e.target.value)} className="w-full p-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] bg-[#F4F8F6] dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3] text-xs font-bold focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]" required>
-                  <option value="" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">-- Choose Vehicle --</option>
+                <select value={aucVehicleId} onChange={(e) => setAucVehicleId(e.target.value)} className="w-full p-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.2)] bg-[#F4F8F6] dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3] text-xs font-bold focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]" required>
+                  <option value="" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">-- Choose Vehicle --</option>
                   {vehicles.map(v => (
-                    <option key={v.id} value={v.id} className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">{v.year} {v.make} {v.model} - KES {v.price.toLocaleString()}</option>
+                    <option key={v.id} value={v.id} className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">{v.year} {v.make} {v.model} - KES {v.price.toLocaleString()}</option>
                   ))}
                 </select>
               </div>

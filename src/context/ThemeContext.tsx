@@ -21,26 +21,29 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         return stored;
       }
     }
-    return 'dark'; // Default brand theme
+    return 'light'; // Default to light theme for new visits
   });
 
   const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem(THEME_STORAGE_KEY);
-      if (stored === 'light') return 'light';
       if (stored === 'dark') return 'dark';
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
-      if (window.matchMedia('(prefers-color-scheme: light)').matches) return 'light';
+      if (stored === 'light') return 'light';
+      if (stored === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
     }
-    return 'dark';
+    return 'light';
   });
 
-  // Synchronize document classes and data attributes
+  // Synchronize document classes, data attributes, and mobile status bar
   const applyTheme = (resolved: ResolvedTheme) => {
     setResolvedTheme(resolved);
     if (typeof document !== 'undefined') {
       const root = document.documentElement;
-      if (resolved === 'dark') {
+      const isDark = resolved === 'dark';
+      const statusColor = isDark ? '#000000' : '#FFFFFF';
+      const statusBarStyle = isDark ? 'black' : 'default';
+
+      if (isDark) {
         root.classList.add('dark');
         root.setAttribute('data-theme', 'dark');
         root.style.colorScheme = 'dark';
@@ -49,6 +52,24 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         root.setAttribute('data-theme', 'light');
         root.style.colorScheme = 'light';
       }
+
+      // Dynamically update mobile browser status-bar color (#FFFFFF for Light, #000000 for Dark)
+      let metaThemeColor = document.querySelector('meta[name="theme-color"]');
+      if (!metaThemeColor) {
+        metaThemeColor = document.createElement('meta');
+        metaThemeColor.setAttribute('name', 'theme-color');
+        document.head.appendChild(metaThemeColor);
+      }
+      metaThemeColor.setAttribute('content', statusColor);
+
+      // Dynamically update iOS status bar style ('default' for Light/dark-icons, 'black' for Dark/light-icons)
+      let metaAppleStatusBar = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+      if (!metaAppleStatusBar) {
+        metaAppleStatusBar = document.createElement('meta');
+        metaAppleStatusBar.setAttribute('name', 'apple-mobile-web-app-status-bar-style');
+        document.head.appendChild(metaAppleStatusBar);
+      }
+      metaAppleStatusBar.setAttribute('content', statusBarStyle);
     }
   };
 

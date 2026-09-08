@@ -28,9 +28,9 @@ const Terms = lazy(() => import('./pages/Terms').then((m) => ({ default: m.Terms
 const NotFound = lazy(() => import('./pages/NotFound').then((m) => ({ default: m.NotFound })));
 
 const PageLoader: React.FC = () => (
-  <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] flex items-center justify-center">
+  <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#050505] flex items-center justify-center">
     <div className="flex flex-col items-center gap-3">
-      <div className="w-9 h-9 border-3 border-[#009E52]/20 dark:border-[#00E878]/20 border-t-[#009E52] dark:border-t-[#00E878] rounded-full animate-spin" />
+      <div className="w-9 h-9 border-3 border-[#0251B8]/20 dark:border-[#2D7DFF]/20 border-t-[#0251B8] dark:border-t-[#2D7DFF] rounded-full animate-spin" />
       <span className="text-xs font-bold text-[#5F7E71] dark:text-[#8EA79C] tracking-wide">
         Loading...
       </span>
@@ -60,60 +60,20 @@ export const App: React.FC = () => {
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin/login" element={<AdminLogin />} />
 
-            {/* Protected Dashboard & Marketplace Feature Routes */}
-            <Route
-              path="/buy"
-              element={
-                <ProtectedRoute>
-                  <BuyCars />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/home"
-              element={
-                <ProtectedRoute>
-                  <Home />
-                </ProtectedRoute>
-              }
-            />
+            {/* Public Marketplace Catalog & Feature Routes */}
+            <Route path="/buy" element={<BuyCars />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/vehicles/:id" element={<VehicleDetails />} />
+            <Route path="/auction" element={<AuctionMarketplace />} />
+            <Route path="/trade-in" element={<TradeIn />} />
+            <Route path="/import" element={<ImportServicePage />} />
+
+            {/* Protected User Dashboard & Seller Listing Routes */}
             <Route
               path="/sell"
               element={
                 <ProtectedRoute>
                   <SellCar />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/vehicles/:id"
-              element={
-                <ProtectedRoute>
-                  <VehicleDetails />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/trade-in"
-              element={
-                <ProtectedRoute>
-                  <TradeIn />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/auction"
-              element={
-                <ProtectedRoute>
-                  <AuctionMarketplace />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/import"
-              element={
-                <ProtectedRoute>
-                  <ImportServicePage />
                 </ProtectedRoute>
               }
             />
@@ -126,11 +86,11 @@ export const App: React.FC = () => {
               }
             />
 
-            {/* Protected Yard Admin Console - Strictly Restricted to Admin & Yard Admin Roles */}
+            {/* Protected Yard Admin Console - Strictly Restricted to Admin Roles */}
             <Route
               path="/admin"
               element={
-                <ProtectedRoute allowedRoles={['admin', 'yard_admin']}>
+                <ProtectedRoute allowedRoles={['admin', 'yard_admin', 'super_admin']}>
                   <AdminDashboard />
                 </ProtectedRoute>
               }

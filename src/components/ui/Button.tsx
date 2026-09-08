@@ -28,12 +28,12 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   const variants = {
-    primary: "bg-[#009E52] dark:bg-[#00E878] text-white dark:text-[#001A13] font-bold hover:bg-[#008744] dark:hover:bg-[#55FF78] shadow-md hover:shadow-lg hover:-translate-y-[1px] shadow-[#009E52]/20 dark:shadow-[#00E878]/25 focus:ring-[#009E52] dark:focus:ring-[#00E878]",
-    secondary: "bg-[#EBF2EE] dark:bg-[#003D2D] text-[#009E52] dark:text-[#00E878] font-bold hover:bg-[#D8E6DE] dark:hover:bg-[#004D39] border border-[rgba(0,60,40,0.12)] dark:border-[rgba(180,255,210,0.2)] focus:ring-[#009E52] dark:focus:ring-[#00E878]",
-    outline: "bg-white dark:bg-[#002B1F]/60 text-[#0F241C] dark:text-[#F2F7F3] border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.25)] hover:border-[#009E52] dark:hover:border-[#00E878] hover:text-[#009E52] dark:hover:text-[#00E878] hover:bg-[#F4F8F6] dark:hover:bg-[#003D2D]/60 shadow-sm",
-    ghost: "bg-transparent text-[#5F7E71] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#EBF2EE]/60 dark:hover:bg-[#002B1F]/50",
+    primary: "bg-[#0251B8] dark:bg-[#2D7DFF] text-white dark:text-[#050505] font-bold hover:bg-[#014196] dark:hover:bg-[#FF3B4E] shadow-md hover:shadow-lg hover:-translate-y-[1px] shadow-[#0251B8]/20 dark:shadow-[#2D7DFF]/25 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]",
+    secondary: "bg-[#EBF2EE] dark:bg-[#1A1A1A] text-[#0251B8] dark:text-[#2D7DFF] font-bold hover:bg-[#D8E6DE] dark:hover:bg-[#242424] border border-[rgba(0,60,40,0.12)] dark:border-[rgba(255, 255, 255,0.2)] focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]",
+    outline: "bg-white dark:bg-[#121212]/60 text-[#0F241C] dark:text-[#F2F7F3] border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.25)] hover:border-[#0251B8] dark:hover:border-[#2D7DFF] hover:text-[#0251B8] dark:hover:text-[#2D7DFF] hover:bg-[#F4F8F6] dark:hover:bg-[#1A1A1A]/60 shadow-sm",
+    ghost: "bg-transparent text-[#5F7E71] dark:text-[#8EA79C] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] hover:bg-[#EBF2EE]/60 dark:hover:bg-[#121212]/50",
     danger: "bg-red-600/90 text-white hover:bg-red-600 shadow-md shadow-red-900/30 focus:ring-red-500",
-    success: "bg-[#009E52] dark:bg-[#00E878] text-white dark:text-[#001A13] font-bold hover:bg-[#008744] dark:hover:bg-[#55FF78] shadow-md shadow-[#009E52]/25 dark:shadow-[#00E878]/30 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+    success: "bg-[#0251B8] dark:bg-[#2D7DFF] text-white dark:text-[#050505] font-bold hover:bg-[#014196] dark:hover:bg-[#FF3B4E] shadow-md shadow-[#0251B8]/25 dark:shadow-[#2D7DFF]/30 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
   };
 
   return (

@@ -3,7 +3,7 @@ import { ShieldCheck, MapPin, Heart, ChevronLeft, ChevronRight } from 'lucide-re
 import { Vehicle, VehicleImage } from '../../types/database';
 import { Badge } from '../ui/Badge';
 import { VehicleImageWithFallback } from '../ui/VehicleImageWithFallback';
-import { getVehiclePrimaryImage } from '../../lib/utils/imageResolver';
+import { getVehiclePrimaryImage, normalizeImageUrl } from '../../lib/utils/imageResolver';
 
 interface VehicleCardCarouselProps {
   vehicle: Vehicle;
@@ -51,7 +51,7 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
       const imgObj = validImages[idx];
       if (imgObj?.image_url && !failedImageIds.has(imgObj.id || '')) {
         const img = new Image();
-        img.src = imgObj.image_url;
+        img.src = normalizeImageUrl(imgObj.image_url);
       }
     });
   }, [currentIndex, hasMultipleImages, validImages, failedImageIds]);
@@ -168,7 +168,7 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
   if (!hasMultipleImages) {
     const singleImg = validImages[0] || getVehiclePrimaryImage(vehicle);
     return (
-      <div className="relative aspect-[16/10] overflow-hidden bg-[#001711] select-none">
+      <div className="relative aspect-[16/10] overflow-hidden bg-[#0A0A0A] select-none">
         <VehicleImageWithFallback
           image={singleImg}
           make={vehicle.make}
@@ -194,8 +194,8 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
         </div>
 
         <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
-          <div className="bg-[#001A13]/85 backdrop-blur-md text-[#F2F7F3] border border-[rgba(180,255,210,0.15)] text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md">
-            <MapPin className="w-3 h-3 text-[#00E878]" />
+          <div className="bg-[#050505]/85 backdrop-blur-md text-[#F2F7F3] border border-[rgba(255, 255, 255,0.15)] text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md">
+            <MapPin className="w-3 h-3 text-[#2D7DFF]" />
             <span>{vehicle.location}</span>
           </div>
         </div>
@@ -207,7 +207,7 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
             e.stopPropagation();
           }}
           aria-label="Save to favorites"
-          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-[#00251B]/80 backdrop-blur-md border border-[rgba(180,255,210,0.15)] flex items-center justify-center text-[#8EA79C] hover:text-red-400 hover:bg-[#003D2D] active:scale-90 transition-all z-20 shadow-xs"
+          className="absolute top-3 right-3 w-8 h-8 rounded-full bg-[#121212]/80 backdrop-blur-md border border-[rgba(255, 255, 255,0.15)] flex items-center justify-center text-[#8EA79C] hover:text-red-400 hover:bg-[#1A1A1A] active:scale-90 transition-all z-20 shadow-xs"
         >
           <Heart className="w-4 h-4" />
         </button>
@@ -235,7 +235,7 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUpOrCancel}
       onPointerCancel={handlePointerUpOrCancel}
-      className="relative aspect-[16/10] overflow-hidden bg-[#001711] touch-pan-y select-none group/carousel focus:outline-none"
+      className="relative aspect-[16/10] overflow-hidden bg-[#0A0A0A] touch-pan-y select-none group/carousel focus:outline-none"
     >
       {/* GPU-Accelerated Physical Horizontal Sliding Track */}
       <div
@@ -261,7 +261,7 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
                 />
               ) : (
                 <img
-                  src={img.image_url}
+                  src={normalizeImageUrl(img.image_url)}
                   alt={img.alt_text || `${vehicle.year} ${vehicle.make} ${vehicle.model} - Photo ${idx + 1}`}
                   onError={() => img.id && handleImageError(img.id)}
                   className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500 ease-out pointer-events-none"
@@ -278,7 +278,7 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
         type="button"
         onClick={handlePrevClick}
         aria-label="Previous image"
-        className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#001A13]/70 hover:bg-[#00E878] hover:text-[#001A13] text-[#F2F7F3] backdrop-blur-md border border-[rgba(180,255,210,0.2)] flex items-center justify-center transition-all opacity-0 group-hover/carousel:opacity-100 z-20 active:scale-90 shadow-md"
+        className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#050505]/70 hover:bg-[#2D7DFF] hover:text-[#050505] text-[#F2F7F3] backdrop-blur-md border border-[rgba(255, 255, 255,0.2)] flex items-center justify-center transition-all opacity-0 group-hover/carousel:opacity-100 z-20 active:scale-90 shadow-md"
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
@@ -287,7 +287,7 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
         type="button"
         onClick={handleNextClick}
         aria-label="Next image"
-        className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#001A13]/70 hover:bg-[#00E878] hover:text-[#001A13] text-[#F2F7F3] backdrop-blur-md border border-[rgba(180,255,210,0.2)] flex items-center justify-center transition-all opacity-0 group-hover/carousel:opacity-100 z-20 active:scale-90 shadow-md"
+        className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#050505]/70 hover:bg-[#2D7DFF] hover:text-[#050505] text-[#F2F7F3] backdrop-blur-md border border-[rgba(255, 255, 255,0.2)] flex items-center justify-center transition-all opacity-0 group-hover/carousel:opacity-100 z-20 active:scale-90 shadow-md"
       >
         <ChevronRight className="w-5 h-5" />
       </button>
@@ -309,12 +309,12 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
 
       {/* Location Tag & Image Counter */}
       <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-none z-10">
-        <div className="bg-[#001A13]/85 backdrop-blur-md text-[#F2F7F3] border border-[rgba(180,255,210,0.15)] text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md">
-          <MapPin className="w-3 h-3 text-[#00E878]" />
+        <div className="bg-[#050505]/85 backdrop-blur-md text-[#F2F7F3] border border-[rgba(255, 255, 255,0.15)] text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md">
+          <MapPin className="w-3 h-3 text-[#2D7DFF]" />
           <span>{vehicle.location}</span>
         </div>
 
-        <div className="bg-[#00251B]/90 backdrop-blur-md text-[#00E878] text-[10px] font-extrabold px-2.5 py-1 rounded-full border border-[rgba(180,255,210,0.2)] shadow-md tracking-tight">
+        <div className="bg-[#121212]/90 backdrop-blur-md text-[#2D7DFF] text-[10px] font-extrabold px-2.5 py-1 rounded-full border border-[rgba(255, 255, 255,0.2)] shadow-md tracking-tight">
           {currentIndex + 1} / {validImages.length}
         </div>
       </div>
@@ -327,7 +327,7 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
           e.stopPropagation();
         }}
         aria-label="Save to favorites"
-        className="absolute top-3 right-3 w-8 h-8 rounded-full bg-[#00251B]/80 backdrop-blur-md border border-[rgba(180,255,210,0.15)] flex items-center justify-center text-[#8EA79C] hover:text-red-400 hover:bg-[#003D2D] active:scale-90 transition-all z-20 shadow-xs"
+        className="absolute top-3 right-3 w-8 h-8 rounded-full bg-[#121212]/80 backdrop-blur-md border border-[rgba(255, 255, 255,0.15)] flex items-center justify-center text-[#8EA79C] hover:text-red-400 hover:bg-[#1A1A1A] active:scale-90 transition-all z-20 shadow-xs"
       >
         <Heart className="w-4 h-4" />
       </button>

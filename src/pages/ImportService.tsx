@@ -3,7 +3,9 @@ import { Navbar } from '../components/navigation/Navbar';
 import { Plane, CheckCircle2, ShieldCheck, Ship, Globe, FileCheck, ArrowRight, Upload, FileText, AlertCircle } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { ImportService, AuthService, AuthUser } from '../lib/supabase/client';
+import { ImportService } from '../lib/import/import.service';
+import { AuthService } from '../lib/auth/auth.service';
+import type { AuthUser } from '../lib/auth/session';
 import { useSEO } from '../lib/hooks/useSEO';
 import { siteConfig } from '../config/site';
 
@@ -95,14 +97,14 @@ export const ImportServicePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col font-sans selection:bg-[#00E878] selection:text-[#001A13]">
+    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#050505] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col font-sans selection:bg-[#0251B8] dark:selection:bg-[#2D7DFF] selection:text-[#050505]">
       <Navbar />
 
       {/* Hero */}
-      <div className="bg-gradient-to-r from-[#EDF5F1] via-[#E4EFEA] to-[#DBE9E2] dark:from-[#00140F] dark:via-[#00251B] dark:to-[#001F17] border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] text-[#0F241C] dark:text-[#F2F7F3] py-14 px-4 sm:px-6 lg:px-8">
+      <div className="bg-gradient-to-r from-[#EDF5F1] via-[#E4EFEA] to-[#DBE9E2] dark:from-[#000000] dark:via-[#121212] dark:to-[#0A0A0A] border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] text-[#0F241C] dark:text-[#F2F7F3] py-14 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#009E52]/10 dark:bg-[#002B1F]/90 border border-[#009E52]/20 dark:border-[#00E878]/30 text-xs font-extrabold uppercase tracking-wider text-[#009E52] dark:text-[#00E878]">
-            <Globe className="w-4 h-4 text-[#009E52] dark:text-[#00E878]" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0251B8]/10 dark:bg-[#121212]/90 border border-[#0251B8]/20 dark:border-[#2D7DFF]/30 text-xs font-extrabold uppercase tracking-wider text-[#0251B8] dark:text-[#2D7DFF]">
+            <Globe className="w-4 h-4 text-[#0251B8] dark:text-[#2D7DFF]" />
             <span>GLOBAL VEHICLE SOURCING & CUSTOMS CLEARANCE</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-[#0F241C] dark:text-[#F2F7F3]">
@@ -116,8 +118,8 @@ export const ImportServicePage: React.FC = () => {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-[calc(7rem+env(safe-area-inset-bottom,0px))] md:pb-12 w-full flex-grow">
         {submittedRef ? (
-          <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.18)] p-8 sm:p-12 shadow-sm dark:shadow-2xl text-center space-y-6">
-            <div className="w-20 h-20 bg-[#E0F8EC] dark:bg-[#003D2D] text-[#009E52] dark:text-[#00E878] border border-[#009E52]/30 dark:border-[#00E878]/30 rounded-full flex items-center justify-center mx-auto shadow-sm">
+          <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.18)] p-8 sm:p-12 shadow-sm dark:shadow-2xl text-center space-y-6">
+            <div className="w-20 h-20 bg-[#EBF2FC] dark:bg-[#1A1A1A] text-[#0251B8] dark:text-[#2D7DFF] border border-[#0251B8]/30 dark:border-[#2D7DFF]/30 rounded-full flex items-center justify-center mx-auto shadow-sm">
               <CheckCircle2 className="w-10 h-10" />
             </div>
             <div className="space-y-2">
@@ -127,10 +129,10 @@ export const ImportServicePage: React.FC = () => {
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-[#F4F8F6] dark:bg-[#001F17] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] inline-block w-full max-w-md text-left space-y-2">
+            <div className="p-6 rounded-2xl bg-[#F4F8F6] dark:bg-[#0A0A0A] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] inline-block w-full max-w-md text-left space-y-2">
               <div className="text-xs font-bold text-[#355347] dark:text-[#8EA79C] uppercase tracking-wider">Import Reference Code</div>
-              <div className="text-2xl font-black font-mono text-[#009E52] dark:text-[#00E878]">{submittedRef}</div>
-              <div className="text-xs text-[#355347] dark:text-[#8EA79C] pt-2 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)]">
+              <div className="text-2xl font-black font-mono text-[#0251B8] dark:text-[#2D7DFF]">{submittedRef}</div>
+              <div className="text-xs text-[#355347] dark:text-[#8EA79C] pt-2 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)]">
                 Requested: <strong className="text-[#0F241C] dark:text-[#F2F7F3]">{make} {model} ({preferredSourceCountry})</strong>
               </div>
             </div>
@@ -146,8 +148,8 @@ export const ImportServicePage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.18)] p-6 sm:p-10 shadow-sm dark:shadow-2xl space-y-8">
-            <div className="border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] pb-6">
+          <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.18)] p-6 sm:p-10 shadow-sm dark:shadow-2xl space-y-8">
+            <div className="border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] pb-6">
               <h2 className="text-2xl font-black text-[#0F241C] dark:text-[#F2F7F3]">Direct Import Sourcing Application</h2>
               <p className="text-xs sm:text-sm text-[#355347] dark:text-[#8EA79C] mt-1">
                 Fill in your desired vehicle specifications and budget to begin sourcing.
@@ -165,7 +167,7 @@ export const ImportServicePage: React.FC = () => {
               
               {/* Contact Info */}
               <div>
-                <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#009E52] dark:text-[#00E878] mb-4">
+                <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#0251B8] dark:text-[#2D7DFF] mb-4">
                   1. Buyer Details
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -196,7 +198,7 @@ export const ImportServicePage: React.FC = () => {
 
               {/* Sourcing Requirements */}
               <div>
-                <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#009E52] dark:text-[#00E878] mb-4">
+                <h3 className="text-sm font-extrabold uppercase tracking-wider text-[#0251B8] dark:text-[#2D7DFF] mb-4">
                   2. Vehicle Sourcing Requirements
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -205,12 +207,12 @@ export const ImportServicePage: React.FC = () => {
                     <select
                       value={preferredSourceCountry}
                       onChange={(e) => setPreferredSourceCountry(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.18)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                      className="w-full px-4 py-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.18)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#0A0A0A] focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                     >
-                      <option value="Japan" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Japan (JDM / USS Auctions)</option>
-                      <option value="United Kingdom" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">United Kingdom (UK Specs)</option>
-                      <option value="Australia" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Australia</option>
-                      <option value="Dubai" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Dubai / UAE</option>
+                      <option value="Japan" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Japan (JDM / USS Auctions)</option>
+                      <option value="United Kingdom" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">United Kingdom (UK Specs)</option>
+                      <option value="Australia" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Australia</option>
+                      <option value="Dubai" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Dubai / UAE</option>
                     </select>
                   </div>
                   <Input
@@ -246,10 +248,10 @@ export const ImportServicePage: React.FC = () => {
                     <select
                       value={shippingPreference}
                       onChange={(e) => setShippingPreference(e.target.value)}
-                      className="w-full px-4 py-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.18)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                      className="w-full px-4 py-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.18)] text-xs font-bold text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#0A0A0A] focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                     >
-                      <option value="RoRo" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Roll-on/Roll-off (RoRo)</option>
-                      <option value="Container" className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">Dedicated Container Shipping</option>
+                      <option value="RoRo" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Roll-on/Roll-off (RoRo)</option>
+                      <option value="Container" className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">Dedicated Container Shipping</option>
                     </select>
                   </div>
                 </div>
@@ -264,7 +266,7 @@ export const ImportServicePage: React.FC = () => {
                     placeholder="e.g. Sunroof, Leather interior, 360 camera, White or Black exterior..."
                     value={preferredSpecs}
                     onChange={(e) => setPreferredSpecs(e.target.value)}
-                    className="w-full p-4 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.18)] text-xs text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] placeholder-[#355347]/50 dark:placeholder-[#8EA79C]/50 focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                    className="w-full p-4 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.18)] text-xs text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#0A0A0A] placeholder-[#355347]/50 dark:placeholder-[#8EA79C]/50 focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                   />
                 </div>
 
@@ -275,7 +277,7 @@ export const ImportServicePage: React.FC = () => {
                     placeholder="Any special inspection certs, delivery destination, financing requests..."
                     value={additionalRequirements}
                     onChange={(e) => setAdditionalRequirements(e.target.value)}
-                    className="w-full p-4 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.18)] text-xs text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#001F17] placeholder-[#355347]/50 dark:placeholder-[#8EA79C]/50 focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                    className="w-full p-4 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.18)] text-xs text-[#0F241C] dark:text-[#F2F7F3] bg-[#F4F8F6] dark:bg-[#0A0A0A] placeholder-[#355347]/50 dark:placeholder-[#8EA79C]/50 focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                   />
                 </div>
 
@@ -285,8 +287,8 @@ export const ImportServicePage: React.FC = () => {
                     Upload PIN / Import Authorization Document (.pdf / .doc)
                   </label>
                   <div className="flex items-center gap-3">
-                    <label className="cursor-pointer inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#E0F8EC] dark:bg-[#003D2D] text-[#009E52] dark:text-[#00E878] border border-[#009E52]/30 dark:border-[#00E878]/30 text-xs font-extrabold shadow-sm hover:bg-[#D0F2E2] dark:hover:bg-[#004D39] transition-all">
-                      <FileText className="w-4 h-4 text-[#009E52] dark:text-[#00E878]" />
+                    <label className="cursor-pointer inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#EBF2FC] dark:bg-[#1A1A1A] text-[#0251B8] dark:text-[#2D7DFF] border border-[#0251B8]/30 dark:border-[#2D7DFF]/30 text-xs font-extrabold shadow-sm hover:bg-[#DCE9FB] dark:hover:bg-[#242424] transition-all">
+                      <FileText className="w-4 h-4 text-[#0251B8] dark:text-[#2D7DFF]" />
                       <span>Select Document (.pdf / .doc)</span>
                       <input
                         type="file"
@@ -296,7 +298,7 @@ export const ImportServicePage: React.FC = () => {
                       />
                     </label>
                     {docFileName && (
-                      <div className="flex items-center gap-2 bg-[#F4F8F6] dark:bg-[#003D2D]/80 border border-[#009E52]/30 dark:border-[#00E878]/30 text-[#009E52] dark:text-[#00E878] px-3 py-1.5 rounded-lg text-xs font-bold">
+                      <div className="flex items-center gap-2 bg-[#F4F8F6] dark:bg-[#1A1A1A]/80 border border-[#0251B8]/30 dark:border-[#2D7DFF]/30 text-[#0251B8] dark:text-[#2D7DFF] px-3 py-1.5 rounded-lg text-xs font-bold">
                         <FileText className="w-4 h-4" />
                         <span className="truncate max-w-[200px]">{docFileName}</span>
                       </div>
@@ -305,7 +307,7 @@ export const ImportServicePage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)]">
+              <div className="pt-4 border-t border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)]">
                 <Button type="submit" fullWidth loading={loading} className="py-3.5 text-sm font-extrabold btn-glow">
                   Submit Direct Import Request
                 </Button>

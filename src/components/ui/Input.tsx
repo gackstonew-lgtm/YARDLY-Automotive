@@ -34,10 +34,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
         <input
           ref={ref}
           id={inputId}
-          className={`w-full rounded-xl border bg-white dark:bg-[#001F17] px-4 py-3 text-sm text-[#0F241C] dark:text-[#F2F7F3] placeholder-[#5F7E71]/60 dark:placeholder-[#8EA79C]/60 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878] focus:border-transparent ${
+          className={`w-full rounded-xl border bg-white dark:bg-[#0A0A0A] px-4 py-3 text-sm text-[#0F241C] dark:text-[#F2F7F3] placeholder-[#5F7E71]/60 dark:placeholder-[#8EA79C]/60 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF] focus:border-transparent ${
             icon ? 'pl-10' : ''
           } ${
-            error ? 'border-red-500 focus:ring-red-500' : 'border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.18)] hover:border-[#009E52]/60 dark:hover:border-[#00E878]/60'
+            error ? 'border-red-500 focus:ring-red-500' : 'border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.18)] hover:border-[#0251B8]/60 dark:hover:border-[#2D7DFF]/60'
           } ${className}`}
           {...props}
         />

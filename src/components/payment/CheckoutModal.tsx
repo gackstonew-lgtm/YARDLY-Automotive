@@ -5,7 +5,7 @@ import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Vehicle } from '../../types/database';
 import { siteConfig } from '../../config/site';
-import { ReservationService, PaymentService } from '../../lib/supabase/client';
+import { ReservationService, PaymentService } from '../../lib/payments/payment.service';
 import { EmailService } from '../../lib/email/resend';
 
 interface CheckoutModalProps {
@@ -133,14 +133,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     >
       {paymentStatus === 'paid' ? (
         <div className="text-center py-6 space-y-4">
-          <div className="w-16 h-16 rounded-full bg-[#E0F8EC] dark:bg-[#003D2D] text-[#009E52] dark:text-[#00E878] border border-[#009E52]/30 dark:border-[#00E878]/30 flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(0,232,120,0.2)]">
+          <div className="w-16 h-16 rounded-full bg-[#EBF2FC] dark:bg-[#1A1A1A] text-[#0251B8] dark:text-[#2D7DFF] border border-[#0251B8]/30 dark:border-[#2D7DFF]/30 flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(45, 125, 255,0.2)]">
             <CheckCircle2 className="w-8 h-8" />
           </div>
           <h3 className="text-2xl font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">Vehicle Reserved!</h3>
           <p className="text-xs text-[#355347] dark:text-[#A7BDB3] max-w-xs mx-auto">
             M-Pesa receipt <strong>{receiptNumber}</strong> confirmed. A reservation email has been sent to <strong>{buyerEmail}</strong>.
           </p>
-          <div className="p-4 rounded-2xl bg-[#F4F8F6] dark:bg-[#001F17] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] text-left text-xs space-y-1">
+          <div className="p-4 rounded-2xl bg-[#F4F8F6] dark:bg-[#0A0A0A] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] text-left text-xs space-y-1">
             <div className="font-bold text-[#0F241C] dark:text-[#F2F7F3]">Next Steps:</div>
             <div className="text-[#355347] dark:text-[#8EA79C]">1. Our sales rep will call {buyerPhone} to confirm inspection.</div>
             <div className="text-[#355347] dark:text-[#8EA79C]">2. Visit {siteConfig.contact.address} to complete final paperwork.</div>
@@ -159,10 +159,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           )}
 
           {/* Deposit Summary Box */}
-          <div className="p-4 rounded-2xl bg-[#F4F8F6] dark:bg-[#001F17] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] flex items-center justify-between">
+          <div className="p-4 rounded-2xl bg-[#F4F8F6] dark:bg-[#0A0A0A] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] flex items-center justify-between">
             <div>
               <div className="text-[10px] font-bold text-[#355347] dark:text-[#8EA79C] uppercase">Holding Deposit</div>
-              <div className="text-xl font-black text-[#009E52] dark:text-[#00E878]">KES {depositAmount.toLocaleString()}</div>
+              <div className="text-xl font-black text-[#0251B8] dark:text-[#2D7DFF]">KES {depositAmount.toLocaleString()}</div>
             </div>
             <div className="text-right">
               <div className="text-[10px] font-bold text-[#355347] dark:text-[#8EA79C] uppercase">Vehicle Price</div>
@@ -198,7 +198,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           />
 
           <div className="flex items-center gap-2 text-xs text-[#355347] dark:text-[#8EA79C] pt-1">
-            <Lock className="w-4 h-4 text-[#009E52] dark:text-[#00E878]" />
+            <Lock className="w-4 h-4 text-[#0251B8] dark:text-[#2D7DFF]" />
             <span>256-bit SSL encrypted. Idempotency protected.</span>
           </div>
 

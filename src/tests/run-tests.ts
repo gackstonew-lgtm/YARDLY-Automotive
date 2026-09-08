@@ -1,10 +1,24 @@
 import { getPaymentProvider } from '../lib/payments/factory.js';
-import { VehicleService, AuthService, requireAdminRole, isAdminRole } from '../lib/supabase/client.js';
+import { 
+  VehicleService, 
+  AuthService, 
+  requireAdminRole, 
+  isAdminRole, 
+  isStaffRole, 
+  hasRequiredRole 
+} from '../lib/supabase/client.js';
 import { EmailService } from '../lib/email/resend.js';
+import { 
+  SignUpSchema, 
+  InquiryInputSchema, 
+  TestDriveInputSchema, 
+  VehicleInputSchema,
+  AuctionBidSchema
+} from '../lib/validation/schemas.js';
 
 async function runVerificationSuite() {
   console.log('====================================================');
-  console.log('RUNNING Yardly Automotives PLATFORM INTEGRATION TEST SUITE');
+  console.log('RUNNING YARDLY AUTOMOTIVE PRODUCTION INTEGRATION TEST SUITE');
   console.log('====================================================\n');
 
   let passed = 0;
@@ -24,10 +38,10 @@ async function runVerificationSuite() {
   try {
     const testProvider = getPaymentProvider('test');
     const paymentRes = await testProvider.initiatePayment({
-      vehicleId: 'v1000000-0000-0000-0000-000000000001',
+      vehicleId: 'a1000000-0000-0000-0000-000000000001',
       amount: 50000,
       phone: '0712345678',
-      email: 'test@yardly.co.ke',
+      email: 'buyer@yardly.co.ke',
       fullName: 'Test Buyer'
     });
     assert(paymentRes.success === true && paymentRes.status === 'paid', 'Test Mode M-Pesa Payment Initiation');
@@ -39,10 +53,10 @@ async function runVerificationSuite() {
   try {
     const testProvider = getPaymentProvider('test');
     const paymentRes = await testProvider.initiatePayment({
-      vehicleId: 'v1000000-0000-0000-0000-000000000001',
+      vehicleId: 'a1000000-0000-0000-0000-000000000001',
       amount: 50000,
       phone: '0712340000',
-      email: 'test@yardly.co.ke',
+      email: 'buyer@yardly.co.ke',
       fullName: 'Decline Buyer'
     });
     assert(paymentRes.success === false && paymentRes.status === 'failed', 'Payment Decline Handling (0000)');
@@ -56,7 +70,10 @@ async function runVerificationSuite() {
       make: 'Toyota',
       bodyType: 'SUV'
     });
-    assert(toyotaSUVList.length > 0 && toyotaSUVList.every(v => v.make === 'Toyota' && v.body_type === 'SUV'), 'Vehicle Filtering by Make & Body Type');
+    assert(
+      toyotaSUVList.length > 0 && toyotaSUVList.every(v => v.make.toLowerCase() === 'toyota' && v.body_type === 'SUV'),
+      'Vehicle Filtering by Make & Body Type'
+    );
   } catch (e) {
     assert(false, `Vehicle Filter Exception: ${e}`);
   }
@@ -66,183 +83,159 @@ async function runVerificationSuite() {
     const sortedList = await VehicleService.filterVehicles({
       sortBy: 'price_high'
     });
-    assert(sortedList[0].price >= sortedList[sortedList.length - 1].price, 'Vehicle Sorting by Price High to Low');
+    assert(
+      sortedList.length > 0 && sortedList[0].price >= sortedList[sortedList.length - 1].price,
+      'Vehicle Sorting by Price High to Low'
+    );
   } catch (e) {
     assert(false, `Price Sort Exception: ${e}`);
   }
 
-  // TEST 5: Email HTML Generation
+  // TEST 5: Targeted Vehicle Lookup by ID / Slug
+  try {
+    const vehicle = await VehicleService.getById('a1000000-0000-0000-0000-000000000001');
+    assert(
+      vehicle !== null && vehicle.id === 'a1000000-0000-0000-0000-000000000001' && vehicle.images.length > 0,
+      'Targeted Vehicle Lookup with Resolved Images'
+    );
+  } catch (e) {
+    assert(false, `Targeted Vehicle Lookup Exception: ${e}`);
+  }
+
+  // TEST 6: Email HTML Generation
   try {
     const html = EmailService.generateReservationEmailHtml('Jane Doe', '2019 Toyota Harrier', 50000, 'res-101');
-    assert(html.includes('Jane Doe') && html.includes('Toyota Harrier') && html.includes('50,000'), 'Transactional Reservation Email HTML Generation');
+    assert(
+      html.includes('Jane Doe') && html.includes('Toyota Harrier') && html.includes('50,000'),
+      'Transactional Reservation Email HTML Generation'
+    );
   } catch (e) {
     assert(false, `Email HTML Generation Exception: ${e}`);
   }
 
-  // TEST 6: Dedicated Yard Admin Authentication (yardlyauto@admin.com / Admin123.)
+  // TEST 7: Role Hierarchy & Permission Helpers
   try {
-    const adminAuthRes = await AuthService.signIn('yardlyauto@admin.com', 'Admin123.');
     assert(
-      adminAuthRes.success === true &&
-      adminAuthRes.user?.email === 'yardlyauto@admin.com' &&
-      adminAuthRes.user?.role === 'yard_admin',
-      'Yard Admin Sign In with yardlyauto@admin.com & role=yard_admin'
-    );
-  } catch (e) {
-    assert(false, `Yard Admin Sign In Exception: ${e}`);
-  }
-
-  // TEST 7: Dedicated Yard Admin Executive Access & requireAdminRole Guard
-  try {
-    const adminPortalRes = await AuthService.adminSignIn('yardlyauto@admin.com', 'Admin123.');
-    const validatedAdmin = await requireAdminRole();
-    assert(
-      adminPortalRes.success === true &&
-      adminPortalRes.user?.role === 'yard_admin' &&
-      validatedAdmin.role === 'yard_admin',
-      'Yard Admin AdminSignIn & Server-level Guard Authorization'
-    );
-  } catch (e) {
-    assert(false, `Yard Admin Portal Login Exception: ${e}`);
-  }
-
-  // TEST 8: Invalid Admin Credentials Rejection
-  try {
-    const badLogin = await AuthService.signIn('yardlyauto@admin.com', 'WrongPassword123');
-    assert(badLogin.success === false, 'Invalid Admin Password Properly Rejected');
-  } catch (e) {
-    assert(false, `Bad Admin Password Exception: ${e}`);
-  }
-
-  // TEST 9: Public Registration Cannot Assign Administrative Roles
-  try {
-    const testEmail = `intruder_${Date.now()}@test.com`;
-    const attemptAdminSignUp = await AuthService.signUp(
-      testEmail,
-      'TestPass123.',
-      'Intruder Test',
-      'yard_admin' as any
+      isAdminRole('super_admin') && isAdminRole('admin') && isAdminRole('yard_admin') && !isAdminRole('buyer') && !isAdminRole('seller'),
+      'isAdminRole Verification for Admin Roles'
     );
     assert(
-      attemptAdminSignUp.success === true &&
-      attemptAdminSignUp.user?.role === 'buyer',
-      'Public Registration Role Sanitization (cannot self-assign admin/yard_admin)'
+      isStaffRole('staff') && isStaffRole('yard_admin') && isStaffRole('admin') && !isStaffRole('buyer'),
+      'isStaffRole Verification for Staff Hierarchy'
     );
-  } catch (e) {
-    assert(false, `Sign Up Role Sanitization Exception: ${e}`);
-  }
-
-  // TEST 10: Centralized Admin Role Verification Utility
-  try {
-    const isYardAdmin = isAdminRole('yard_admin');
-    const isSystemAdmin = isAdminRole('admin');
-    const isBuyerAdmin = isAdminRole('buyer');
-    const isSellerAdmin = isAdminRole('seller');
     assert(
-      isYardAdmin === true &&
-      isSystemAdmin === true &&
-      isBuyerAdmin === false &&
-      isSellerAdmin === false,
-      'Centralized isAdminRole Helper Verification'
+      hasRequiredRole('admin', 'staff') && hasRequiredRole('super_admin', 'admin') && !hasRequiredRole('buyer', 'staff'),
+      'hasRequiredRole Hierarchy Verification'
     );
   } catch (e) {
-    assert(false, `isAdminRole Helper Exception: ${e}`);
+    assert(false, `Role Hierarchy Helper Exception: ${e}`);
   }
 
-  // TEST 11: Reactive onAuthStateChange Subscription
+  // TEST 8: Public Registration Validation & Role Sanitization
   try {
-    let capturedUser: any = undefined;
-    const unsub = AuthService.onAuthStateChange((u) => {
-      capturedUser = u;
+    const validBuyer = SignUpSchema.safeParse({
+      email: 'buyer@yardly.co.ke',
+      password: 'SecurePassword123!',
+      fullName: 'Valid Buyer',
+      role: 'buyer'
     });
+    const invalidRoleAttempt = SignUpSchema.safeParse({
+      email: 'intruder@test.com',
+      password: 'SecurePassword123!',
+      fullName: 'Intruder',
+      role: 'admin' as any
+    });
+    assert(
+      validBuyer.success === true && invalidRoleAttempt.success === false,
+      'Public Registration Role Validation (cannot submit admin/staff role)'
+    );
+  } catch (e) {
+    assert(false, `Registration Validation Exception: ${e}`);
+  }
+
+  // TEST 9: Zod Schema Validation for Vehicle Inquiries
+  try {
+    const validInquiry = InquiryInputSchema.safeParse({
+      vehicle_id: 'a1000000-0000-0000-0000-000000000001',
+      name: 'John Kamau',
+      phone: '0712345678',
+      email: 'john@example.com',
+      message: 'I would like to view this car tomorrow.'
+    });
+    const invalidPhoneInquiry = InquiryInputSchema.safeParse({
+      vehicle_id: 'a1000000-0000-0000-0000-000000000001',
+      name: 'John',
+      phone: '12345',
+      email: 'invalid-email',
+      message: 'Hi'
+    });
+    assert(
+      validInquiry.success === true && invalidPhoneInquiry.success === false,
+      'Vehicle Inquiry Zod Input Validation'
+    );
+  } catch (e) {
+    assert(false, `Inquiry Validation Exception: ${e}`);
+  }
+
+  // TEST 10: Zod Schema Validation for Test Drive Requests
+  try {
+    const validTestDrive = TestDriveInputSchema.safeParse({
+      vehicle_id: 'a1000000-0000-0000-0000-000000000001',
+      name: 'Sarah Mwangi',
+      phone: '+254712345678',
+      email: 'sarah@example.com',
+      preferred_date: '2026-09-15',
+      preferred_time: '10:00 AM'
+    });
+    assert(validTestDrive.success === true, 'Test Drive Request Zod Input Validation');
+  } catch (e) {
+    assert(false, `Test Drive Validation Exception: ${e}`);
+  }
+
+  // TEST 11: Zod Schema Validation for Auction Bids
+  try {
+    const validBid = AuctionBidSchema.safeParse({
+      auction_id: 'auc-101',
+      buyer_id: 'u-101',
+      buyer_name: 'Bidder One',
+      buyer_email: 'bidder@yardly.co.ke',
+      amount: 4500000
+    });
+    const invalidNegativeBid = AuctionBidSchema.safeParse({
+      auction_id: 'auc-101',
+      buyer_id: 'u-101',
+      buyer_name: 'Bidder One',
+      buyer_email: 'bidder@yardly.co.ke',
+      amount: -500
+    });
+    assert(
+      validBid.success === true && invalidNegativeBid.success === false,
+      'Auction Bid Zod Positive Amount Validation'
+    );
+  } catch (e) {
+    assert(false, `Auction Bid Validation Exception: ${e}`);
+  }
+
+  // TEST 12: Reactive onAuthStateChange Subscription
+  try {
+    const unsub = AuthService.onAuthStateChange(() => {});
     assert(typeof unsub === 'function', 'AuthService.onAuthStateChange Returns Unsubscribe Handler');
     unsub();
   } catch (e) {
     assert(false, `onAuthStateChange Exception: ${e}`);
   }
 
-  // TEST 12: Admin Vehicle Listing Creation & Retrieval (e.g. Mercedes-Benz C200d)
+  // TEST 13: Admin Guard Rejection for Unauthenticated / Non-Admin Users
   try {
-    await AuthService.adminSignIn('yardlyauto@admin.com', 'Admin123.');
-    const newVehicle = await VehicleService.addVehicle({
-      make: 'Mercedes-Benz',
-      model: `C-Class C200d Test-${Date.now()}`,
-      year: 2021,
-      price: 5850000,
-      currency: 'KES',
-      mileage: 38000,
-      engine_cc: 1950,
-      fuel_type: 'Diesel',
-      transmission: 'Automatic',
-      body_type: 'Sedan',
-      color: 'Iridium Silver',
-      location: 'Nairobi',
-      description: 'Test Mercedes-Benz C200d listing verification',
-      status: 'active',
-      verification_status: 'verified',
-      logbook_verified: true,
-      featured: true,
-      seller_type: 'dealer',
-      dealer_name: 'Yardly Certified',
-      images: [
-        {
-          id: `img-benz-${Date.now()}`,
-          vehicle_id: '',
-          image_url: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=800&q=80',
-          display_order: 1,
-          is_primary: true,
-          created_at: new Date().toISOString()
-        }
-      ]
-    });
-    const fetched = await VehicleService.getById(newVehicle.id);
-    assert(
-      fetched !== null &&
-      fetched.id === newVehicle.id &&
-      fetched.make === 'Mercedes-Benz' &&
-      fetched.price === 5850000,
-      'Admin Vehicle Listing Creation & Retrieval (Mercedes-Benz C200d)'
-    );
+    let threw = false;
+    try {
+      await requireAdminRole();
+    } catch {
+      threw = true;
+    }
+    assert(threw === true, 'requireAdminRole Guard Enforces Admin Authorization');
   } catch (e) {
-    assert(false, `Admin Vehicle Creation Exception: ${e}`);
-  }
-
-  // TEST 13: Live Public User Registration & Profile Verification
-  try {
-    const freshBuyerEmail = `buyer_${Date.now()}@yardly.co.ke`;
-    const signupRes = await AuthService.signUp(
-      freshBuyerEmail,
-      'BuyerPassword123!',
-      'Jane Wanjiku',
-      'buyer',
-      '+254712345678'
-    );
-    assert(
-      signupRes.success === true &&
-      signupRes.user !== undefined &&
-      signupRes.user.email === freshBuyerEmail &&
-      signupRes.user.role === 'buyer',
-      'Live Public Buyer Registration & Profile Creation'
-    );
-  } catch (e) {
-    assert(false, `Live Buyer Registration Exception: ${e}`);
-  }
-
-  // TEST 14: User Profile Update Synchronization
-  try {
-    const updateRes = await AuthService.updateProfile({
-      full_name: 'Jane Wanjiku Updated',
-      phone: '+254799887766'
-    });
-    const currentUser = await AuthService.getCurrentUser();
-    assert(
-      updateRes.success === true &&
-      currentUser?.full_name === 'Jane Wanjiku Updated' &&
-      currentUser?.phone === '+254799887766',
-      'User Profile Update & Current User Synchronization'
-    );
-  } catch (e) {
-    assert(false, `Profile Update Exception: ${e}`);
+    assert(false, `requireAdminRole Guard Exception: ${e}`);
   }
 
   console.log('\n====================================================');

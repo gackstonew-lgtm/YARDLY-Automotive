@@ -14,13 +14,14 @@ import {
   ArrowLeft, 
   CheckCircle2, 
   Lock, 
-  Sparkles, 
   Heart,
   TrendingUp,
   BarChart2
 } from 'lucide-react';
 import { Navbar } from '../components/navigation/Navbar';
-import { VehicleService, InquiryService, InspectionService, RealtimeService } from '../lib/supabase/client';
+import { VehicleService } from '../lib/vehicles/vehicle.service';
+import { InquiryService, InspectionService } from '../lib/inquiries/inquiry.service';
+import { RealtimeService } from '../lib/realtime/realtime.service';
 import { Vehicle, VehicleImage } from '../types/database';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
@@ -141,11 +142,11 @@ export const VehicleDetails: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col">
+      <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#050505] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col">
         <Navbar />
         <div className="max-w-7xl mx-auto p-8 w-full animate-pulse space-y-6">
-          <div className="h-8 bg-white/70 dark:bg-[#00251B]/60 rounded-xl w-1/4" />
-          <div className="h-96 bg-white/70 dark:bg-[#00251B]/60 rounded-3xl" />
+          <div className="h-8 bg-white/70 dark:bg-[#121212]/60 rounded-xl w-1/4" />
+          <div className="h-96 bg-white/70 dark:bg-[#121212]/60 rounded-3xl" />
         </div>
       </div>
     );
@@ -153,7 +154,7 @@ export const VehicleDetails: React.FC = () => {
 
   if (!vehicle) {
     return (
-      <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col">
+      <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#050505] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col">
         <Navbar />
         <div className="max-w-7xl mx-auto p-12 text-center space-y-4">
           <h2 className="text-2xl font-bold text-[#0F241C] dark:text-[#F2F7F3]">Vehicle Not Found</h2>
@@ -234,18 +235,18 @@ export const VehicleDetails: React.FC = () => {
   const imagesList: VehicleImage[] = resolveVehicleImages(vehicle);
 
   return (
-    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#001A13] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col pb-24 lg:pb-12 selection:bg-[#00E878] selection:text-[#001A13]">
+    <div className="min-h-screen bg-[#F4F8F6] dark:bg-[#050505] text-[#0F241C] dark:text-[#F2F7F3] flex flex-col pb-24 lg:pb-12 selection:bg-[#0251B8] dark:selection:bg-[#2D7DFF] selection:text-[#050505]">
       <Navbar />
 
       {/* Breadcrumb Header */}
-      <div className="bg-[#EDF5F1] dark:bg-[#001711] border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] py-4 px-4 sm:px-6 lg:px-8">
+      <div className="bg-[#EDF5F1] dark:bg-[#0A0A0A] border-b border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] py-4 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link to="/buy" className="inline-flex items-center gap-1.5 text-xs font-bold text-[#009E52] dark:text-[#00E878] hover:text-[#00B85E] dark:hover:text-[#55FF78] hover:underline transition-colors">
+          <Link to="/buy" className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0251B8] dark:text-[#2D7DFF] hover:text-[#0150B5] dark:hover:text-[#FF3B4E] hover:underline transition-colors">
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Marketplace</span>
           </Link>
           <div className="flex items-center gap-2">
-            <button onClick={() => navigator.clipboard?.writeText(window.location.href)} className="p-2 rounded-xl text-[#355347] dark:text-[#8EA79C] hover:bg-[#E4EFEA] dark:hover:bg-[#00251B] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] transition-colors">
+            <button onClick={() => navigator.clipboard?.writeText(window.location.href)} className="p-2 rounded-xl text-[#355347] dark:text-[#8EA79C] hover:bg-[#E4EFEA] dark:hover:bg-[#121212] hover:text-[#0F241C] dark:hover:text-[#F2F7F3] transition-colors">
               <Share2 className="w-4 h-4" />
             </button>
           </div>
@@ -265,10 +266,10 @@ export const VehicleDetails: React.FC = () => {
             />
 
             {/* Title & Key Spec Chips */}
-            <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] shadow-sm dark:shadow-glass space-y-6">
+            <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] shadow-sm dark:shadow-glass space-y-6">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                 <div>
-                  <div className="text-xs font-bold text-[#009E52] dark:text-[#00E878] mb-1">
+                  <div className="text-xs font-bold text-[#0251B8] dark:text-[#2D7DFF] mb-1">
                     {vehicle.dealer_name || 'Verified Car Yard'} • {vehicle.location}
                   </div>
                   <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">
@@ -279,37 +280,37 @@ export const VehicleDetails: React.FC = () => {
 
                 <div className="text-left sm:text-right">
                   <div className="text-[10px] font-bold uppercase text-[#355347] dark:text-[#8EA79C]">Cash Price</div>
-                  <div className="text-2xl sm:text-3xl font-black text-[#009E52] dark:text-[#00E878]">
+                  <div className="text-2xl sm:text-3xl font-black text-[#0251B8] dark:text-[#2D7DFF]">
                     KES {vehicle.price.toLocaleString()}
                   </div>
                 </div>
               </div>
 
               {/* Specs Pills Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#F4F8F6] dark:bg-[#001F17] p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)]">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#F4F8F6] dark:bg-[#0A0A0A] p-4 rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)]">
                 <div className="flex items-center gap-2.5">
-                  <Gauge className="w-5 h-5 text-[#009E52] dark:text-[#00E878]" />
+                  <Gauge className="w-5 h-5 text-[#0251B8] dark:text-[#2D7DFF]" />
                   <div>
                     <div className="text-[10px] text-[#355347] dark:text-[#8EA79C] font-bold uppercase">Mileage</div>
                     <div className="text-xs font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">{vehicle.mileage.toLocaleString()} KM</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <Cog className="w-5 h-5 text-[#009E52] dark:text-[#00E878]" />
+                  <Cog className="w-5 h-5 text-[#0251B8] dark:text-[#2D7DFF]" />
                   <div>
                     <div className="text-[10px] text-[#355347] dark:text-[#8EA79C] font-bold uppercase">Transmission</div>
                     <div className="text-xs font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">{vehicle.transmission}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <Fuel className="w-5 h-5 text-[#009E52] dark:text-[#00E878]" />
+                  <Fuel className="w-5 h-5 text-[#0251B8] dark:text-[#2D7DFF]" />
                   <div>
                     <div className="text-[10px] text-[#355347] dark:text-[#8EA79C] font-bold uppercase">Fuel</div>
                     <div className="text-xs font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">{vehicle.fuel_type}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <Calendar className="w-5 h-5 text-[#009E52] dark:text-[#00E878]" />
+                  <Calendar className="w-5 h-5 text-[#0251B8] dark:text-[#2D7DFF]" />
                   <div>
                     <div className="text-[10px] text-[#355347] dark:text-[#8EA79C] font-bold uppercase">Year</div>
                     <div className="text-xs font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">{vehicle.year}</div>
@@ -319,10 +320,10 @@ export const VehicleDetails: React.FC = () => {
 
               {/* Estimated Market Reference Card */}
               {vehicle.estimated_market_value && (
-                <div className="p-5 rounded-2xl bg-gradient-to-r from-[#EDF5F1] to-[#E4EFEA] dark:from-[#001F17] dark:to-[#002B1F] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] space-y-3">
+                <div className="p-5 rounded-2xl bg-gradient-to-r from-[#EDF5F1] to-[#E4EFEA] dark:from-[#0A0A0A] dark:to-[#121212] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs font-black text-[#009E52] dark:text-[#00E878] uppercase tracking-wider">
-                      <TrendingUp className="w-4 h-4 text-[#009E52] dark:text-[#00E878]" />
+                    <div className="flex items-center gap-2 text-xs font-black text-[#0251B8] dark:text-[#2D7DFF] uppercase tracking-wider">
+                      <TrendingUp className="w-4 h-4 text-[#0251B8] dark:text-[#2D7DFF]" />
                       <span>Estimated Market Reference</span>
                     </div>
                     <Badge variant="verified" size="sm">
@@ -338,7 +339,7 @@ export const VehicleDetails: React.FC = () => {
                     </div>
                     <div>
                       <div className="text-[10px] font-bold text-[#355347] dark:text-[#8EA79C] uppercase">Estimated Market Value</div>
-                      <div className="text-sm font-black text-[#009E52] dark:text-[#00E878]">
+                      <div className="text-sm font-black text-[#0251B8] dark:text-[#2D7DFF]">
                         KES {vehicle.estimated_market_value.toLocaleString()}
                       </div>
                     </div>
@@ -365,7 +366,7 @@ export const VehicleDetails: React.FC = () => {
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {vehicle.features.map((feat, idx) => (
                       <div key={idx} className="flex items-center gap-2 text-xs font-semibold text-[#0F241C] dark:text-[#F2F7F3]">
-                        <CheckCircle2 className="w-4 h-4 text-[#009E52] dark:text-[#00E878] shrink-0" />
+                        <CheckCircle2 className="w-4 h-4 text-[#0251B8] dark:text-[#2D7DFF] shrink-0" />
                         <span>{feat}</span>
                       </div>
                     ))}
@@ -375,9 +376,9 @@ export const VehicleDetails: React.FC = () => {
             </div>
 
             {/* Vehicle Financing Estimator */}
-            <div className="bg-white dark:bg-[#00251B]/90 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.15)] shadow-sm dark:shadow-glass space-y-4">
+            <div className="bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl p-6 sm:p-8 border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.15)] shadow-sm dark:shadow-glass space-y-4">
               <div className="flex items-center gap-2">
-                <Calculator className="w-5 h-5 text-[#009E52] dark:text-[#00E878]" />
+                <Calculator className="w-5 h-5 text-[#0251B8] dark:text-[#2D7DFF]" />
                 <h3 className="text-lg font-extrabold text-[#0F241C] dark:text-[#F2F7F3]">Vehicle Financing Estimator</h3>
               </div>
               <p className="text-xs text-[#355347] dark:text-[#8EA79C]">Calculate estimated monthly repayments based on standard Kenyan auto loan terms (14% p.a.).</p>
@@ -392,7 +393,7 @@ export const VehicleDetails: React.FC = () => {
                     step="5"
                     value={depositPercent}
                     onChange={(e) => setDepositPercent(Number(e.target.value))}
-                    className="w-full accent-[#009E52] dark:accent-[#00E878]"
+                    className="w-full accent-[#0251B8] dark:accent-[#2D7DFF]"
                   />
                   <span className="text-xs text-[#355347] dark:text-[#8EA79C]">KES {depositAmount.toLocaleString()}</span>
                 </div>
@@ -402,19 +403,19 @@ export const VehicleDetails: React.FC = () => {
                   <select
                     value={tenureMonths}
                     onChange={(e) => setTenureMonths(Number(e.target.value))}
-                    className="w-full p-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] text-xs font-bold bg-[#F4F8F6] dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3] focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                    className="w-full p-2.5 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.2)] text-xs font-bold bg-[#F4F8F6] dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3] focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                   >
-                    <option value={12} className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">12 Months (1 Year)</option>
-                    <option value={24} className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">24 Months (2 Years)</option>
-                    <option value={36} className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">36 Months (3 Years)</option>
-                    <option value={48} className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">48 Months (4 Years)</option>
-                    <option value={60} className="bg-white dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3]">60 Months (5 Years)</option>
+                    <option value={12} className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">12 Months (1 Year)</option>
+                    <option value={24} className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">24 Months (2 Years)</option>
+                    <option value={36} className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">36 Months (3 Years)</option>
+                    <option value={48} className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">48 Months (4 Years)</option>
+                    <option value={60} className="bg-white dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3]">60 Months (5 Years)</option>
                   </select>
                 </div>
 
-                <div className="p-4 bg-[#F4F8F6] dark:bg-[#001F17] rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] text-center">
+                <div className="p-4 bg-[#F4F8F6] dark:bg-[#0A0A0A] rounded-2xl border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] text-center">
                   <div className="text-[10px] font-bold uppercase text-[#355347] dark:text-[#8EA79C]">Est. Monthly Repayment</div>
-                  <div className="text-xl font-black text-[#009E52] dark:text-[#00E878] mt-0.5">
+                  <div className="text-xl font-black text-[#0251B8] dark:text-[#2D7DFF] mt-0.5">
                     KES {estimatedMonthlyPayment.toLocaleString()}
                   </div>
                   <div className="text-[10px] text-[#5F7E71] dark:text-[#8EA79C] mt-1">*Subject to bank appraisal</div>
@@ -427,13 +428,13 @@ export const VehicleDetails: React.FC = () => {
           {/* Right Column: Action Box & Reservation */}
           <div className="lg:col-span-4 space-y-6">
             
-            <div className="bg-white dark:bg-[#00251B]/95 backdrop-blur-md rounded-3xl p-6 border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.18)] shadow-sm dark:shadow-glow sticky top-24 space-y-6">
+            <div className="bg-white dark:bg-[#121212]/95 backdrop-blur-md rounded-3xl p-6 border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.18)] shadow-sm dark:shadow-glow sticky top-24 space-y-6">
               <div className="space-y-2">
                 <Badge variant="verified">
                   <ShieldCheck className="w-4 h-4 mr-1" />
                   Yardly Verified Vehicle
                 </Badge>
-                <div className="text-2xl font-black text-[#009E52] dark:text-[#00E878]">
+                <div className="text-2xl font-black text-[#0251B8] dark:text-[#2D7DFF]">
                   KES {vehicle.price.toLocaleString()}
                 </div>
                 <p className="text-xs text-[#355347] dark:text-[#8EA79C]">
@@ -470,25 +471,25 @@ export const VehicleDetails: React.FC = () => {
                   onClick={() => Analytics.trackWhatsAppClick('vehicle_details_page', `${vehicle.year} ${vehicle.make} ${vehicle.model}`)}
                   aria-label="Chat about this vehicle on WhatsApp"
                 >
-                  <button className="w-full py-2.5 px-4 rounded-xl bg-[#009E52] dark:bg-[#00E878] hover:bg-[#00B85E] dark:hover:bg-[#55FF78] text-white dark:text-[#001A13] text-xs font-bold flex items-center justify-center gap-2 transition-colors shadow-sm">
+                  <button className="w-full py-2.5 px-4 rounded-xl bg-[#0251B8] dark:bg-[#2D7DFF] hover:bg-[#0150B5] dark:hover:bg-[#FF3B4E] text-white dark:text-[#050505] text-xs font-bold flex items-center justify-center gap-2 transition-colors shadow-sm">
                     <Phone className="w-4 h-4" aria-hidden="true" />
                     <span>Chat on WhatsApp</span>
                   </button>
                 </a>
               </div>
 
-              <div className="p-4 rounded-2xl bg-[#F4F8F6] dark:bg-[#001F17] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(180,255,210,0.12)] text-xs text-[#355347] dark:text-[#8EA79C] space-y-2">
+              <div className="p-4 rounded-2xl bg-[#F4F8F6] dark:bg-[#0A0A0A] border border-[rgba(0,60,40,0.08)] dark:border-[rgba(255, 255, 255,0.12)] text-xs text-[#355347] dark:text-[#8EA79C] space-y-2">
                 <div className="font-bold text-[#0F241C] dark:text-[#F2F7F3]">Why Reserve via Yardly Automotives?</div>
                 <div className="flex items-center gap-2 text-[11px]">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#009E52] dark:text-[#00E878] shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#0251B8] dark:text-[#2D7DFF] shrink-0" />
                   <span>Logbook & Ownership document verification</span>
                 </div>
                 <div className="flex items-center gap-2 text-[11px]">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#009E52] dark:text-[#00E878] shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#0251B8] dark:text-[#2D7DFF] shrink-0" />
                   <span>3-Day holding guarantee against other buyers</span>
                 </div>
                 <div className="flex items-center gap-2 text-[11px]">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#009E52] dark:text-[#00E878] shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#0251B8] dark:text-[#2D7DFF] shrink-0" />
                   <span>100% Refundable deposit if inspection fails</span>
                 </div>
               </div>
@@ -513,7 +514,7 @@ export const VehicleDetails: React.FC = () => {
         <Modal title="Schedule Yard Inspection" isOpen={inspectionOpen} onClose={() => setInspectionOpen(false)}>
           {inquirySuccess ? (
             <div className="p-6 text-center space-y-4">
-              <div className="w-12 h-12 bg-[#E0F8EC] dark:bg-[#00E878]/15 text-[#009E52] dark:text-[#00E878] rounded-full flex items-center justify-center mx-auto border border-[#009E52]/30 dark:border-[#00E878]/30">
+              <div className="w-12 h-12 bg-[#EBF2FC] dark:bg-[#2D7DFF]/15 text-[#0251B8] dark:text-[#2D7DFF] rounded-full flex items-center justify-center mx-auto border border-[#0251B8]/30 dark:border-[#2D7DFF]/30">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold text-[#0F241C] dark:text-[#F2F7F3]">Inspection Request Received!</h3>
@@ -555,7 +556,7 @@ export const VehicleDetails: React.FC = () => {
                   rows={3}
                   value={inquiryMsg}
                   onChange={(e) => setInquiryMsg(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(180,255,210,0.2)] bg-[#F4F8F6] dark:bg-[#001F17] text-[#0F241C] dark:text-[#F2F7F3] text-xs focus:outline-none focus:ring-2 focus:ring-[#009E52] dark:focus:ring-[#00E878]"
+                  className="w-full p-3 rounded-xl border border-[rgba(0,60,40,0.15)] dark:border-[rgba(255, 255, 255,0.2)] bg-[#F4F8F6] dark:bg-[#0A0A0A] text-[#0F241C] dark:text-[#F2F7F3] text-xs focus:outline-none focus:ring-2 focus:ring-[#0251B8] dark:focus:ring-[#2D7DFF]"
                 />
               </div>
               <Button type="submit" fullWidth loading={inquiryLoading} className="font-extrabold">

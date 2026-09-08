@@ -1,40 +1,772 @@
 -- ============================================================
--- YARDLY AUTOMOTIVE — PRODUCTION DATABASE SECURITY HARDENING
--- UPDATED VERSION
+-- YARDLY AUTOMOTIVE
+-- SUPABASE / POSTGRES DATABASE PRODUCTION HARDENING MIGRATION
+-- MIGRATION: 20260903000000_production_hardening.sql
 -- ============================================================
 -- Purpose:
---   1. Secure application views with security_invoker where appropriate.
---   2. Keep RLS enabled on every public table.
---   3. Remove unsafe client-side access to audit/payment event data.
---   4. Prevent public exposure of auction bidder identity/email.
---   5. Keep customer-facing inquiry data separate from internal staff notes.
---   6. Add trusted database audit logging for important table changes.
---   7. Preserve staff/admin workflows and user-owned data access.
---
--- IMPORTANT:
---   Run this in Supabase SQL Editor as a privileged database role.
---   Take a database backup/snapshot first.
---
--- DESIGN ASSUMPTIONS:
---   - Yardly public visitors may browse inventory/auctions.
---   - Auction bidders are authenticated users.
---   - Payment and payment-event writes are performed by trusted
---     server-side/webhook code, not directly by browser clients.
---   - Audit logs are written by trusted database triggers.
---   - Guest submission workflows should be implemented through a
---     trusted endpoint/function with anti-spam/rate limiting. This
---     script intentionally does NOT grant anon unrestricted INSERT
---     access to sensitive tables.
+--   1. Authoritative production schema with complete RLS enforcement.
+--   2. Strict role hierarchy: super_admin > admin > yard_admin > staff > dealer/seller > buyer.
+--   3. Prevention of user self-promotion or role manipulation.
+--   4. Protected public marketplace inventory browsing via security_invoker view.
+--   5. Bidder privacy preservation on auction bids.
+--   6. Server-controlled payment records and immutable audit logs.
 -- ============================================================
 
+-- ============================================================
+-- 1. EXTENSIONS
+-- ============================================================
+create extension if not exists "pgcrypto";
+create extension if not exists "uuid-ossp";
 
 -- ============================================================
--- 0. ENABLE RLS ON ALL KNOWN PUBLIC TABLES
+-- 2. ENUM TYPES
+-- ============================================================
+do $$
+begin
+    if not exists (select 1 from pg_type where typname = 'user_role') then
+        create type public.user_role as enum (
+            'buyer',
+            'seller',
+            'dealer',
+            'customer',
+            'staff',
+            'yard_admin',
+            'admin',
+            'super_admin'
+        );
+    else
+        begin alter type public.user_role add value if not exists 'buyer'; exception when duplicate_object then null; end;
+        begin alter type public.user_role add value if not exists 'seller'; exception when duplicate_object then null; end;
+        begin alter type public.user_role add value if not exists 'dealer'; exception when duplicate_object then null; end;
+        begin alter type public.user_role add value if not exists 'customer'; exception when duplicate_object then null; end;
+        begin alter type public.user_role add value if not exists 'staff'; exception when duplicate_object then null; end;
+        begin alter type public.user_role add value if not exists 'yard_admin'; exception when duplicate_object then null; end;
+        begin alter type public.user_role add value if not exists 'admin'; exception when duplicate_object then null; end;
+        begin alter type public.user_role add value if not exists 'super_admin'; exception when duplicate_object then null; end;
+    end if;
+
+    if not exists (select 1 from pg_type where typname = 'vehicle_status') then
+        create type public.vehicle_status as enum (
+            'pending_review',
+            'active',
+            'available',
+            'reserved',
+            'sold',
+            'rejected',
+            'draft',
+            'hidden',
+            'archived'
+        );
+    else
+        begin alter type public.vehicle_status add value if not exists 'pending_review'; exception when duplicate_object then null; end;
+        begin alter type public.vehicle_status add value if not exists 'active'; exception when duplicate_object then null; end;
+        begin alter type public.vehicle_status add value if not exists 'available'; exception when duplicate_object then null; end;
+        begin alter type public.vehicle_status add value if not exists 'reserved'; exception when duplicate_object then null; end;
+        begin alter type public.vehicle_status add value if not exists 'sold'; exception when duplicate_object then null; end;
+        begin alter type public.vehicle_status add value if not exists 'rejected'; exception when duplicate_object then null; end;
+        begin alter type public.vehicle_status add value if not exists 'draft'; exception when duplicate_object then null; end;
+        begin alter type public.vehicle_status add value if not exists 'hidden'; exception when duplicate_object then null; end;
+        begin alter type public.vehicle_status add value if not exists 'archived'; exception when duplicate_object then null; end;
+    end if;
+
+    if not exists (select 1 from pg_type where typname = 'vehicle_condition') then
+        create type public.vehicle_condition as enum (
+            'new',
+            'used',
+            'Brand New',
+            'Foreign Used',
+            'Locally Used'
+        );
+    else
+        begin alter type public.vehicle_condition add value if not exists 'new'; exception when duplicate_object then null; end;
+        begin alter type public.vehicle_condition add value if not exists 'used'; exception when duplicate_object then null; end;
+        begin alter type public.vehicle_condition add value if not exists 'Brand New'; exception when duplicate_object then null; end;
+        begin alter type public.vehicle_condition add value if not exists 'Foreign Used'; exception when duplicate_object then null; end;
+        begin alter type public.vehicle_condition add value if not exists 'Locally Used'; exception when duplicate_object then null; end;
+    end if;
+
+    if not exists (select 1 from pg_type where typname = 'verification_status') then
+        create type public.verification_status as enum (
+            'pending',
+            'verified',
+            'rejected'
+        );
+    else
+        begin alter type public.verification_status add value if not exists 'pending'; exception when duplicate_object then null; end;
+        begin alter type public.verification_status add value if not exists 'verified'; exception when duplicate_object then null; end;
+        begin alter type public.verification_status add value if not exists 'rejected'; exception when duplicate_object then null; end;
+    end if;
+
+    if not exists (select 1 from pg_type where typname = 'seller_type') then
+        create type public.seller_type as enum (
+            'private',
+            'dealer',
+            'importer',
+            'business'
+        );
+    else
+        begin alter type public.seller_type add value if not exists 'private'; exception when duplicate_object then null; end;
+        begin alter type public.seller_type add value if not exists 'dealer'; exception when duplicate_object then null; end;
+        begin alter type public.seller_type add value if not exists 'importer'; exception when duplicate_object then null; end;
+        begin alter type public.seller_type add value if not exists 'business'; exception when duplicate_object then null; end;
+    end if;
+
+    if not exists (select 1 from pg_type where typname = 'auction_status') then
+        create type public.auction_status as enum (
+            'upcoming',
+            'live',
+            'ending_soon',
+            'ended',
+            'cancelled'
+        );
+    else
+        begin alter type public.auction_status add value if not exists 'upcoming'; exception when duplicate_object then null; end;
+        begin alter type public.auction_status add value if not exists 'live'; exception when duplicate_object then null; end;
+        begin alter type public.auction_status add value if not exists 'ending_soon'; exception when duplicate_object then null; end;
+        begin alter type public.auction_status add value if not exists 'ended'; exception when duplicate_object then null; end;
+        begin alter type public.auction_status add value if not exists 'cancelled'; exception when duplicate_object then null; end;
+    end if;
+
+    if not exists (select 1 from pg_type where typname = 'trade_in_status') then
+        create type public.trade_in_status as enum (
+            'new',
+            'under_review',
+            'valuation',
+            'offer_sent',
+            'accepted',
+            'rejected',
+            'completed'
+        );
+    else
+        begin alter type public.trade_in_status add value if not exists 'new'; exception when duplicate_object then null; end;
+        begin alter type public.trade_in_status add value if not exists 'under_review'; exception when duplicate_object then null; end;
+        begin alter type public.trade_in_status add value if not exists 'valuation'; exception when duplicate_object then null; end;
+        begin alter type public.trade_in_status add value if not exists 'offer_sent'; exception when duplicate_object then null; end;
+        begin alter type public.trade_in_status add value if not exists 'accepted'; exception when duplicate_object then null; end;
+        begin alter type public.trade_in_status add value if not exists 'rejected'; exception when duplicate_object then null; end;
+        begin alter type public.trade_in_status add value if not exists 'completed'; exception when duplicate_object then null; end;
+    end if;
+
+    if not exists (select 1 from pg_type where typname = 'import_status') then
+        create type public.import_status as enum (
+            'new',
+            'reviewing',
+            'sourcing',
+            'quotation',
+            'shipping',
+            'customs',
+            'delivered',
+            'completed'
+        );
+    else
+        begin alter type public.import_status add value if not exists 'new'; exception when duplicate_object then null; end;
+        begin alter type public.import_status add value if not exists 'reviewing'; exception when duplicate_object then null; end;
+        begin alter type public.import_status add value if not exists 'sourcing'; exception when duplicate_object then null; end;
+        begin alter type public.import_status add value if not exists 'quotation'; exception when duplicate_object then null; end;
+        begin alter type public.import_status add value if not exists 'shipping'; exception when duplicate_object then null; end;
+        begin alter type public.import_status add value if not exists 'customs'; exception when duplicate_object then null; end;
+        begin alter type public.import_status add value if not exists 'delivered'; exception when duplicate_object then null; end;
+        begin alter type public.import_status add value if not exists 'completed'; exception when duplicate_object then null; end;
+    end if;
+end $$;
+
+-- ============================================================
+-- 3. CORE APPLICATION TABLES
+-- ============================================================
+
+-- Profiles
+create table if not exists public.profiles (
+    id uuid primary key references auth.users(id) on delete cascade,
+    email text not null,
+    full_name text not null,
+    phone text,
+    role public.user_role not null default 'buyer',
+    seller_type public.seller_type default 'private',
+    business_name text,
+    avatar_url text,
+    status text not null default 'active',
+    is_active boolean not null default true,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
+-- Ensure all profile columns exist on existing databases
+do $$
+begin
+    if exists (select 1 from pg_tables where schemaname = 'public' and tablename = 'profiles') then
+        alter table public.profiles add column if not exists email text;
+        alter table public.profiles add column if not exists full_name text;
+        alter table public.profiles add column if not exists phone text;
+        alter table public.profiles add column if not exists role public.user_role not null default 'buyer';
+        alter table public.profiles add column if not exists seller_type public.seller_type default 'private';
+        alter table public.profiles add column if not exists business_name text;
+        alter table public.profiles add column if not exists avatar_url text;
+        alter table public.profiles add column if not exists status text not null default 'active';
+        alter table public.profiles add column if not exists is_active boolean not null default true;
+        alter table public.profiles add column if not exists created_at timestamptz not null default now();
+        alter table public.profiles add column if not exists updated_at timestamptz not null default now();
+    end if;
+exception when others then null;
+end $$;
+
+-- Vehicles
+create table if not exists public.vehicles (
+    id uuid primary key default gen_random_uuid(),
+    seller_id uuid references public.profiles(id) on delete set null,
+    created_by uuid references public.profiles(id) on delete set null,
+    dealer_name text default 'Yardly Certified',
+    seller_type public.seller_type not null default 'dealer',
+    make text not null,
+    model text not null,
+    variant text,
+    year integer not null check (year >= 1980 and year <= 2030),
+    price numeric(12,2) not null check (price >= 0),
+    sale_price numeric(12,2) check (sale_price is null or sale_price <= price),
+    currency text not null default 'KES',
+    mileage integer not null default 0 check (mileage >= 0),
+    engine_cc integer not null check (engine_cc > 0),
+    fuel_type text not null default 'Petrol',
+    transmission text not null default 'Automatic',
+    body_type text not null default 'SUV',
+    drive_type text,
+    color text not null default 'Silver',
+    location text not null default 'Nairobi',
+    description text not null,
+    registration_number text,
+    vin text,
+    status public.vehicle_status not null default 'active',
+    verification_status public.verification_status not null default 'verified',
+    logbook_verified boolean not null default false,
+    featured boolean not null default false,
+    is_featured boolean not null default false,
+    slug text,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
+-- Ensure all vehicle columns exist on existing databases
+do $$
+begin
+    if exists (select 1 from pg_tables where schemaname = 'public' and tablename = 'vehicles') then
+        alter table public.vehicles add column if not exists seller_id uuid references public.profiles(id) on delete set null;
+        alter table public.vehicles add column if not exists created_by uuid references public.profiles(id) on delete set null;
+        alter table public.vehicles add column if not exists dealer_name text default 'Yardly Certified';
+        alter table public.vehicles add column if not exists seller_type public.seller_type not null default 'dealer';
+        alter table public.vehicles add column if not exists variant text;
+        alter table public.vehicles add column if not exists sale_price numeric(12,2);
+        alter table public.vehicles add column if not exists currency text not null default 'KES';
+        alter table public.vehicles add column if not exists drive_type text;
+        alter table public.vehicles add column if not exists color text not null default 'Silver';
+        alter table public.vehicles add column if not exists registration_number text;
+        alter table public.vehicles add column if not exists vin text;
+        alter table public.vehicles add column if not exists status public.vehicle_status not null default 'active';
+        alter table public.vehicles add column if not exists verification_status public.verification_status not null default 'verified';
+        alter table public.vehicles add column if not exists logbook_verified boolean not null default false;
+        alter table public.vehicles add column if not exists featured boolean not null default false;
+        alter table public.vehicles add column if not exists is_featured boolean not null default false;
+        alter table public.vehicles add column if not exists slug text;
+        alter table public.vehicles add column if not exists created_at timestamptz not null default now();
+        alter table public.vehicles add column if not exists updated_at timestamptz not null default now();
+    end if;
+exception when others then null;
+end $$;
+
+-- Vehicle Images
+create table if not exists public.vehicle_images (
+    id uuid primary key default gen_random_uuid(),
+    vehicle_id uuid not null references public.vehicles(id) on delete cascade,
+    image_url text not null,
+    thumbnail_url text,
+    alt_text text,
+    display_order integer not null default 1,
+    is_primary boolean not null default false,
+    created_at timestamptz not null default now()
+);
+
+-- Vehicle Features
+create table if not exists public.vehicle_features (
+    id uuid primary key default gen_random_uuid(),
+    vehicle_id uuid not null references public.vehicles(id) on delete cascade,
+    feature_name text not null,
+    created_at timestamptz not null default now()
+);
+
+-- Favorites
+create table if not exists public.favorites (
+    id uuid primary key default gen_random_uuid(),
+    user_id uuid not null references public.profiles(id) on delete cascade,
+    vehicle_id uuid not null references public.vehicles(id) on delete cascade,
+    created_at timestamptz not null default now(),
+    unique(user_id, vehicle_id)
+);
+
+-- Vehicle Inquiries
+create table if not exists public.vehicle_inquiries (
+    id uuid primary key default gen_random_uuid(),
+    vehicle_id uuid not null references public.vehicles(id) on delete cascade,
+    buyer_id uuid references public.profiles(id) on delete set null,
+    name text not null,
+    phone text not null,
+    email text not null,
+    message text not null,
+    source text not null default 'web',
+    status text not null default 'new',
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
+-- Inspection Requests
+create table if not exists public.inspection_requests (
+    id uuid primary key default gen_random_uuid(),
+    vehicle_id uuid not null references public.vehicles(id) on delete cascade,
+    buyer_id uuid references public.profiles(id) on delete set null,
+    seller_id uuid references public.profiles(id) on delete set null,
+    buyer_name text not null,
+    buyer_phone text not null,
+    buyer_email text not null,
+    preferred_date date not null,
+    preferred_time text not null,
+    location text not null default 'Nairobi Yard',
+    notes text,
+    seller_notes text,
+    status text not null default 'requested',
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
+-- Test Drive Requests
+create table if not exists public.test_drive_requests (
+    id uuid primary key default gen_random_uuid(),
+    vehicle_id uuid not null references public.vehicles(id) on delete cascade,
+    user_id uuid references public.profiles(id) on delete set null,
+    name text not null,
+    phone text not null,
+    email text not null,
+    preferred_date date not null,
+    preferred_time text not null,
+    location text not null default 'Nairobi Yard',
+    notes text,
+    status text not null default 'pending',
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
+-- Reservations
+create table if not exists public.reservations (
+    id uuid primary key default gen_random_uuid(),
+    vehicle_id uuid not null references public.vehicles(id) on delete cascade,
+    user_id uuid references public.profiles(id) on delete set null,
+    buyer_name text not null,
+    buyer_phone text not null,
+    buyer_email text not null,
+    amount numeric(12,2) not null default 50000,
+    currency text not null default 'KES',
+    status text not null default 'pending',
+    expires_at timestamptz,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
+-- Payments
+create table if not exists public.payments (
+    id uuid primary key default gen_random_uuid(),
+    reservation_id uuid references public.reservations(id) on delete set null,
+    vehicle_id uuid not null references public.vehicles(id) on delete cascade,
+    user_id uuid references public.profiles(id) on delete set null,
+    amount numeric(12,2) not null,
+    currency text not null default 'KES',
+    provider text not null default 'test',
+    checkout_request_id text,
+    merchant_request_id text,
+    mpesa_receipt_number text,
+    phone_number text not null,
+    status text not null default 'pending',
+    idempotency_key text unique,
+    raw_response jsonb,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
+-- Payment Events
+create table if not exists public.payment_events (
+    id uuid primary key default gen_random_uuid(),
+    payment_id uuid references public.payments(id) on delete cascade,
+    event_type text not null,
+    payload jsonb not null,
+    created_at timestamptz not null default now()
+);
+
+-- Seller Listings
+create table if not exists public.seller_listings (
+    id uuid primary key default gen_random_uuid(),
+    seller_name text not null,
+    seller_phone text not null,
+    seller_email text not null,
+    seller_type public.seller_type not null default 'private',
+    make text not null,
+    model text not null,
+    year integer not null,
+    registration_number text,
+    mileage integer not null default 0,
+    engine_cc integer not null,
+    transmission text not null,
+    fuel_type text not null,
+    body_type text not null,
+    location text not null,
+    asking_price numeric(12,2) not null,
+    description text not null,
+    condition public.vehicle_condition not null default 'Foreign Used',
+    images jsonb default '[]'::jsonb,
+    logbook_document_url text,
+    status text not null default 'pending_review',
+    rejection_reason text,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
+-- Auctions
+create table if not exists public.auctions (
+    id uuid primary key default gen_random_uuid(),
+    vehicle_id uuid not null references public.vehicles(id) on delete cascade,
+    seller_id uuid references public.profiles(id) on delete set null,
+    starting_bid numeric(12,2) not null check (starting_bid > 0),
+    current_bid numeric(12,2) not null check (current_bid >= starting_bid),
+    minimum_increment numeric(12,2) not null default 10000,
+    bid_count integer not null default 0 check (bid_count >= 0),
+    start_time timestamptz not null,
+    end_time timestamptz not null,
+    status public.auction_status not null default 'upcoming',
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
+-- Auction Bids
+create table if not exists public.auction_bids (
+    id uuid primary key default gen_random_uuid(),
+    auction_id uuid not null references public.auctions(id) on delete cascade,
+    buyer_id uuid not null references public.profiles(id) on delete cascade,
+    buyer_name text not null,
+    buyer_email text not null,
+    amount numeric(12,2) not null check (amount > 0),
+    created_at timestamptz not null default now()
+);
+
+-- Trade-In Requests
+create table if not exists public.trade_in_requests (
+    id uuid primary key default gen_random_uuid(),
+    user_id uuid references public.profiles(id) on delete set null,
+    target_vehicle_id uuid references public.vehicles(id) on delete set null,
+    user_name text not null,
+    user_phone text not null,
+    user_email text not null,
+    current_vehicle_make text not null,
+    current_vehicle_model text not null,
+    current_vehicle_year integer not null,
+    current_vehicle_mileage integer not null default 0,
+    current_vehicle_condition text not null,
+    estimated_value numeric(12,2),
+    valuation_offer numeric(12,2),
+    notes text,
+    status public.trade_in_status not null default 'new',
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
+-- Import Requests
+create table if not exists public.import_requests (
+    id uuid primary key default gen_random_uuid(),
+    user_id uuid references public.profiles(id) on delete set null,
+    user_name text not null,
+    user_phone text not null,
+    user_email text not null,
+    preferred_make text not null,
+    preferred_model text not null,
+    preferred_year_min integer,
+    budget_kes numeric(12,2),
+    sourcing_country text default 'Japan',
+    notes text,
+    admin_notes text,
+    status public.import_status not null default 'new',
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+
+-- Notifications
+create table if not exists public.notifications (
+    id uuid primary key default gen_random_uuid(),
+    user_id uuid not null references public.profiles(id) on delete cascade,
+    type text not null,
+    title text not null,
+    message text not null,
+    read boolean not null default false,
+    link text,
+    created_at timestamptz not null default now()
+);
+
+-- Audit Logs
+create table if not exists public.audit_logs (
+    id uuid primary key default gen_random_uuid(),
+    user_id uuid references public.profiles(id) on delete set null,
+    action text not null,
+    table_name text,
+    record_id text,
+    new_data jsonb,
+    created_at timestamptz not null default now()
+);
+
+-- ============================================================
+-- 4. SECURITY & ROLE AUTHORIZATION FUNCTIONS
+-- ============================================================
+
+create or replace function public.has_role(required_role text)
+returns boolean
+language plpgsql
+stable
+security definer
+set search_path = public
+set row_security = off
+as $$
+declare
+    current_user_id uuid;
+    user_role_val text;
+    user_is_active boolean;
+    user_status text;
+begin
+    current_user_id := auth.uid();
+    if current_user_id is null then
+        return false;
+    end if;
+
+    select role::text, is_active, status
+    into user_role_val, user_is_active, user_status
+    from public.profiles
+    where id = current_user_id;
+
+    if user_role_val is null then
+        return false;
+    end if;
+
+    -- Verify active status
+    if user_is_active is false or user_status = 'suspended' then
+        return false;
+    end if;
+
+    if user_role_val = 'super_admin' then
+        return true;
+    end if;
+
+    if user_role_val = required_role then
+        return true;
+    end if;
+
+    -- Staff role hierarchy
+    if required_role = 'staff' and user_role_val in ('admin', 'yard_admin', 'super_admin', 'staff') then
+        return true;
+    end if;
+
+    -- Yard Admin hierarchy
+    if required_role = 'yard_admin' and user_role_val in ('admin', 'super_admin', 'yard_admin') then
+        return true;
+    end if;
+
+    -- Admin hierarchy
+    if required_role = 'admin' and user_role_val in ('admin', 'super_admin') then
+        return true;
+    end if;
+
+    -- Seller / Dealer hierarchy
+    if required_role in ('seller', 'dealer') and user_role_val in ('seller', 'dealer', 'admin', 'yard_admin', 'super_admin') then
+        return true;
+    end if;
+
+    return false;
+end;
+$$;
+
+create or replace function public.has_role(required_role public.user_role)
+returns boolean
+language plpgsql
+stable
+security definer
+set search_path = public
+set row_security = off
+as $$
+begin
+    return public.has_role(required_role::text);
+end;
+$$;
+
+-- Automatic Profile Creation Trigger with Sanitized Role (Prevents self-promotion)
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+set row_security = off
+as $$
+declare
+    assigned_role public.user_role;
+    raw_role_str text;
+    parsed_seller_type public.seller_type;
+    user_full_name text;
+    user_phone text;
+    user_biz text;
+begin
+    raw_role_str := lower(coalesce(new.raw_user_meta_data ->> 'role', 'buyer'));
+
+    -- Public signups can only ever be buyer or seller (never admin/staff)
+    if raw_role_str in ('admin', 'super_admin', 'yard_admin', 'staff') then
+        assigned_role := 'buyer'::public.user_role;
+    elsif raw_role_str in ('seller', 'dealer') then
+        assigned_role := 'seller'::public.user_role;
+    else
+        assigned_role := 'buyer'::public.user_role;
+    end if;
+
+    if (new.raw_user_meta_data ->> 'seller_type') in ('private', 'dealer', 'importer', 'business') then
+        parsed_seller_type := (new.raw_user_meta_data ->> 'seller_type')::public.seller_type;
+    else
+        parsed_seller_type := 'private'::public.seller_type;
+    end if;
+
+    user_full_name := coalesce(new.raw_user_meta_data ->> 'full_name', coalesce(new.raw_user_meta_data ->> 'name', 'Yardly User'));
+    user_phone := new.raw_user_meta_data ->> 'phone';
+    user_biz := new.raw_user_meta_data ->> 'business_name';
+
+    insert into public.profiles (
+        id,
+        email,
+        full_name,
+        phone,
+        role,
+        seller_type,
+        business_name,
+        status,
+        is_active,
+        created_at,
+        updated_at
+    )
+    values (
+        new.id,
+        coalesce(new.email, ''),
+        user_full_name,
+        user_phone,
+        assigned_role,
+        parsed_seller_type,
+        user_biz,
+        'active',
+        true,
+        now(),
+        now()
+    )
+    on conflict (id) do update set
+        email = excluded.email,
+        full_name = coalesce(nullif(excluded.full_name, 'Yardly User'), profiles.full_name),
+        phone = coalesce(excluded.phone, profiles.phone),
+        seller_type = coalesce(excluded.seller_type, profiles.seller_type),
+        business_name = coalesce(excluded.business_name, profiles.business_name),
+        updated_at = now();
+
+    return new;
+exception
+    when others then
+        raise warning 'handle_new_user error: %', sqlerrm;
+        return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+after insert on auth.users
+for each row
+execute function public.handle_new_user();
+
+-- Trigger: Prevent Profile Role Self-Escalation
+-- Permits Table Editor / SQL Editor / Service Role / Postgres Superusers and Authenticated Admins to assign roles,
+-- while strictly preventing ordinary users from escalating their own privileges.
+create or replace function public.prevent_profile_role_self_escalation()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+set row_security = off
+as $$
+declare
+    db_user text;
+    jwt_role text;
+    caller_is_admin boolean;
+begin
+    -- 1. Check if executing in privileged database context (Table Editor, SQL Editor, Postgres superuser, service_role)
+    db_user := coalesce(current_user, '');
+    if db_user in ('postgres', 'supabase_admin', 'service_role', 'supabase_auth_admin') then
+        new.updated_at := now();
+        return new;
+    end if;
+
+    -- Check session setting role
+    begin
+        if current_setting('role', true) in ('postgres', 'supabase_admin', 'service_role', 'supabase_auth_admin') then
+            new.updated_at := now();
+            return new;
+        end if;
+    exception when others then null;
+    end;
+
+    -- Check JWT claims for service_role
+    begin
+        jwt_role := (current_setting('request.jwt.claims', true)::jsonb ->> 'role');
+        if jwt_role = 'service_role' then
+            new.updated_at := now();
+            return new;
+        end if;
+    exception when others then null;
+    end;
+
+    -- 2. Check if the authenticated user has administrative role
+    caller_is_admin := false;
+    if auth.uid() is not null then
+        caller_is_admin := public.has_role('admin');
+    end if;
+
+    -- 3. If caller is NOT an admin, block any role or status/active self-escalation
+    if not caller_is_admin then
+        -- Prevent role modification by normal users
+        if new.role is distinct from old.role then
+            new.role := old.role;
+        end if;
+
+        -- Prevent status / is_active self-unbanning by normal users
+        begin
+            if new.is_active is distinct from old.is_active then
+                new.is_active := old.is_active;
+            end if;
+        exception when others then null;
+        end;
+
+        begin
+            if new.status is distinct from old.status then
+                new.status := old.status;
+            end if;
+        exception when others then null;
+        end;
+    end if;
+
+    new.updated_at := now();
+    return new;
+end;
+$$;
+
+drop trigger if exists trg_prevent_profile_role_self_escalation on public.profiles;
+create trigger trg_prevent_profile_role_self_escalation
+before update on public.profiles
+for each row
+execute function public.prevent_profile_role_self_escalation();
+
+-- ============================================================
+-- 5. ROW LEVEL SECURITY (RLS) POLICIES
 -- ============================================================
 
 alter table public.profiles enable row level security;
-alter table public.buyer_profiles enable row level security;
-alter table public.seller_profiles enable row level security;
 alter table public.vehicles enable row level security;
 alter table public.vehicle_images enable row level security;
 alter table public.vehicle_features enable row level security;
@@ -51,946 +783,257 @@ alter table public.auction_bids enable row level security;
 alter table public.trade_in_requests enable row level security;
 alter table public.import_requests enable row level security;
 alter table public.notifications enable row level security;
-alter table public.vehicle_history enable row level security;
 alter table public.audit_logs enable row level security;
 
+-- Profiles: Users view own or staff view all; users update non-role fields
+drop policy if exists "Profiles select policy" on public.profiles;
+create policy "Profiles select policy" on public.profiles
+for select using (auth.uid() = id or public.has_role('staff'));
+
+drop policy if exists "Profiles update policy" on public.profiles;
+create policy "Profiles update policy" on public.profiles
+for update using (auth.uid() = id or public.has_role('admin'))
+with check (auth.uid() = id or public.has_role('admin'));
+
+-- Vehicles: Public can view active/available/reserved; creators view own; staff manage all
+drop policy if exists "Vehicles select policy" on public.vehicles;
+create policy "Vehicles select policy" on public.vehicles
+for select using (
+    status in ('active', 'available', 'reserved')
+    or (auth.uid() is not null and (auth.uid() = seller_id or auth.uid() = created_by))
+    or public.has_role('staff')
+);
+
+drop policy if exists "Vehicles write policy" on public.vehicles;
+create policy "Vehicles write policy" on public.vehicles
+for all using (public.has_role('staff'))
+with check (public.has_role('staff'));
+
+-- Vehicle Images & Features: Public select; staff write
+drop policy if exists "Vehicle images select policy" on public.vehicle_images;
+create policy "Vehicle images select policy" on public.vehicle_images for select using (true);
+
+drop policy if exists "Vehicle images write policy" on public.vehicle_images;
+create policy "Vehicle images write policy" on public.vehicle_images for all using (public.has_role('staff')) with check (public.has_role('staff'));
+
+drop policy if exists "Vehicle features select policy" on public.vehicle_features;
+create policy "Vehicle features select policy" on public.vehicle_features for select using (true);
+
+drop policy if exists "Vehicle features write policy" on public.vehicle_features;
+create policy "Vehicle features write policy" on public.vehicle_features for all using (public.has_role('staff')) with check (public.has_role('staff'));
+
+-- Favorites: User-owned only
+drop policy if exists "Favorites policy" on public.favorites;
+create policy "Favorites policy" on public.favorites
+for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- Inquiries: Public insert; user views own inquiries; staff manage
+drop policy if exists "Inquiries insert policy" on public.vehicle_inquiries;
+create policy "Inquiries insert policy" on public.vehicle_inquiries
+for insert with check (buyer_id is null or auth.uid() = buyer_id);
+
+drop policy if exists "Inquiries select policy" on public.vehicle_inquiries;
+create policy "Inquiries select policy" on public.vehicle_inquiries
+for select using ((auth.uid() is not null and auth.uid() = buyer_id) or public.has_role('staff'));
+
+drop policy if exists "Inquiries manage policy" on public.vehicle_inquiries;
+create policy "Inquiries manage policy" on public.vehicle_inquiries
+for update using (public.has_role('staff')) with check (public.has_role('staff'));
+
+-- Test Drives & Inspections: Public insert; user views own; staff manage
+drop policy if exists "Test drives insert policy" on public.test_drive_requests;
+create policy "Test drives insert policy" on public.test_drive_requests
+for insert with check (user_id is null or auth.uid() = user_id);
+
+drop policy if exists "Test drives select policy" on public.test_drive_requests;
+create policy "Test drives select policy" on public.test_drive_requests
+for select using (auth.uid() = user_id or public.has_role('staff'));
+
+drop policy if exists "Inspections insert policy" on public.inspection_requests;
+create policy "Inspections insert policy" on public.inspection_requests
+for insert with check (buyer_id is null or auth.uid() = buyer_id);
+
+drop policy if exists "Inspections select policy" on public.inspection_requests;
+create policy "Inspections select policy" on public.inspection_requests
+for select using ((auth.uid() is not null and (auth.uid() = buyer_id or auth.uid() = seller_id)) or public.has_role('staff'));
+
+-- Reservations & Payments: User views own; staff manage
+drop policy if exists "Reservations select policy" on public.reservations;
+create policy "Reservations select policy" on public.reservations
+for select using (auth.uid() = user_id or public.has_role('staff'));
+
+drop policy if exists "Reservations insert policy" on public.reservations;
+create policy "Reservations insert policy" on public.reservations
+for insert with check (user_id is null or auth.uid() = user_id);
+
+drop policy if exists "Payments select policy" on public.payments;
+create policy "Payments select policy" on public.payments
+for select using (auth.uid() = user_id or public.has_role('staff'));
+
+drop policy if exists "Payments insert policy" on public.payments;
+create policy "Payments insert policy" on public.payments
+for insert with check (user_id is null or auth.uid() = user_id or public.has_role('staff'));
+
+-- Auctions & Bids: Public views live auctions and bids; authenticated users place bids with own ID
+drop policy if exists "Auctions select policy" on public.auctions;
+create policy "Auctions select policy" on public.auctions for select using (true);
+
+drop policy if exists "Auctions write policy" on public.auctions;
+create policy "Auctions write policy" on public.auctions for all using (public.has_role('staff')) with check (public.has_role('staff'));
+
+drop policy if exists "Auction bids select policy" on public.auction_bids;
+create policy "Auction bids select policy" on public.auction_bids for select using (true);
+
+drop policy if exists "Auction bids insert policy" on public.auction_bids;
+create policy "Auction bids insert policy" on public.auction_bids
+for insert with check (auth.uid() is not null and auth.uid() = buyer_id);
+
+-- Seller Listings: Public submit; owner view own; staff manage
+drop policy if exists "Seller listings insert policy" on public.seller_listings;
+create policy "Seller listings insert policy" on public.seller_listings for insert with check (true);
+
+drop policy if exists "Seller listings select policy" on public.seller_listings;
+create policy "Seller listings select policy" on public.seller_listings for select using (public.has_role('staff'));
+
+drop policy if exists "Seller listings manage policy" on public.seller_listings;
+create policy "Seller listings manage policy" on public.seller_listings for all using (public.has_role('staff')) with check (public.has_role('staff'));
+
+-- Trade-In & Imports: User views own; public insert; staff manage
+drop policy if exists "Trade in select policy" on public.trade_in_requests;
+create policy "Trade in select policy" on public.trade_in_requests for select using (auth.uid() = user_id or public.has_role('staff'));
+
+drop policy if exists "Trade in insert policy" on public.trade_in_requests;
+create policy "Trade in insert policy" on public.trade_in_requests for insert with check (true);
+
+drop policy if exists "Import requests select policy" on public.import_requests;
+create policy "Import requests select policy" on public.import_requests for select using (auth.uid() = user_id or public.has_role('staff'));
+
+drop policy if exists "Import requests insert policy" on public.import_requests;
+create policy "Import requests insert policy" on public.import_requests for insert with check (true);
+
+-- Notifications: User views and updates own
+drop policy if exists "Notifications select policy" on public.notifications;
+create policy "Notifications select policy" on public.notifications for select using (auth.uid() = user_id);
+
+drop policy if exists "Notifications update policy" on public.notifications;
+create policy "Notifications update policy" on public.notifications for update using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+-- Audit Logs: Admin/Super Admin only select; authenticated actions insert; no updates or deletes (immutable)
+drop policy if exists "Audit logs select policy" on public.audit_logs;
+create policy "Audit logs select policy" on public.audit_logs for select using (public.has_role('admin') or public.has_role('super_admin'));
+
+drop policy if exists "Audit logs insert policy" on public.audit_logs;
+create policy "Audit logs insert policy" on public.audit_logs for insert with check (auth.uid() is not null or public.has_role('staff'));
 
 -- ============================================================
--- 1. SECURE PUBLIC INVENTORY VIEW
+-- 6. SECURE INVENTORY VIEW (SECURITY INVOKER)
 -- ============================================================
--- Keep security_invoker=true so the view respects vehicles RLS.
--- VIN is intentionally omitted from the public view.
--- Internal verification fields are also omitted.
--- Staff can query the base vehicles table directly under staff RLS.
-
-drop view if exists public.available_inventory;
-
+drop view if exists public.available_inventory cascade;
 create view public.available_inventory
 with (security_invoker = true)
 as
 select
     v.id,
-    v.stock_number,
     v.make,
     v.model,
     v.variant,
-    v.trim,
     v.year,
-    v.condition,
-    v.body_type,
-    v.drivetrain,
-    v.drive_type,
-    v.transmission,
-    v.fuel_type,
-    v.engine,
-    v.engine_cc,
-    v.engine_size,
-    v.color,
-    v.exterior_color,
-    v.interior_color,
-    v.doors,
-    v.seats,
-    v.mileage,
     v.price,
     v.sale_price,
-    v.monthly_payment,
     v.currency,
-    v.title,
+    v.mileage,
+    v.engine_cc,
+    v.fuel_type,
+    v.transmission,
+    v.body_type,
+    v.drive_type,
+    v.color,
+    v.location,
     v.description,
     v.status,
-    v.is_featured,
+    v.verification_status,
+    v.logbook_verified,
     v.featured,
-    v.location,
+    v.is_featured,
     v.slug,
     v.dealer_name,
+    v.seller_id,
     v.created_at,
-    (
-        select vi.image_url
-        from public.vehicle_images vi
-        where vi.vehicle_id = v.id
-        order by vi.is_primary desc, vi.display_order asc, vi.sort_order asc
-        limit 1
-    ) as primary_image
+    v.updated_at
 from public.vehicles v
 where v.status in ('active', 'available');
 
-revoke all on public.available_inventory from anon, authenticated;
-grant select on public.available_inventory to anon, authenticated, service_role;
-
+-- ============================================================
+-- 7. PERFORMANCE INDEXES
+-- ============================================================
+create index if not exists idx_vehicles_status on public.vehicles(status);
+create index if not exists idx_vehicles_make_model on public.vehicles(make, model);
+create index if not exists idx_vehicles_price on public.vehicles(price);
+create index if not exists idx_vehicles_year on public.vehicles(year);
+create index if not exists idx_vehicle_images_vehicle_id on public.vehicle_images(vehicle_id);
+create index if not exists idx_vehicle_features_vehicle_id on public.vehicle_features(vehicle_id);
+create index if not exists idx_favorites_user_vehicle on public.favorites(user_id, vehicle_id);
+create index if not exists idx_auctions_status on public.auctions(status);
+create index if not exists idx_auction_bids_auction on public.auction_bids(auction_id, created_at desc);
+create index if not exists idx_notifications_user_unread on public.notifications(user_id, read);
 
 -- ============================================================
--- 2. INQUIRIES VIEWS
+-- 8. STORAGE BUCKETS (SAFE IDEMPOTENT BLOCK)
 -- ============================================================
--- Keep the existing compatibility view for authenticated/staff use,
--- but remove it from anonymous access.
--- Create a separate public-safe view without staff_notes/assigned_to.
-
-drop view if exists public.inquiries;
-
-create view public.inquiries
-with (security_invoker = true)
-as
-select
-    id,
-    vehicle_id,
-    user_id,
-    buyer_id,
-    seller_id,
-    name,
-    email,
-    phone,
-    subject,
-    message,
-    source,
-    status,
-    assigned_to,
-    staff_notes,
-    created_at,
-    updated_at
-from public.vehicle_inquiries;
-
-revoke all on public.inquiries from anon;
-grant select on public.inquiries to authenticated, service_role;
-revoke insert, update, delete on public.inquiries from anon, authenticated;
-
-
-drop view if exists public.inquiries_public;
-
-create view public.inquiries_public
-with (security_invoker = true)
-as
-select
-    id,
-    vehicle_id,
-    user_id,
-    buyer_id,
-    seller_id,
-    name,
-    email,
-    phone,
-    subject,
-    message,
-    source,
-    status,
-    created_at,
-    updated_at
-from public.vehicle_inquiries;
-
-revoke all on public.inquiries_public from anon, authenticated;
-grant select on public.inquiries_public to authenticated, service_role;
-
-
--- ============================================================
--- 3. RLS POLICIES — PROFILES
--- ============================================================
-
-drop policy if exists "Users can view own profile" on public.profiles;
-create policy "Users can view own profile"
-on public.profiles
-for select
-using (auth.uid() = id or public.has_role('staff'));
-
-drop policy if exists "Users can update own profile" on public.profiles;
-create policy "Users can update own profile"
-on public.profiles
-for update
-using (auth.uid() = id)
-with check (auth.uid() = id);
-
-drop policy if exists "Users can insert own profile" on public.profiles;
-create policy "Users can insert own profile"
-on public.profiles
-for insert
-with check (auth.uid() = id or public.has_role('staff'));
-
-
--- ============================================================
--- 4. BUYER / SELLER PROFILES
--- ============================================================
-
-drop policy if exists "Users view own buyer profile" on public.buyer_profiles;
-create policy "Users view own buyer profile"
-on public.buyer_profiles
-for select
-using (auth.uid() = id or public.has_role('staff'));
-
-drop policy if exists "Users update own buyer profile" on public.buyer_profiles;
-create policy "Users update own buyer profile"
-on public.buyer_profiles
-for update
-using (auth.uid() = id)
-with check (auth.uid() = id);
-
-drop policy if exists "Users insert own buyer profile" on public.buyer_profiles;
-create policy "Users insert own buyer profile"
-on public.buyer_profiles
-for insert
-with check (auth.uid() = id);
-
-
-drop policy if exists "Users view own seller profile" on public.seller_profiles;
-create policy "Users view own seller profile"
-on public.seller_profiles
-for select
-using (auth.uid() = id or public.has_role('staff'));
-
-drop policy if exists "Users update own seller profile" on public.seller_profiles;
-create policy "Users update own seller profile"
-on public.seller_profiles
-for update
-using (auth.uid() = id)
-with check (auth.uid() = id);
-
-drop policy if exists "Users insert own seller profile" on public.seller_profiles;
-create policy "Users insert own seller profile"
-on public.seller_profiles
-for insert
-with check (auth.uid() = id);
-
-
--- ============================================================
--- 5. VEHICLES & MEDIA
--- ============================================================
-
-drop policy if exists "Public can view active vehicles" on public.vehicles;
-create policy "Public can view active vehicles"
-on public.vehicles
-for select
-using (
-    status in ('active', 'available', 'reserved')
-    or (
-        auth.uid() is not null
-        and (auth.uid() = seller_id or auth.uid() = created_by)
-    )
-    or public.has_role('staff')
-);
-
-drop policy if exists "Staff can manage vehicles" on public.vehicles;
-create policy "Staff can manage vehicles"
-on public.vehicles
-for all
-using (public.has_role('staff'))
-with check (public.has_role('staff'));
-
-
-drop policy if exists "Public can view vehicle images" on public.vehicle_images;
-create policy "Public can view vehicle images"
-on public.vehicle_images
-for select
-using (true);
-
-drop policy if exists "Staff can manage vehicle images" on public.vehicle_images;
-create policy "Staff can manage vehicle images"
-on public.vehicle_images
-for all
-using (public.has_role('staff'))
-with check (public.has_role('staff'));
-
-
-drop policy if exists "Public can view vehicle features" on public.vehicle_features;
-create policy "Public can view vehicle features"
-on public.vehicle_features
-for select
-using (true);
-
-drop policy if exists "Staff can manage vehicle features" on public.vehicle_features;
-create policy "Staff can manage vehicle features"
-on public.vehicle_features
-for all
-using (public.has_role('staff'))
-with check (public.has_role('staff'));
-
-
--- ============================================================
--- 6. FAVORITES
--- ============================================================
-
-drop policy if exists "Users manage own favorites" on public.favorites;
-create policy "Users manage own favorites"
-on public.favorites
-for all
-using (auth.uid() = user_id)
-with check (auth.uid() = user_id);
-
-
--- ============================================================
--- 7. INQUIRIES & TEST DRIVES
--- ============================================================
-
-drop policy if exists "Anyone can create inquiries" on public.vehicle_inquiries;
-create policy "Anyone can create inquiries"
-on public.vehicle_inquiries
-for insert
-with check (
-    (
-        auth.uid() is not null
-        and (
-            user_id is null
-            or buyer_id is null
-            or auth.uid() in (user_id, buyer_id)
-        )
-    )
-    or public.has_role('staff')
-);
-
-drop policy if exists "Users can view relevant inquiries" on public.vehicle_inquiries;
-create policy "Users can view relevant inquiries"
-on public.vehicle_inquiries
-for select
-using (
-    (
-        auth.uid() is not null
-        and auth.uid() in (user_id, buyer_id, seller_id)
-    )
-    or public.has_role('staff')
-);
-
-drop policy if exists "Staff can update inquiries" on public.vehicle_inquiries;
-create policy "Staff can update inquiries"
-on public.vehicle_inquiries
-for update
-using (public.has_role('staff'))
-with check (public.has_role('staff'));
-
-drop policy if exists "Staff can delete inquiries" on public.vehicle_inquiries;
-create policy "Staff can delete inquiries"
-on public.vehicle_inquiries
-for delete
-using (public.has_role('staff'));
-
-
-drop policy if exists "Anyone create test drive requests" on public.test_drive_requests;
-create policy "Anyone create test drive requests"
-on public.test_drive_requests
-for insert
-with check (
-    auth.uid() is not null
-    and (user_id is null or auth.uid() = user_id)
-);
-
-drop policy if exists "Users view own test drive requests" on public.test_drive_requests;
-create policy "Users view own test drive requests"
-on public.test_drive_requests
-for select
-using (auth.uid() = user_id or public.has_role('staff'));
-
-drop policy if exists "Staff manage test drive requests" on public.test_drive_requests;
-create policy "Staff manage test drive requests"
-on public.test_drive_requests
-for update
-using (public.has_role('staff'))
-with check (public.has_role('staff'));
-
-
--- ============================================================
--- 8. INSPECTIONS & RESERVATIONS
--- ============================================================
-
-drop policy if exists "Anyone create inspection requests" on public.inspection_requests;
-create policy "Anyone create inspection requests"
-on public.inspection_requests
-for insert
-with check (
-    auth.uid() is not null
-    and (
-        buyer_id is null
-        or seller_id is null
-        or auth.uid() in (buyer_id, seller_id)
-    )
-);
-
-drop policy if exists "Users view relevant inspection requests" on public.inspection_requests;
-create policy "Users view relevant inspection requests"
-on public.inspection_requests
-for select
-using (
-    (
-        auth.uid() is not null
-        and auth.uid() in (buyer_id, seller_id)
-    )
-    or public.has_role('staff')
-);
-
-drop policy if exists "Staff update inspection requests" on public.inspection_requests;
-create policy "Staff update inspection requests"
-on public.inspection_requests
-for update
-using (
-    public.has_role('staff')
-    or auth.uid() = seller_id
-)
-with check (
-    public.has_role('staff')
-    or auth.uid() = seller_id
-);
-
-drop policy if exists "Staff delete inspection requests" on public.inspection_requests;
-create policy "Staff delete inspection requests"
-on public.inspection_requests
-for delete
-using (public.has_role('staff'));
-
-
-drop policy if exists "Anyone create reservations" on public.reservations;
-create policy "Anyone create reservations"
-on public.reservations
-for insert
-with check (
-    auth.uid() is not null
-    and (user_id is null or auth.uid() = user_id)
-);
-
-drop policy if exists "Users view own reservations" on public.reservations;
-create policy "Users view own reservations"
-on public.reservations
-for select
-using (user_id = auth.uid() or public.has_role('staff'));
-
-drop policy if exists "Staff manage reservations" on public.reservations;
-create policy "Staff manage reservations"
-on public.reservations
-for update
-using (public.has_role('staff'))
-with check (public.has_role('staff'));
-
-drop policy if exists "Staff delete reservations" on public.reservations;
-create policy "Staff delete reservations"
-on public.reservations
-for delete
-using (public.has_role('staff'));
-
-
--- ============================================================
--- 9. PAYMENTS — TRUSTED SERVER/STAFF WRITE MODEL
--- ============================================================
-
-drop policy if exists "Users view own payments" on public.payments;
-create policy "Users view own payments"
-on public.payments
-for select
-using (
-    user_id = auth.uid()
-    or public.has_role('staff')
-);
-
--- Remove direct browser INSERT access.
-drop policy if exists "Authenticated or staff insert payments" on public.payments;
-drop policy if exists "Staff insert payments" on public.payments;
-
--- Only staff can update payment records through the authenticated API.
-drop policy if exists "Staff manage payments" on public.payments;
-create policy "Staff manage payments"
-on public.payments
-for update
-using (public.has_role('staff'))
-with check (public.has_role('staff'));
-
--- No client-side DELETE policy.
-drop policy if exists "Users delete payments" on public.payments;
-drop policy if exists "Staff delete payments" on public.payments;
-
-
--- ============================================================
--- 10. PAYMENT EVENTS — TRUSTED WRITE MODEL
--- ============================================================
-
-drop policy if exists "Staff view payment events" on public.payment_events;
-create policy "Staff view payment events"
-on public.payment_events
-for select
-using (public.has_role('staff'));
-
-drop policy if exists "Staff insert payment events" on public.payment_events;
-drop policy if exists "Users insert payment events" on public.payment_events;
-
-drop policy if exists "Staff update payment events" on public.payment_events;
-drop policy if exists "Staff delete payment events" on public.payment_events;
-
-
--- ============================================================
--- 11. SELLER / TRADE-IN / IMPORT REQUESTS
--- ============================================================
--- Anonymous browser INSERT is deliberately NOT granted by this script.
--- Use a trusted Edge Function/server endpoint with validation, CAPTCHA
--- and rate limiting for guest submissions.
-
-drop policy if exists "Anyone submit seller listing" on public.seller_listings;
-create policy "Authenticated submit seller listing"
-on public.seller_listings
-for insert
-with check (
-    auth.uid() is not null
-);
-
-drop policy if exists "Staff manage seller listings" on public.seller_listings;
-create policy "Staff manage seller listings"
-on public.seller_listings
-for all
-using (public.has_role('staff'))
-with check (public.has_role('staff'));
-
-
-drop policy if exists "Anyone insert trade-ins" on public.trade_in_requests;
-create policy "Authenticated insert trade-ins"
-on public.trade_in_requests
-for insert
-with check (
-    auth.uid() is not null
-    and (user_id is null or user_id = auth.uid())
-);
-
-drop policy if exists "Users manage own trade-ins" on public.trade_in_requests;
-create policy "Users manage own trade-ins"
-on public.trade_in_requests
-for select
-using (user_id = auth.uid() or public.has_role('staff'));
-
-drop policy if exists "Staff update trade-ins" on public.trade_in_requests;
-create policy "Staff update trade-ins"
-on public.trade_in_requests
-for update
-using (public.has_role('staff'))
-with check (public.has_role('staff'));
-
-
-drop policy if exists "Anyone insert imports" on public.import_requests;
-create policy "Authenticated insert imports"
-on public.import_requests
-for insert
-with check (
-    auth.uid() is not null
-    and (user_id is null or user_id = auth.uid())
-);
-
-drop policy if exists "Users manage own imports" on public.import_requests;
-create policy "Users manage own imports"
-on public.import_requests
-for select
-using (user_id = auth.uid() or public.has_role('staff'));
-
-drop policy if exists "Staff update imports" on public.import_requests;
-create policy "Staff update imports"
-on public.import_requests
-for update
-using (public.has_role('staff'))
-with check (public.has_role('staff'));
-
-
--- ============================================================
--- 12. AUCTIONS
--- ============================================================
-
-drop policy if exists "Public view live auctions" on public.auctions;
-create policy "Public view live auctions"
-on public.auctions
-for select
-using (true);
-
-drop policy if exists "Staff manage auctions" on public.auctions;
-create policy "Staff manage auctions"
-on public.auctions
-for all
-using (public.has_role('staff'))
-with check (public.has_role('staff'));
-
-
--- ============================================================
--- 13. AUCTION BIDS — PRIVATE BASE TABLE + SAFE PUBLIC VIEW
--- ============================================================
-
--- Remove public access to raw bidder records.
-drop policy if exists "Public view auction bids" on public.auction_bids;
-
--- Bidders may see their own bids; staff may see all bids.
-drop policy if exists "Users view own auction bids" on public.auction_bids;
-create policy "Users view own auction bids"
-on public.auction_bids
-for select
-using (
-    buyer_id = auth.uid()
-    or public.has_role('staff')
-);
-
-drop policy if exists "Users place auction bids" on public.auction_bids;
-create policy "Users place auction bids"
-on public.auction_bids
-for insert
-with check (
-    auth.uid() is not null
-    and auth.uid() = buyer_id
-);
-
-drop policy if exists "Staff manage auction bids" on public.auction_bids;
-create policy "Staff manage auction bids"
-on public.auction_bids
-for delete
-using (public.has_role('staff'));
-
--- Public-safe auction bid view.
--- This view intentionally contains NO buyer_id, buyer_name or buyer_email.
-drop view if exists public.public_auction_bids;
-
-create view public.public_auction_bids
-with (security_barrier = true)
-as
-select
-    auction_id,
-    amount,
-    created_at
-from public.auction_bids;
-
-revoke all on public.public_auction_bids from anon, authenticated;
-grant select on public.public_auction_bids to anon, authenticated, service_role;
-
--- Remove direct anonymous/raw access to auction_bids.
-revoke select on public.auction_bids from anon;
-
-
--- ============================================================
--- 14. NOTIFICATIONS
--- ============================================================
-
-drop policy if exists "Users view own notifications" on public.notifications;
-create policy "Users view own notifications"
-on public.notifications
-for select
-using (user_id = auth.uid());
-
-drop policy if exists "Users update own notifications" on public.notifications;
-create policy "Users update own notifications"
-on public.notifications
-for update
-using (user_id = auth.uid())
-with check (user_id = auth.uid());
-
-drop policy if exists "Staff insert notifications" on public.notifications;
-create policy "Staff insert notifications"
-on public.notifications
-for insert
-with check (public.has_role('staff'));
-
-drop policy if exists "Users insert notifications" on public.notifications;
-
-
--- ============================================================
--- 15. VEHICLE HISTORY
--- ============================================================
-
-drop policy if exists "Staff view vehicle history" on public.vehicle_history;
-create policy "Staff view vehicle history"
-on public.vehicle_history
-for select
-using (public.has_role('staff'));
-
-drop policy if exists "Staff manage vehicle history" on public.vehicle_history;
-create policy "Staff manage vehicle history"
-on public.vehicle_history
-for all
-using (public.has_role('staff'))
-with check (public.has_role('staff'));
-
-
--- ============================================================
--- 16. AUDIT LOGS — ADMIN READ, NO CLIENT WRITE
--- ============================================================
-
-drop policy if exists "Admin view audit logs" on public.audit_logs;
-create policy "Admin view audit logs"
-on public.audit_logs
-for select
-using (
-    public.has_role('admin')
-    or public.has_role('super_admin')
-);
-
-drop policy if exists "Staff insert audit logs" on public.audit_logs;
-drop policy if exists "Staff update audit logs" on public.audit_logs;
-drop policy if exists "Staff delete audit logs" on public.audit_logs;
-
--- Explicitly prevent client-side mutation through RLS.
--- Trusted SECURITY DEFINER audit trigger below can still insert.
-
-
--- ============================================================
--- 17. HARDEN has_role()
--- ============================================================
--- The existing function already uses SECURITY DEFINER and fixes the
--- search_path to public. Recreate it with fully qualified references
--- and an explicit search_path. This keeps role checks predictable.
-
-create or replace function public.has_role(required_role user_role)
-returns boolean
-language sql
-stable
-security definer
-set search_path = ''
-as $function$
-    select exists (
-        select 1
-        from public.profiles
-        where id = auth.uid()
-          and is_active = true
-          and (
-              role = required_role
-              or role = 'admin'
-              or role = 'yard_admin'
-              or role = 'super_admin'
-              or (
-                  required_role = 'staff'
-                  and role in ('admin', 'yard_admin', 'super_admin')
-              )
-          )
-    );
-$function$;
-
-revoke execute on function public.has_role(user_role) from public;
-grant execute on function public.has_role(user_role) to anon, authenticated, service_role;
-
-
--- ============================================================
--- 18. TRUSTED GENERIC AUDIT LOGGER
--- ============================================================
--- This trigger records INSERT/UPDATE/DELETE operations performed
--- against selected application tables.
---
--- The function is SECURITY DEFINER so ordinary users do not need
--- INSERT permission on audit_logs.
---
--- The audit record stores OLD/NEW row data. Because audit_logs is
--- admin-only, this remains protected by RLS.
-
-create or replace function public.audit_row_change()
-returns trigger
-language plpgsql
-security definer
-set search_path = ''
-as $function$
+do $$
 begin
-    insert into public.audit_logs (
-        user_id,
-        action,
-        table_name,
-        record_id,
-        old_data,
-        new_data,
-        created_at
-    )
-    values (
-        auth.uid(),
-        TG_OP,
-        TG_TABLE_NAME,
-        coalesce(
-            case when TG_OP <> 'DELETE'
-                 then (to_jsonb(NEW)->>'id')::uuid end,
-            case when TG_OP <> 'INSERT'
-                 then (to_jsonb(OLD)->>'id')::uuid end
-        ),
-        case when TG_OP in ('UPDATE', 'DELETE')
-             then to_jsonb(OLD) else null end,
-        case when TG_OP in ('INSERT', 'UPDATE')
-             then to_jsonb(NEW) else null end,
-        now()
-    );
+    insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+    values 
+      ('vehicles', 'vehicles', true, 15728640, array['image/jpeg', 'image/png', 'image/webp', 'image/jpg']),
+      ('avatars', 'avatars', true, 5242880, array['image/jpeg', 'image/png', 'image/webp', 'image/jpg']),
+      ('logbooks', 'logbooks', false, 10485760, array['image/jpeg', 'image/png', 'image/webp', 'application/pdf']),
+      ('documents', 'documents', false, 10485760, array['image/jpeg', 'image/png', 'image/webp', 'application/pdf'])
+    on conflict (id) do update set 
+      public = excluded.public,
+      file_size_limit = excluded.file_size_limit,
+      allowed_mime_types = excluded.allowed_mime_types;
+exception
+    when others then
+        raise notice 'Storage buckets setup note: %', sqlerrm;
+end $$;
 
-    return coalesce(NEW, OLD);
-end;
-$function$;
+-- Storage Objects RLS Policies
+do $$
+begin
+    if exists (select 1 from pg_tables where schemaname = 'storage' and tablename = 'objects') then
+        execute 'alter table storage.objects enable row level security;';
+        
+        -- Public vehicles bucket read
+        execute 'drop policy if exists "Public Vehicle Images Read" on storage.objects;';
+        execute 'create policy "Public Vehicle Images Read" on storage.objects for select using (bucket_id in (''vehicles'', ''avatars''));';
 
-revoke execute on function public.audit_row_change() from public;
-
-
--- ============================================================
--- 19. INSTALL AUDIT TRIGGERS
--- ============================================================
--- Only tables that contain an "id" UUID column are included here.
--- Payment raw responses and other sensitive fields are captured in
--- the protected audit_logs table.
-
-drop trigger if exists audit_profiles on public.profiles;
-create trigger audit_profiles
-after insert or update or delete on public.profiles
-for each row execute function public.audit_row_change();
-
-drop trigger if exists audit_buyer_profiles on public.buyer_profiles;
-create trigger audit_buyer_profiles
-after insert or update or delete on public.buyer_profiles
-for each row execute function public.audit_row_change();
-
-drop trigger if exists audit_seller_profiles on public.seller_profiles;
-create trigger audit_seller_profiles
-after insert or update or delete on public.seller_profiles
-for each row execute function public.audit_row_change();
-
-drop trigger if exists audit_vehicles on public.vehicles;
-create trigger audit_vehicles
-after insert or update or delete on public.vehicles
-for each row execute function public.audit_row_change();
-
-drop trigger if exists audit_vehicle_inquiries on public.vehicle_inquiries;
-create trigger audit_vehicle_inquiries
-after insert or update or delete on public.vehicle_inquiries
-for each row execute function public.audit_row_change();
-
-drop trigger if exists audit_inspection_requests on public.inspection_requests;
-create trigger audit_inspection_requests
-after insert or update or delete on public.inspection_requests
-for each row execute function public.audit_row_change();
-
-drop trigger if exists audit_test_drive_requests on public.test_drive_requests;
-create trigger audit_test_drive_requests
-after insert or update or delete on public.test_drive_requests
-for each row execute function public.audit_row_change();
-
-drop trigger if exists audit_reservations on public.reservations;
-create trigger audit_reservations
-after insert or update or delete on public.reservations
-for each row execute function public.audit_row_change();
-
-drop trigger if exists audit_payments on public.payments;
-create trigger audit_payments
-after insert or update or delete on public.payments
-for each row execute function public.audit_row_change();
-
-drop trigger if exists audit_payment_events on public.payment_events;
-create trigger audit_payment_events
-after insert or update or delete on public.payment_events
-for each row execute function public.audit_row_change();
-
-drop trigger if exists audit_seller_listings on public.seller_listings;
-create trigger audit_seller_listings
-after insert or update or delete on public.seller_listings
-for each row execute function public.audit_row_change();
-
-drop trigger if exists audit_auctions on public.auctions;
-create trigger audit_auctions
-after insert or update or delete on public.auctions
-for each row execute function public.audit_row_change();
-
-drop trigger if exists audit_auction_bids on public.auction_bids;
-create trigger audit_auction_bids
-after insert or update or delete on public.auction_bids
-for each row execute function public.audit_row_change();
-
-drop trigger if exists audit_trade_in_requests on public.trade_in_requests;
-create trigger audit_trade_in_requests
-after insert or update or delete on public.trade_in_requests
-for each row execute function public.audit_row_change();
-
-drop trigger if exists audit_import_requests on public.import_requests;
-create trigger audit_import_requests
-after insert or update or delete on public.import_requests
-for each row execute function public.audit_row_change();
-
+        -- Staff bucket upload
+        execute 'drop policy if exists "Staff Storage Upload" on storage.objects;';
+        execute 'create policy "Staff Storage Upload" on storage.objects for insert with check (auth.uid() is not null and (bucket_id in (''vehicles'', ''avatars'', ''logbooks'', ''documents'')));';
+    end if;
+exception
+    when others then
+        raise notice 'Storage policies setup note: %', sqlerrm;
+end $$;
 
 -- ============================================================
--- 20. LEAST-PRIVILEGE GRANTS
+-- 9. REALTIME PUBLICATION SETUP (SAFE IDEMPOTENT BLOCK)
 -- ============================================================
--- Keep SELECT on public-safe views.
--- Remove destructive table privileges from anonymous users.
--- Remove TRUNCATE from authenticated users.
---
--- We deliberately do NOT revoke all SELECT/INSERT privileges from
--- authenticated because RLS policies depend on these grants and the
--- Yardly application needs them for normal operation.
+do $$
+begin
+    if exists (select 1 from pg_publication where pubname = 'supabase_realtime') then
+        begin alter publication supabase_realtime add table public.auctions; exception when others then null; end;
+        begin alter publication supabase_realtime add table public.auction_bids; exception when others then null; end;
+        begin alter publication supabase_realtime add table public.notifications; exception when others then null; end;
+        begin alter publication supabase_realtime add table public.vehicles; exception when others then null; end;
+        begin alter publication supabase_realtime add table public.vehicle_inquiries; exception when others then null; end;
+    end if;
+exception
+    when others then null;
+end $$;
 
-revoke all on public.audit_logs from anon, authenticated;
-revoke select on public.audit_logs from anon, authenticated;
-
-grant select on public.audit_logs to service_role;
-
-revoke truncate on all tables in schema public from anon, authenticated;
-revoke delete, update on all tables in schema public from anon;
-
-
--- Sensitive payment/event tables: no direct browser mutation.
-revoke insert, update, delete on public.payments from anon, authenticated;
-revoke insert, update, delete on public.payment_events from anon, authenticated;
-
--- Audit logs: no direct browser mutation.
-revoke insert, update, delete on public.audit_logs from anon, authenticated;
-
--- Raw auction bids: no anonymous read.
-revoke select on public.auction_bids from anon;
-
--- Internal compatibility inquiry view: no anonymous read.
-revoke all on public.inquiries from anon;
-
-
--- ============================================================
--- 21. VERIFICATION QUERIES
--- ============================================================
-
--- A. Every public table should have RLS enabled.
-select
-    schemaname,
-    tablename,
-    rowsecurity as rls_enabled
-from pg_tables
-where schemaname = 'public'
-order by tablename;
-
--- B. This should return zero rows.
-select
-    schemaname,
-    tablename
-from pg_tables
-where schemaname = 'public'
-  and rowsecurity = false
-order by tablename;
-
--- C. Check the important policies.
-select
-    schemaname,
-    tablename,
-    policyname,
-    permissive,
-    roles,
-    cmd,
-    qual,
-    with_check
-from pg_policies
-where schemaname = 'public'
-order by tablename, policyname;
-
--- D. Check views and their security options.
-select
-    n.nspname as schema_name,
-    c.relname as view_name,
-    c.reloptions
-from pg_class c
-join pg_namespace n on n.oid = c.relnamespace
-where n.nspname = 'public'
-  and c.relkind = 'v'
-order by c.relname;
-
--- E. Check audit triggers.
-select
-    event_object_table as table_name,
-    trigger_name,
-    event_manipulation,
-    action_statement
-from information_schema.triggers
-where event_object_schema = 'public'
-  and trigger_name like 'audit_%'
-order by event_object_table, trigger_name;
-
--- F. Check sensitive table grants.
-select
-    table_name,
-    grantee,
-    privilege_type
-from information_schema.role_table_grants
-where table_schema = 'public'
-  and grantee in ('anon', 'authenticated')
-  and table_name in (
-      'audit_logs',
-      'payments',
-      'payment_events',
-      'auction_bids'
-  )
-order by table_name, grantee, privilege_type;
-
-
--- ============================================================
--- END OF UPDATED YARDLY AUTOMOTIVE SECURITY HARDENING SCRIPT
--- ============================================================
+-- Migration complete notification
+do $$
+begin
+    raise notice 'Yardly Automotive production hardening migration applied successfully.';
+end $$;

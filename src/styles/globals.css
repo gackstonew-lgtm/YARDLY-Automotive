@@ -4,9 +4,10 @@
 
 @layer base {
   :root {
-    --primary: 0 158 82;         /* #009E52 Deep Emerald for Light Mode */
-    --primary-dark: 0 135 68;     /* #008744 */
-    --primary-glow: 0 232 120;   /* #00E878 */
+    --primary: 2 81 184;         /* #0251B8 Royal Blue (Logo Cobalt) */
+    --primary-dark: 1 65 150;    /* #014196 */
+    --primary-glow: 45 125 255;  /* #2D7DFF */
+    --accent-red: 222 15 31;     /* #DE0F1F Crimson Red (Logo Automotive Red) */
     --bg-main: 244 248 246;       /* #F4F8F6 Soft Mint Alabaster */
     --bg-sub: 235 242 238;        /* #EBF2EE Subtle Mint Contrast */
     --bg-card: 255 255 255;       /* #FFFFFF Pure Crisp White */
@@ -18,17 +19,18 @@
   }
 
   .dark {
-    --primary: 0 232 120;        /* #00E878 Luminous Emerald */
-    --primary-dark: 0 184 94;    /* #00B85E */
-    --primary-glow: 85 255 120;  /* #55FF78 Luminous Green */
-    --bg-main: 0 26 19;          /* #001A13 Very Dark Forest */
-    --bg-sub: 0 20 15;           /* #00140F Deep Forest */
-    --bg-card: 0 37 27;          /* #00251B Forest Card */
-    --bg-elevated: 0 61 45;      /* #003D2D Forest Surface */
+    --primary: 45 125 255;       /* #2D7DFF Luminous Electric Royal Blue */
+    --primary-dark: 2 81 184;    /* #0251B8 */
+    --primary-glow: 77 150 255;  /* #4D96FF */
+    --accent-red: 255 59 78;     /* #FF3B4E Luminous Crimson Red */
+    --bg-main: 5 5 5;            /* #050505 Fading Black Canvas */
+    --bg-sub: 10 10 10;          /* #0A0A0A Deep Sub-surface / Inset Well */
+    --bg-card: 18 18 18;         /* #121212 Deep Black Card */
+    --bg-elevated: 26 26 26;     /* #1A1A1A Elevated Surface */
     --text-main: 242 247 243;    /* #F2F7F3 Warm Off-White */
     --text-secondary: 167 189 179; /* #A7BDB3 */
     --text-muted: 142 167 156;   /* #8EA79C Muted Green-Gray */
-    --border-main: 180 255 210 / 0.12;
+    --border-main: 255 255 255 / 0.08;
   }
 
   body {
@@ -46,22 +48,22 @@
   box-shadow: 0 8px 30px -8px rgba(0, 43, 31, 0.08);
 }
 .dark .glass-card {
-  background: rgba(0, 43, 31, 0.7);
-  border: 1px solid rgba(180, 255, 210, 0.12);
-  box-shadow: 0 10px 30px -10px rgba(0, 20, 15, 0.6);
+  background: rgba(18, 18, 18, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.8);
 }
 
 .glass-card-dark {
   background: rgba(244, 248, 246, 0.95);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 158, 82, 0.2);
-  box-shadow: 0 12px 32px -10px rgba(0, 43, 31, 0.1);
+  border: 1px solid rgba(2, 81, 184, 0.2);
+  box-shadow: 0 12px 32px -10px rgba(2, 81, 184, 0.1);
 }
 .dark .glass-card-dark {
-  background: rgba(0, 26, 19, 0.85);
-  border: 1px solid rgba(0, 232, 120, 0.2);
-  box-shadow: 0 20px 40px -15px rgba(0, 15, 10, 0.8);
+  background: rgba(5, 5, 5, 0.9);
+  border: 1px solid rgba(45, 125, 255, 0.25);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.9);
 }
 
 .glass-pill {
@@ -70,11 +72,11 @@
   border: 1px solid rgba(0, 60, 40, 0.12);
 }
 .dark .glass-pill {
-  background: rgba(0, 43, 31, 0.7);
-  border: 1px solid rgba(180, 255, 210, 0.15);
+  background: rgba(18, 18, 18, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Luxury Emerald Glow Effects */
+/* Luxury Brand Blue Glow Effects */
 .unitpay-glow {
   position: relative;
 }
@@ -85,7 +87,7 @@
   left: 20%;
   width: 60%;
   height: 60%;
-  background: radial-gradient(circle, rgba(0, 232, 120, 0.18) 0%, rgba(0, 26, 19, 0) 70%);
+  background: radial-gradient(circle, rgba(45, 125, 255, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
   filter: blur(40px);
   z-index: 0;
   pointer-events: none;
@@ -97,14 +99,14 @@
 }
 .hover-lift:hover {
   transform: translateY(-3px);
-  box-shadow: 0 16px 36px -8px rgba(0, 232, 120, 0.12), 0 8px 20px -4px rgba(0, 20, 15, 0.8);
+  box-shadow: 0 16px 36px -8px rgba(45, 125, 255, 0.15), 0 8px 20px -4px rgba(0, 0, 0, 0.9);
 }
 
 .btn-glow {
   transition: transform 0.2s ease, box-shadow 0.3s ease, background-color 0.2s ease;
 }
 .btn-glow:hover {
-  box-shadow: 0 0 25px rgba(0, 232, 120, 0.35), 0 4px 14px rgba(0, 232, 120, 0.25);
+  box-shadow: 0 0 25px rgba(45, 125, 255, 0.35), 0 4px 14px rgba(45, 125, 255, 0.25);
 }
 
 /* Subtle gradient text shimmer for hero accents */
@@ -138,20 +140,20 @@ body.menu-open {
   overflow: hidden;
 }
 
-/* Custom Scrollbar - Dark Forest & Emerald */
+/* Custom Scrollbar - Fading Black & Royal Blue */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #001A13;
+  background: #050505;
 }
 ::-webkit-scrollbar-thumb {
-  background: #004D39;
+  background: #242424;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #00E878;
+  background: #2D7DFF;
 }
 
 /* Safe Area Insets & Mobile Enhancements */
