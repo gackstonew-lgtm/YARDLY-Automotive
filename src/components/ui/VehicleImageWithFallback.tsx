@@ -11,6 +11,7 @@ interface VehicleImageWithFallbackProps {
   alt?: string;
   className?: string;
   aspectRatio?: string;
+  priority?: boolean;
 }
 
 export const VehicleImageWithFallback: React.FC<VehicleImageWithFallbackProps> = ({
@@ -20,9 +21,11 @@ export const VehicleImageWithFallback: React.FC<VehicleImageWithFallbackProps> =
   year,
   alt,
   className = '',
-  aspectRatio = 'aspect-[16/10]'
+  aspectRatio = 'aspect-[16/10]',
+  priority = false
 }) => {
   const [imageError, setImageError] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const rawSrc = image?.image_url || null;
   const isAuthorized = Boolean(rawSrc && rawSrc.trim() !== '' && !imageError);
@@ -32,8 +35,13 @@ export const VehicleImageWithFallback: React.FC<VehicleImageWithFallbackProps> =
       <img
         src={normalizeImageUrl(rawSrc)}
         alt={alt || `${year} ${make} ${model}`}
-        className={className}
-        loading="lazy"
+        className={`${className} transition-opacity duration-300 ease-out ${
+          isLoaded || priority ? 'opacity-100' : 'opacity-0'
+        }`}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding="async"
+        {...(priority ? { fetchPriority: 'high' } : { fetchPriority: 'auto' })}
+        onLoad={() => setIsLoaded(true)}
         onError={() => setImageError(true)}
       />
     );
@@ -53,3 +61,4 @@ export const VehicleImageWithFallback: React.FC<VehicleImageWithFallbackProps> =
     </div>
   );
 };
+

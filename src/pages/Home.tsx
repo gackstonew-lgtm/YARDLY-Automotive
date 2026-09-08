@@ -88,9 +88,9 @@ export const Home: React.FC = () => {
             </div>
           ) : (
             <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredVehicles.map((vehicle) => (
+              {featuredVehicles.map((vehicle, index) => (
                 <StaggerItem key={vehicle.id}>
-                  <VehicleCard vehicle={vehicle} />
+                  <VehicleCard vehicle={vehicle} priority={index < 3} />
                 </StaggerItem>
               ))}
             </StaggerContainer>

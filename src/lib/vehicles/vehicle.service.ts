@@ -7,6 +7,13 @@ import { AuditLogService } from '../audit/audit.service';
 import { requireAdminRole } from '../auth/auth.service';
 import { VehicleFilterParams } from './vehicle.queries';
 
+const withTimeout = <T>(promise: PromiseLike<T>, ms: number = 2000): Promise<T> => {
+  return Promise.race([
+    Promise.resolve(promise),
+    new Promise<T>((_, reject) => setTimeout(() => reject(new Error(`Query timeout after ${ms}ms`)), ms))
+  ]);
+};
+
 export const VehicleService = {
   /**
    * Retrieves all publicly visible vehicles (or all for staff).
@@ -20,10 +27,12 @@ export const VehicleService = {
 
     if (isSupabaseConfigured && supabase) {
       try {
-        const { data, error } = await supabase
+        const queryPromise = supabase
           .from('vehicles')
           .select('*, images:vehicle_images(*), features:vehicle_features(feature_name)')
           .order('created_at', { ascending: false });
+
+        const { data, error } = await withTimeout(queryPromise, 2500);
 
         if (!error && Array.isArray(data) && data.length > 0) {
           const dbVehicles = (data as Vehicle[]).map(v => ({
@@ -57,11 +66,13 @@ export const VehicleService = {
 
     if (isSupabaseConfigured && supabase) {
       try {
-        const { data, error } = await supabase
+        const queryPromise = supabase
           .from('vehicles')
           .select('*, images:vehicle_images(*), features:vehicle_features(feature_name)')
           .or(`id.eq.${idOrSlug},slug.eq.${idOrSlug}`)
           .maybeSingle();
+
+        const { data, error } = await withTimeout(queryPromise, 2500);
 
         if (!error && data) {
           const vehicle = data as Vehicle;

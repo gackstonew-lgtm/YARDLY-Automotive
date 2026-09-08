@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, memo } from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, MapPin, Gauge, Fuel, Cog, Calendar, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -10,10 +10,11 @@ import { resolveVehicleImages } from '../../lib/utils/imageResolver';
 
 interface VehicleCardProps {
   vehicle: Vehicle;
+  priority?: boolean;
 }
 
-export const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle }) => {
-  const images = resolveVehicleImages(vehicle);
+const VehicleCardComponent: React.FC<VehicleCardProps> = ({ vehicle, priority = false }) => {
+  const images = useMemo(() => resolveVehicleImages(vehicle), [vehicle]);
 
   return (
     <motion.div
@@ -22,7 +23,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle }) => {
       className="group relative bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.1)] dark:border-[rgba(255, 255, 255,0.12)] overflow-hidden shadow-md hover:shadow-glass-hover hover:border-[#0251B8]/50 dark:hover:border-[#2D7DFF]/50 transition-all duration-300 flex flex-col h-full hover-lift text-[#0F241C] dark:text-[#F2F7F3]"
     >
       {/* Interactive Image Header Container / Slideshow */}
-      <VehicleCardCarousel vehicle={vehicle} images={images} />
+      <VehicleCardCarousel vehicle={vehicle} images={images} priority={priority} />
 
       {/* Body Content */}
       <div className="p-5 flex flex-col flex-grow">
@@ -86,3 +87,6 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({ vehicle }) => {
     </motion.div>
   );
 };
+
+export const VehicleCard = memo(VehicleCardComponent);
+

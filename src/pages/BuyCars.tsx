@@ -331,7 +331,7 @@ export const BuyCars: React.FC = () => {
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
               >
                 <AnimatePresence>
-                  {vehicles.map((vehicle) => (
+                  {vehicles.map((vehicle, index) => (
                     <motion.div
                       key={vehicle.id}
                       layout
@@ -340,7 +340,7 @@ export const BuyCars: React.FC = () => {
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                     >
-                      <VehicleCard vehicle={vehicle} />
+                      <VehicleCard vehicle={vehicle} priority={index < 6} />
                     </motion.div>
                   ))}
                 </AnimatePresence>

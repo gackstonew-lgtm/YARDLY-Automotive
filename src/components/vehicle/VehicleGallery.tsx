@@ -72,7 +72,9 @@ export const VehicleGallery: React.FC<VehicleGalleryProps> = ({
             onDragEnd={handleDragEnd}
             onClick={() => setLightboxOpen(true)}
             className="w-full h-full object-cover cursor-zoom-in"
-            loading="lazy"
+            loading="eager"
+            decoding="async"
+            {...({ fetchPriority: 'high' } as any)}
           />
         </AnimatePresence>
 
@@ -139,6 +141,7 @@ export const VehicleGallery: React.FC<VehicleGalleryProps> = ({
                 alt={img.alt_text || `${altTitle} thumbnail ${idx + 1}`}
                 className="w-full h-full object-cover"
                 loading="lazy"
+                decoding="async"
               />
               {idx === 0 && (
                 <span className="absolute bottom-0 inset-x-0 bg-[#2D7DFF] text-[#050505] text-[8px] font-extrabold uppercase py-0.5 text-center leading-none">

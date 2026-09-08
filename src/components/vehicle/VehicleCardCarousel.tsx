@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react';
 import { ShieldCheck, MapPin, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Vehicle, VehicleImage } from '../../types/database';
 import { Badge } from '../ui/Badge';
@@ -8,22 +8,51 @@ import { getVehiclePrimaryImage, normalizeImageUrl } from '../../lib/utils/image
 interface VehicleCardCarouselProps {
   vehicle: Vehicle;
   images: VehicleImage[];
+  priority?: boolean;
 }
 
-export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicle, images }) => {
+const VehicleCardCarouselComponent: React.FC<VehicleCardCarouselProps> = ({ 
+  vehicle, 
+  images,
+  priority = false 
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffsetX, setDragOffsetX] = useState(0);
-  const [failedImageIds, setFailedImageIds] = useState<Set<string>>(new Set());
+  const [failedImageIds, setFailedImageIds] = useState<Set<string>>(() => new Set());
+  const [loadedIndices, setLoadedIndices] = useState<Set<number>>(() => new Set());
+  const [isInView, setIsInView] = useState<boolean>(() => Boolean(priority));
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
   const resumeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const validImages = images && images.length > 0 ? images : [];
+  const validImages = useMemo(() => (images && images.length > 0 ? images : []), [images]);
   const hasMultipleImages = validImages.length > 1;
+
+  // Viewport visibility observer to prevent background thrashing
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setIsInView(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { rootMargin: '200px 0px', threshold: 0.01 }
+    );
+
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   // Detect reduced-motion preference
   const prefersReducedMotion =
@@ -41,9 +70,9 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
     setCurrentIndex((prev) => (prev === 0 ? validImages.length - 1 : prev - 1));
   }, [hasMultipleImages, validImages.length]);
 
-  // Preload adjacent images (prev & next) for zero-gap transitions
+  // Preload adjacent images ONLY when visible in viewport
   useEffect(() => {
-    if (!hasMultipleImages) return;
+    if (!hasMultipleImages || !isInView) return;
     const prevIdx = (currentIndex - 1 + validImages.length) % validImages.length;
     const nextIdx = (currentIndex + 1) % validImages.length;
 
@@ -54,22 +83,23 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
         img.src = normalizeImageUrl(imgObj.image_url);
       }
     });
-  }, [currentIndex, hasMultipleImages, validImages, failedImageIds]);
+  }, [currentIndex, hasMultipleImages, validImages, failedImageIds, isInView]);
 
-  // Auto-play timer
+  // Auto-play timer (Active only when visible in viewport and not paused/dragged)
   useEffect(() => {
-    if (!hasMultipleImages || isPaused || isDragging) return;
+    if (!hasMultipleImages || isPaused || isDragging || !isInView) return;
 
     const timer = setInterval(() => {
       nextSlide();
     }, 3500);
 
     return () => clearInterval(timer);
-  }, [hasMultipleImages, isPaused, isDragging, nextSlide]);
+  }, [hasMultipleImages, isPaused, isDragging, isInView, nextSlide]);
 
   // Pause & delayed resume on interaction
   const pauseAndScheduleResume = useCallback(() => {
     setIsPaused(true);
+    setHasInteracted(true);
     if (resumeTimeoutRef.current) {
       clearTimeout(resumeTimeoutRef.current);
     }
@@ -104,7 +134,6 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
   // Touch & Pointer Gesture Handling (Real-Time Dragging)
   const handlePointerDown = (e: React.PointerEvent) => {
     if (!hasMultipleImages) return;
-    // Only capture primary touch/mouse button
     if (e.button !== 0 && e.pointerType === 'mouse') return;
 
     touchStartX.current = e.clientX;
@@ -112,6 +141,7 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
     setIsDragging(true);
     setDragOffsetX(0);
     setIsPaused(true);
+    setHasInteracted(true);
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
@@ -120,7 +150,6 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
     const deltaX = e.clientX - touchStartX.current;
     const deltaY = e.clientY - touchStartY.current;
 
-    // Follow finger horizontally if movement is predominantly horizontal
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
       setDragOffsetX(deltaX);
     }
@@ -164,17 +193,25 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
     setFailedImageIds((prev) => new Set(prev).add(imgId));
   };
 
-  // If no images or single image, render simple static image container
+  const handleImageLoad = (idx: number) => {
+    setLoadedIndices((prev) => new Set(prev).add(idx));
+  };
+
+  // If single image or no images, render optimized static container
   if (!hasMultipleImages) {
     const singleImg = validImages[0] || getVehiclePrimaryImage(vehicle);
     return (
-      <div className="relative aspect-[16/10] overflow-hidden bg-[#0A0A0A] select-none">
+      <div 
+        ref={containerRef}
+        className="relative aspect-[16/10] overflow-hidden bg-[#0A0A0A] select-none"
+      >
         <VehicleImageWithFallback
           image={singleImg}
           make={vehicle.make}
           model={vehicle.model}
           year={vehicle.year}
           alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
+          priority={priority}
           className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500 ease-out"
         />
 
@@ -215,7 +252,7 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
     );
   }
 
-  // Calculate sliding track transform style
+  // Sliding track transform style
   const transitionStyle = isDragging
     ? 'none'
     : prefersReducedMotion
@@ -229,7 +266,10 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
       ref={containerRef}
       tabIndex={0}
       onKeyDown={handleKeyDown}
-      onMouseEnter={() => setIsPaused(true)}
+      onMouseEnter={() => {
+        setIsPaused(true);
+        setHasInteracted(true);
+      }}
       onMouseLeave={() => setIsPaused(false)}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
@@ -237,7 +277,7 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
       onPointerCancel={handlePointerUpOrCancel}
       className="relative aspect-[16/10] overflow-hidden bg-[#0A0A0A] touch-pan-y select-none group/carousel focus:outline-none"
     >
-      {/* GPU-Accelerated Physical Horizontal Sliding Track */}
+      {/* Physical GPU-Accelerated Sliding Track */}
       <div
         className="flex w-full h-full"
         style={{
@@ -248,8 +288,16 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
       >
         {validImages.map((img, idx) => {
           const isFailed = img.id ? failedImageIds.has(img.id) : false;
+          const isCurrentOrAdjacent = 
+            idx === currentIndex || 
+            idx === (currentIndex - 1 + validImages.length) % validImages.length || 
+            idx === (currentIndex + 1) % validImages.length;
+          
+          const shouldRenderImage = isCurrentOrAdjacent || hasInteracted || idx === 0;
+          const isLoaded = loadedIndices.has(idx);
+
           return (
-            <div key={img.id || idx} className="w-full h-full shrink-0 flex-none relative aspect-[16/10]">
+            <div key={img.id || idx} className="w-full h-full shrink-0 flex-none relative aspect-[16/10] bg-[#0A0A0A]">
               {isFailed ? (
                 <VehicleImageWithFallback
                   image={null}
@@ -259,14 +307,21 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
                   alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
                   className="w-full h-full object-cover"
                 />
-              ) : (
+              ) : shouldRenderImage ? (
                 <img
                   src={normalizeImageUrl(img.image_url)}
                   alt={img.alt_text || `${vehicle.year} ${vehicle.make} ${vehicle.model} - Photo ${idx + 1}`}
+                  onLoad={() => handleImageLoad(idx)}
                   onError={() => img.id && handleImageError(img.id)}
-                  className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500 ease-out pointer-events-none"
-                  loading={idx === 0 ? 'eager' : 'lazy'}
+                  className={`w-full h-full object-cover group-hover:scale-[1.03] transition-all duration-500 ease-out pointer-events-none ${
+                    isLoaded || (idx === 0 && priority) ? 'opacity-100' : 'opacity-0'
+                  }`}
+                  loading={idx === 0 && priority ? 'eager' : 'lazy'}
+                  decoding="async"
+                  {...(idx === 0 && priority ? { fetchPriority: 'high' } : { fetchPriority: 'auto' })}
                 />
+              ) : (
+                <div className="w-full h-full bg-[#0A0A0A]" />
               )}
             </div>
           );
@@ -334,3 +389,6 @@ export const VehicleCardCarousel: React.FC<VehicleCardCarouselProps> = ({ vehicl
     </div>
   );
 };
+
+export const VehicleCardCarousel = memo(VehicleCardCarouselComponent);
+
