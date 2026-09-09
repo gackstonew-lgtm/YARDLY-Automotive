@@ -71,7 +71,7 @@ export const TrackersPage: React.FC = () => {
           {/* Left: Telematics Showcase Card */}
           <div className="lg:col-span-5 bg-white dark:bg-[#121212]/90 backdrop-blur-md rounded-3xl border border-[rgba(0,60,40,0.1)] dark:border-[rgba(255, 255, 255,0.18)] p-5 sm:p-6 shadow-lg dark:shadow-2xl flex flex-col justify-between">
             <div className="space-y-4">
-              <div className="relative aspect-square sm:aspect-4/3 lg:aspect-square rounded-2xl overflow-hidden bg-[#EBF2EE] dark:bg-[#0A0A0A]">
+              <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-[#EBF2EE] dark:bg-[#0A0A0A]">
                 <img
                   src="/Car Images/VEHICLE TELEMATICS & SECURITY.jpeg"
                   alt="Vehicle Telematics & Security"

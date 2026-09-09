@@ -14,7 +14,7 @@ export const TrackerSection: React.FC = () => {
           <div className="lg:col-span-6 order-2 lg:order-1">
             <Reveal direction="left">
               <div className="relative rounded-3xl overflow-hidden bg-white dark:bg-[#121212] border border-[rgba(0,60,40,0.12)] dark:border-[rgba(255, 255, 255,0.18)] p-3 sm:p-4 shadow-xl dark:shadow-2xl group hover-lift">
-                <div className="relative aspect-square sm:h-[430px] rounded-2xl overflow-hidden bg-[#EBF2EE] dark:bg-[#0A0A0A]">
+                <div className="relative w-full aspect-square rounded-2xl overflow-hidden bg-[#EBF2EE] dark:bg-[#0A0A0A]">
                   <img
                     src="/Car Images/VEHICLE TELEMATICS & SECURITY.jpeg"
                     alt="Vehicle Telematics & Security - Always Track. Always Protected."
